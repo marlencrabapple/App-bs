@@ -231,11 +231,12 @@ buildpkgs() {
     echo "Attempting to build '$pkg'..."
 
     [[ ${#targetcarchs} -ne 0 ]] \
-	&& buildpkg_all_targets "$pkg" "$pkgstr" "${targetcarchs[@]}"
+       && buildpkg_all_targets "$pkg" "$pkgstr" "${targetcarchs[@]}"
 
     err=$?
   
     [[ $err -eq 0 ]] && echo "Successfully built '$pkg'!!"
+    
     exit_pkgbuilddir
   done
 }

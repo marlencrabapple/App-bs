@@ -64,7 +64,7 @@ ADJUST {
 }
 
 method handle_pkglist ($pkgiden) {
-  if (my ($pkg) = App::BS::Package->new($pkgiden)) {
+  if (my ($pkg) = BS::Package->new($pkgiden)) {
     $self->buildpkg($pkg)
   }
   else {

@@ -50,15 +50,66 @@ field $srcinfo_path;
 #   map { $_ . 'sums' => [] } qw(ck md5 sha1 sha256 sha512 b2)
 # ];
 
-method pkgstr ($pref = 'base') {
-  state $pkgstr = { base => $pkgbase, name => $pkgname };
-  delete $$pkgstr{$pref} // $pkgstr->[-1]
+# method pkgstr ($pref = 'base') {
+#   state $pkgstr = { base => $pkgbase, name => $pkgname };
+#   delete $$pkgstr{$pref} // $pkgstr->[-1]
+# }
+
+multi method from_srcinfo :common ($srcinfo = undef, %args) {
+  if(ref $srcinfo eq 'ARRAY') {
+
+  }
+  elsif (ref $srcinfo eq 'Path::Tiny') {
+
+  }
+  elsif (defined $srcinfo) {
+
+  }
+
+  if (-e $srcinfo) {
+    $srcinfo = path($srcinfo) unless ref $srcinfo eq 'Path::Tiny'
+  }
+  else {
+    #my $srcinfo_ashref = ...
+  }
 }
 
-multi method srcinfo ($srcinfo) {
-  $self->srcinfo unless $srcinfo
+method srcinfo_ashref () {
+  my %srcinfo = ();
+  #my $srcinfostr = $
+  # while (my $line = ) {
+   
+  # }
+
+  return \%srcinfo
 }
 
-multi method srcinfo :common ($srcinfo = undef, %args) {
+method srcinfo_deps :common ($file) {
+  my @deps = ();
+  foreach my $line (path($file)->lines_utf8) {
 
+  }
+}
+
+method srcinfo_parsestr :common ($str) {
+  my %srcinfo = ();
+  foreach my ($line) (split '\n', $str) {
+    $class->srcinfo_parseline($line, \%srcinfo)
+  }
+}
+
+method srcinfo_parseline :common ($line, $srcinfo_href = {}) {
+  my ($key, $val) = ( $line =~ /^([a-z]+) = (.+)\n$/ );
+    
+  # $srcinfo{$key} = [ $srcinfo{$key}, $val ]
+  #   if $srcinfo{$key} && ref $srcinfo{$key} eq '';
+
+  if ($$srcinfo_href{$key}) {
+    $$srcinfo_href{$key} = [ $$srcinfo_href{$key} ]
+      if ref $$srcinfo_href{$key} eq '';
+    push $$srcinfo_href{$key}->@*, $val
+  }
+  else {
+    $$srcinfo_href{$key} = $val
+  }
 }

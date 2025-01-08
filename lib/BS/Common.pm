@@ -7,11 +7,15 @@ use utf8;
 use v5.40;
 
 use Carp;
+use IPC::Run3;
+use Struct::Dumb;
+
+struct BsxResult => [qw(cmd in out err ret)];
 
 sub bsx ($cmd_aref, %args) {
   %args = (in => undef, out => '', err => '') unless scalar keys %args;
 
-  my $ret = run3($cmd_aref, \$args{in}, \$args{out}, \$args{err});
+  my $ret = run3($cmd_aref, map { ref $_ ? $_ : \$_ } @args{qw(in out err)});
   
   my $res = BsxResult( cmd => $cmd_aref,
                        %args{qw(in out err)},

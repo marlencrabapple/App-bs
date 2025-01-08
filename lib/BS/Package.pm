@@ -53,12 +53,6 @@ ADJUST {
   $pkgbuilder //= App::BS::pkgbuild->new(package => $self)
 }
 
-method srcinfo_deps :common ($file) {
-  foreach my $line (path($file)->lines_utf8) {
-
-  }
-}
-
 # method handle_depends (@depends) {
 #   #my $builder = App::BS::pkgbuild;
 #   my %pkgargs = ( is_depend => 1 );
@@ -97,7 +91,7 @@ method srcinfo_deps :common ($file) {
 #   $self
 # }
 
-method parse_dep_line :common ($line) {
+method parse_dep :common ($line) {
   use constant DEP_SO_RE => qr/\.so$/;
   use constant DEP_ATTRSEP_RE => qr/(\=)|([\<\>]\=?)|(?:(\:)\s*)/;  
   use constant DEP_ATTR_RE => qr/^(${\VALID_PKG_RE_NB})(${\DEP_SO_RE})?(${\DEP_ATTRSEP_RE})?(.+)?$/;
@@ -117,27 +111,6 @@ method parse_dep_line :common ($line) {
   return \%dep_pkgargs
 }
 
-method list_deps :common ($pkgstr, %args) {
-   say join ($args{sep} // ' '), $class->pactree($pkgstr)
-}
-
-method pactree :common ($pkgstr) {
-  my (@out, $in, $err);
-  my $status = $class->bsx(['pactree', '-sul', '-o', '-1', $pkgstr]
-                          , \@out, undef, \$err);
-  
-  die "$err" if $err;
-  die "$?: $!" if $status != 0;
-
-  my @deps = ();
-
-  foreach my $line (@out) {
-    push @deps, $class->parse_dep_line($line);
-  }
-
-  \@deps
-}
-
 method updchecksums {
   __CLASS__->bsx(['updchecksums'])
 }
@@ -147,7 +120,8 @@ method writesrcinfo (@makepkg_args) {
 }
 
 method printsrcinfo :common ($out, @makepkg_args) {
-  $class->bsx(['makepkg', '--printsrcinfo', @makepkg_args], out => \$out);
+  $class->bsx(['makepkg', '--printsrcinfo', @makepkg_args]
+              , out => (ref $out eq 'ARRAY' ? $out : \$out));
 }
 
 method by_name :common ($searchre, %args) {

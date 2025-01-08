@@ -20,7 +20,7 @@ our @EXPORT = qw(bsx);
 use constant DEFAULT_ENVPREFIXRE => qr/BS_(.+)/;
 use constant DEFAULT_CONFIGPATH => '/etc/pkgbuild/config.toml';
 
-struct BsxResult => [qw(cmd in out err ret)];
+
 
 field $env;
 field $_config_path :param('config') = path(DEFAULT_CONFIGPATH);
