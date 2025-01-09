@@ -10,8 +10,11 @@ use Data::Printer;
 use Struct::Dumb;
 use Syntax::Keyword::MultiSub;
 
+use BS::Package;
+use BS::Package::Meta::Ext::sift;
+
 use constant VALID_PKG_RE_CCLASS_START => "a-z0-9\@_\+";
-use constant VALID_PKG_RE_NB => qr/[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+/;
+use constant VALID_PKG_RE_NB => qr/[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+(\.so)|[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+/;
 
 struct PkgDepends => [qw(make optional check depends)];
 struct PkgChecksums => [qw(ck md5 sha1 sha256 sha512 b2)];
@@ -119,17 +122,16 @@ method srcinfo_parseline :common ($line, $srcinfo_href = {}) {
 }
 
 method parse_dep :common ($line) {
+  use constant PACINFO_SO_PREFIX => qr/(?:lib\:)?/;
   use constant DEP_SO_RE => qr/\.so/;
-  use constant VALID_DEPIDEN_RE => qr/${\VALID_PKG_RE_NB}(${\DEP_SO_RE})?/;
-  use constant DEP_ATTRSEP_RE => qr/(?:\=)|(?:[\<\>]\=?)|(?:(?:\:))/;  
-  use constant DEP_ATTR_RE => qr/^(${\VALID_DEPIDEN_RE})(?:\s*(${\DEP_ATTRSEP_RE})\s*(.+))?\n$/;
+  use constant VALID_DEPIDEN_RE => qr/${\PACINFO_SO_PREFIX}(${\VALID_PKG_RE_NB})(?:${\DEP_SO_RE})?/;
+  use constant DEP_ATTRSEP_RE => qr/(?:\=)|(?:[\<\>]\=?)|(?:(?:\:))|(?:\.)/;  
+  use constant DEP_ATTR_RE => qr/^${\VALID_DEPIDEN_RE}(?:\s*(${\DEP_ATTRSEP_RE})\s*(.+))?\n$/;
   
   my ($depname, $soext, $sep, $attr) = $line =~ DEP_ATTR_RE;
-
-  # use Data::Dumper;
-  # say Dumper($line, $depname, $soext, $sep, $attr);
-
   my %dep_pkgargs = ();
+
+  $dep_pkgargs{name} = $depname;
 
   if ($sep) {
     if ($sep ne ':') {
@@ -143,13 +145,27 @@ method parse_dep :common ($line) {
       $dep_pkgargs{name} = $depname
     }
   }
-  else {
-    $dep_pkgargs{name} = $depname
-  }
 
   if ($soext) {
-    $dep_pkgargs{file} = $depname
-  }
+    my @fquery_args = qw(-Fq);
+    my $now = time;
+    state $fdbsync = $now;
 
-  return \%dep_pkgargs
+    # TODO: Track "top level" package progress and time since last refresh
+    # to reset this in addition to resetting per run
+    if ($now == $fdbsync) {
+      push @fquery_args, qw(-y -y)
+    }
+
+    $dep_pkgargs{file} //= $depname;
+    my @out = ();
+    my $res =  BS::Common->bsx([qw(sudo pacman), @fquery_args, $dep_pkgargs{file}], in => undef, out => \@out);
+
+    my $match = $res->out->[-1];
+    chomp $match;
+
+    ($dep_pkgargs{repo}, $dep_pkgargs{name}) = (split '/', $match)
+  }
+  
+  \%dep_pkgargs
 }

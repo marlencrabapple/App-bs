@@ -102,11 +102,3 @@ method printsrcinfo :common ($out, @makepkg_args) {
   $class->bsx(['makepkg', '--printsrcinfo', @makepkg_args]
               , out => (ref $out eq 'ARRAY' ? $out : \$out));
 }
-
-method by_name :common ($searchre, %args) {
-  $class->bsx([qw(pacsift --name), $searchre, named2cli(\%args), '<&-']);
-}
-
-method owns_file :common ($filere, %args) {
-  $class->bsx([qw(pacsift --owns-file), $filere, named2cli(\%args), '<&-']); 
-}

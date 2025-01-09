@@ -4,8 +4,8 @@ use utf8;
 use v5.40;
 
 
-package BS::Package::Meta::Ext::pactree;
-role BS::Package::Meta::Ext::pactree :does(BS::Package::Meta);
+package BS::Package::Meta::Ext::tree;
+role BS::Package::Meta::Ext::tree :does(BS::Package::Meta);
 
 
 use Data::Printer;
@@ -17,10 +17,12 @@ method list_deps :common ($pkgstr, %args) {
   $depstr
 }
 
-method pactree :common ($pkgstr) {
+method pactree :common ($pkgstr, %args) {
   my (@out, $in, $err);
-  my $res = BS::Common->bsx(['pactree', '-sul', '-o-1', $pkgstr]
-                          , out => \@out, in => undef, err => \$err);
+  $args{'optdep-depth'} //= 1;
+  my $res = BS::Common->bsx( [ 'pactree', '-sul', "-o$args{'optdep-depth'}"
+                                            , $pkgstr ]
+                              , out => \@out, in => undef, err => \$err );
   
   die "$err" if $err;
   die "$?: $!" if $res->cmdexit->[0] != 0;
