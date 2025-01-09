@@ -1,4 +1,4 @@
-
+[![Actions Status](https://github.com/marlencrabapple/App-bs/actions/workflows/test.yml/badge.svg)](https://github.com/marlencrabapple/App-bs/actions)
 # NAME
 
 App::BS - It's new $module

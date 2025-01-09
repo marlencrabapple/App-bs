@@ -5,16 +5,16 @@ use v5.40;
 
 use File::chdir;
 use Getopt::Long;
-use List::Util qw(uniqstr);
-use IPC::Run3;
 
-use BS::Package;
+use lib './lib';
+
+use BS::Package::Meta::Ext::pactree;
 
 Getopt::Long::Configure("bundling");
 
 our %opts = ();
 
-GetOptions(\%opts,"pkgbuild-repo|pkgmeta-repo");
+GetOptions(\%opts,"pkgbuild-repo|pkgmeta");
 
 #BS::Package->new(name => $ARGV[0], dir => $CWD);
-BS::Package->list_deps($ARGV[0], $ARGV[1] // '\n');
+say BS::Package::Meta::Ext::pactree->list_deps($ARGV[0], sep => $ARGV[1] // "\n");

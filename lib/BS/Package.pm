@@ -22,9 +22,6 @@ use Path::Tiny;
 use constant REPO_BASEURI
   => "https://gitlab.archlinux.org/archlinux/packaging/packages/%s.git";
 
-use constant VALID_PKG_RE_CCLASS_START => "a-z0-9@_\+";
-use constant VALID_PKG_RE_NB => qr/[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+/;
-
 field $repo;
 
 field $file_searchstr :param(owns_file) = undef;
@@ -91,25 +88,7 @@ ADJUST {
 #   $self
 # }
 
-method parse_dep :common ($line) {
-  use constant DEP_SO_RE => qr/\.so$/;
-  use constant DEP_ATTRSEP_RE => qr/(\=)|([\<\>]\=?)|(?:(\:)\s*)/;  
-  use constant DEP_ATTR_RE => qr/^(${\VALID_PKG_RE_NB})(${\DEP_SO_RE})?(${\DEP_ATTRSEP_RE})?(.+)?$/;
-  
-  my ($depname, $soext, $sep, $attr) = $line =~ DEP_ATTR_RE;
 
-  my %dep_pkgargs = ();
-
-  if ($sep ne ':') {
-    $dep_pkgargs{version} = $attr;
-    $dep_pkgargs{file} = $depname if $soext
-  }
-  elsif ($sep eq ':') {
-    $dep_pkgargs{description} = $attr
-  }
-
-  return \%dep_pkgargs
-}
 
 method updchecksums {
   __CLASS__->bsx(['updchecksums'])
