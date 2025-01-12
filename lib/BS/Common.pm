@@ -20,6 +20,11 @@ method bsx :common ($cmd_aref, %args) {
 #sub bsx ($class, $cmd_aref, %args) {
   %args = (in => undef, out => '', err => '') unless scalar keys %args;
 
+  if ($args{debug}) {
+    say "${class}::bsx([ '$$cmd_aref[0]', ... ], ...) args:";
+    p $cmd_aref, %args
+  }
+
   my $ret = run3($cmd_aref, map { ref $_ ? $_ : defined $_ ? \$_ : undef } @args{qw(in out err)});
   
   my $res = BsxResult( cmd => $cmd_aref,
@@ -34,16 +39,4 @@ method bsx :common ($cmd_aref, %args) {
   }
 
   $res
-}
-
-method key_cli2env :common ($keys, $sep = qr/-/, $rep = '') {
-  map { my $key = $_ =~ s/$sep/$rep/r; uc $key } @$keys
-}
-
-method cli2named :common ($cli, $sep = qr/-/, $rep = '_') {
-  map { ($_ =~ s/$sep/$rep/r )[0] => $$cli{$_} } keys %$cli
-} 
-
-method named2cli :common ($config, $sep = qr/-/, $rep = '_') {
-  map {  $_ =~ s/$sep/$rep/r } grep { $$config{$_} != 1 } keys %$config
 }

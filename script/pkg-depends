@@ -1,31 +1,76 @@
 #!/usr/bin/env perl
 use Object::Pad;
 
-use lib './lib';
+use lib 'lib';
 
-our $class = class :does(App::BS::Common)
-                   :does(BS::Package::Meta::Ext::pactree) {
+package pkgdepends;
+class pkgdepends :isa(App::BS::CLI)
+                 :does(BS::Ext::pactree) {
   use utf8;
   use v5.40;
 
-  use File::chdir;
-  use Getopt::Long;
+  use Pod::Usage;
+  use Getopt::Long qw(:config auto_abbrev permute bundling);
 
-  use lib './lib';
+  Getopt::Long::Configure ("bundling");
 
-  method print_deps (%args) {
-    foreach my $pkg ($self->queue->@*) {
-      say __PACKAGE__->list_deps($pkg, $self->cliopts->%*, %args)
+  field $queue :mutator :param = [];
+  field $cliopts :param(dest) = {};
+  field $setup :param(getopts);
+
+  ADJUST {
+    GetOptions($cliopts, $setup->@*)
+  }
+
+  method run (%runopts) {
+    foreach my $pkg (@$queue) {
+      state $sync = $$cliopts{sync};
+
+      print __CLASS__->list_deps( $pkg, %$cliopts, %runopts
+                                      , sync => $sync )
+        , $pkg ne $$queue[-1]
+            ? ($$cliopts{delimiter} // "\n\n")
+            : "\n";
+
+      $sync = 0 unless $$cliopts{sync} == -1
     }
   }
-};
+}
 
-our %opts = ();
-our $app = $class->new( getopts => [ "pkgbuild-repo|pkgmeta=s"
-                                   , "seperator|sep=s"
-                                   , "sort|print-order=s"
-                                   , "optdepends-depth|optdep-max=i"
-                                   , "delimiter=s" ]
-                      , optdest => \%opts );
+package main;
 
-$app->print_deps(%opts)
+use utf8;
+use v5.40;
+
+our %opts = (
+  unique => 1,
+  sync => 1,
+  order => 'asc'
+);
+
+our @queue;
+our $app = pkgdepends->new(getopts => [ "pkgbuild-repo|pkgmeta=s"
+                                      , "seperator:s"
+                                      , "order|sort-direction|print-order:s"
+                                      , "optional|o:i"
+                                      , "depth|max-depth:i"
+                                      , "delimiter:s"
+                                      , "sync=i"
+                                      , "unique"
+                                      , "debug"
+                                      , "<>" => \&handle_barearg ],
+
+                           argv => \@ARGV,
+                           dest => \%opts,
+                           queue => \@queue);
+
+sub handle_barearg ($str) {
+  if (length $str == 1 && $ARGV[-1] eq $str) {
+    $opts{seperator} = $str
+  }
+  else {
+    push @queue, $str
+  }
+}
+
+$app->run

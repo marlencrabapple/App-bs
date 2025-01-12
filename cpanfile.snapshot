@@ -642,14 +642,6 @@ DISTRIBUTIONS
       XS::Parse::Sublike 0.31
       XS::Parse::Sublike::Builder 0.31
       perl 5.016
-  Getopt-Long-2.58
-    pathname: J/JV/JV/Getopt-Long-2.58.tar.gz
-    provides:
-      Getopt::Long 2.58
-      Getopt::Long::Parser 2.58
-    requirements:
-      ExtUtils::MakeMaker 0
-      Pod::Usage 1.14
   Getopt-Long-Descriptive-0.116
     pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.116.tar.gz
     provides:
@@ -668,22 +660,6 @@ DISTRIBUTIONS
       Sub::Exporter::Util 0
       overload 0
       perl 5.012
-      strict 0
-      warnings 0
-  HTTP-Tiny-0.090
-    pathname: H/HA/HAARG/HTTP-Tiny-0.090.tar.gz
-    provides:
-      HTTP::Tiny 0.090
-    requirements:
-      Carp 0
-      ExtUtils::MakeMaker 6.17
-      Fcntl 0
-      IO::Socket 0
-      MIME::Base64 0
-      Socket 0
-      Time::Local 0
-      bytes 0
-      perl 5.006
       strict 0
       warnings 0
   IO-Async-0.803
@@ -1078,11 +1054,11 @@ DISTRIBUTIONS
       Try::Tiny 0
       strict 0
       warnings 0
-  Module-Pluggable-6.2
-    pathname: S/SI/SIMONW/Module-Pluggable-6.2.tar.gz
+  Module-Pluggable-6.3
+    pathname: S/SI/SIMONW/Module-Pluggable-6.3.tar.gz
     provides:
       Devel::InnerPackage 0.4
-      Module::Pluggable 6.2
+      Module::Pluggable 6.3
       Module::Pluggable::Object 5.2
     requirements:
       Exporter 5.57
@@ -1165,24 +1141,24 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  Object-Pad-0.818
-    pathname: P/PE/PEVANS/Object-Pad-0.818.tar.gz
+  Object-Pad-0.819
+    pathname: P/PE/PEVANS/Object-Pad-0.819.tar.gz
     provides:
-      Object::Pad 0.818
-      Object::Pad::ExtensionBuilder 0.818
-      Object::Pad::MOP::Class 0.818
-      Object::Pad::MOP::Field 0.818
-      Object::Pad::MOP::FieldAttr 0.818
-      Object::Pad::MOP::Method 0.818
-      Object::Pad::MetaFunctions 0.818
+      Object::Pad 0.819
+      Object::Pad::ExtensionBuilder 0.819
+      Object::Pad::MOP::Class 0.819
+      Object::Pad::MOP::Field 0.819
+      Object::Pad::MOP::FieldAttr 0.819
+      Object::Pad::MOP::Method 0.819
+      Object::Pad::MetaFunctions 0.819
     requirements:
       ExtUtils::CBuilder 0
       File::ShareDir 1.00
       Module::Build 0.4004
-      XS::Parse::Keyword 0.46
-      XS::Parse::Keyword::Builder 0.46
-      XS::Parse::Sublike 0.32
-      XS::Parse::Sublike::Builder 0.32
+      XS::Parse::Keyword 0.47
+      XS::Parse::Keyword::Builder 0.48
+      XS::Parse::Sublike 0.35
+      XS::Parse::Sublike::Builder 0.35
       perl 5.018
   PPI-1.281
     pathname: M/MI/MITHALDU/PPI-1.281.tar.gz
@@ -2875,13 +2851,13 @@ DISTRIBUTIONS
       base 0
       lib 0
       perl 5.008
-  XS-Parse-Keyword-0.47
-    pathname: P/PE/PEVANS/XS-Parse-Keyword-0.47.tar.gz
+  XS-Parse-Keyword-0.48
+    pathname: P/PE/PEVANS/XS-Parse-Keyword-0.48.tar.gz
     provides:
-      XS::Parse::Infix 0.47
-      XS::Parse::Infix::Builder 0.47
-      XS::Parse::Keyword 0.47
-      XS::Parse::Keyword::Builder 0.47
+      XS::Parse::Infix 0.48
+      XS::Parse::Infix::Builder 0.48
+      XS::Parse::Keyword 0.48
+      XS::Parse::Keyword::Builder 0.48
     requirements:
       ExtUtils::CBuilder 0
       ExtUtils::CChecker 0.11
@@ -2889,12 +2865,12 @@ DISTRIBUTIONS
       File::ShareDir 1.00
       Module::Build 0.4004
       perl 5.014
-  XS-Parse-Sublike-0.33
-    pathname: P/PE/PEVANS/XS-Parse-Sublike-0.33.tar.gz
+  XS-Parse-Sublike-0.35
+    pathname: P/PE/PEVANS/XS-Parse-Sublike-0.35.tar.gz
     provides:
-      Sublike::Extended 0.33
-      XS::Parse::Sublike 0.33
-      XS::Parse::Sublike::Builder 0.33
+      Sublike::Extended 0.35
+      XS::Parse::Sublike 0.35
+      XS::Parse::Sublike::Builder 0.35
     requirements:
       ExtUtils::CBuilder 0
       File::ShareDir 1.00

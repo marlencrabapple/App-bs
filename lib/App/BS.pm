@@ -1,12 +1,13 @@
-use Object::Pad;
-
 package App::BS;
-
-use utf8;
-use v5.40;
+use 5.008001;
+use strict;
+use warnings;
 
 our $VERSION = "0.01";
 
+
+
+1;
 __END__
 
 =encoding utf-8
