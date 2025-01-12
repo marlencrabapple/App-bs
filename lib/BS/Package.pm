@@ -1,7 +1,7 @@
 use Object::Pad;
 
 package BS::Package;
-class BS::Package :does(BS::Common);
+class BS::Package :does(BS::Package::Meta);
 
 #inherit App::BS::Package::Meta '$pkgbase';
 #:does(App::BS::Package::Meta)
@@ -36,6 +36,10 @@ field $srcinfo_file = $dir->children('.SRCINFO')
   || __CLASS__->write_srcinfo(path("$dir/.SRCINFO"));
 
 field $pkgbuilder :param;
+
+field $pkg :param :accessor;
+field $pkgname :param :reader;
+field $pkgbase :param :reader;
 
 ADJUST {
   $dir = path($dir) unless ref $dir && ref $dir eq 'Path::Tiny';

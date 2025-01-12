@@ -11,7 +11,7 @@ use Struct::Dumb;
 use Syntax::Keyword::MultiSub;
 
 use BS::Package;
-use BS::Package::Meta::Ext::sift;
+use BS::Package::Meta::Ext::pacsift;
 
 use constant VALID_PKG_RE_CCLASS_START => "a-z0-9\@_\+";
 use constant VALID_PKG_RE_NB => qr/[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+(\.so)|[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+/;
@@ -19,9 +19,6 @@ use constant VALID_PKG_RE_NB => qr/[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_P
 struct PkgDepends => [qw(make optional check depends)];
 struct PkgChecksums => [qw(ck md5 sha1 sha256 sha512 b2)];
 
-field $pkg :param;
-field $pkgname :param;
-field $pkgbase :param;
 field $depends :param = undef;
 field $pkgver :param = undef;
 field $pkgrel :param = undef;
@@ -40,13 +37,17 @@ field @conflicts;
 field @replaces;
 field @provides;
 
-field $options = $pkg->env->{PKGBUILD_OPTIONS}
-              // $pkg->env->{pkgbuild}{options};
+field $options
 
 field $checksums;
 
 field $srcinfo;
 field $srcinfo_path;
+
+ADJUSTPARAMS {
+  $options = $self->pkg->env->{PKGBUILD_OPTIONS}
+          // $self->pkg->env->{pkgbuild}{options};
+}
 
 # field $depends = {
 #   _ => [],

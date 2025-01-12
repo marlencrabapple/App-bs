@@ -4,9 +4,8 @@ use utf8;
 use v5.40;
 
 
-package BS::Package::Meta::Ext::tree;
-role BS::Package::Meta::Ext::tree :does(BS::Package::Meta);
-
+package BS::Package::Meta::Ext::pactree;
+role BS::Package::Meta::Ext::pactree :does(BS::Package::Meta);
 
 use Data::Printer;
 

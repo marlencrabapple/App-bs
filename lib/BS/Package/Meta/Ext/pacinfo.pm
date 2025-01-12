@@ -1,7 +1,7 @@
 use Object::Pad;
 
-package BS::Package::Meta::Ext::info;
-role BS::Package::Meta::Ext::info :does(BS::Package::Meta);
+package BS::Package::Meta::Ext::pacinfo;
+role BS::Package::Meta::Ext::pacinfo :does(BS::Package::Meta);
 
 use utf8;
 use v5.40;

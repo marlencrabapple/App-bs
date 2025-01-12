@@ -11,6 +11,9 @@ use IPC::Run3;
 use Struct::Dumb qw( -named_constructors );
 use Data::Printer;
 
+use parent 'Exporter';
+our @EXPORT = qw(bsx);
+
 struct BsxResult => [qw(cmd in out err run3exit cmdexit)];
 
 method bsx :common ($cmd_aref, %args) {

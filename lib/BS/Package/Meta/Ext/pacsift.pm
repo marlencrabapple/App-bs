@@ -1,7 +1,7 @@
 use Object::Pad;
 
-package BS::Package::Meta::Ext::sift;
-role BS::Package::Meta::Ext::sift :does(BS::Package::Meta);
+package BS::Package::Meta::Ext::pacsift;
+role BS::Package::Meta::Ext::pacsift :does(BS::Package::Meta);
 
 use utf8;
 use v5.40;
