@@ -1,7 +1,9 @@
 use Object::Pad;
 
 package BS::Ext::pactree;
-role BS::Ext::pactree :does(BS::Package::Meta);
+role BS::Ext::pactree :does(BS::Common);
+
+use BS::Package::Meta;
 
 use utf8;
 use v5.40;
