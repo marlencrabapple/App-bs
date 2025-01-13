@@ -3,6 +3,7 @@ requires 'perl', 'v5.40';
 requires 'DBI';
 requires 'DBD::SQLite';
 requires 'DBIx::Connector';
+requires 'Inline';
 requires 'Inline::C';
 requires 'Object::Pad';
 requires 'Syntax::Keyword::Try';
@@ -32,7 +33,8 @@ on 'test' => sub {
   requires 'Test::More', '0.98';
   requires 'Test::CPAN::Meta', '0.25',
   requires 'Test::PAUSE::Permissions';
-  requires 'Test::Spellunker'
+  requires 'Test::Spellunker';
+  requires 'Test::MinimumVersion::Fast';
 };
 
 use constant DEV_PREREQS => sub {
@@ -41,7 +43,11 @@ use constant DEV_PREREQS => sub {
   requires 'Perl::Critic';
   requires 'Perl::Tidy';
   requires 'App::perlimports';
-  requires 'Perl::Critic::Community'
+  requires 'Perl::Critic::Community';
+  requires 'Inline';
+  requires 'Inline::C';
+  requires 'Inline::MakeMaker';
+  requires 'ExtUtils::MakeMaker'
 };
 
 on 'build' => DEV_PREREQS;

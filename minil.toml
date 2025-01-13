@@ -1,5 +1,9 @@
 name = "App-BS"
 badges = ["github-actions/test.yml"]
-module_maker="ModuleBuildTiny"
+module_maker="ExtUtilsMakeMaker"
 static_install = "auto"
+generate_ppport_h = 1
+generate_xshelper_h = 1
 
+needs_compiler_c99 = 1
+cc_warnings = 1

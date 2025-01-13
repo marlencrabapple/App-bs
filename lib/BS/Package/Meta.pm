@@ -1,7 +1,8 @@
 use Object::Pad ':experimental(:all)';
 
 package BS::Package::Meta;
-role BS::Package::Meta :does(BS::Common);
+role BS::Package::Meta :does(BS::Common)
+                       :does(BS::alpm);
 
 use utf8;
 use v5.40;
