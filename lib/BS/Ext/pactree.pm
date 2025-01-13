@@ -27,7 +27,7 @@ method list_deps :common ($pkgstr, %args) {
 
   my @out = $class->tree($pkgstr
     , linear => 1, unique => 1, sync => 1, optional => 1
-    , %args)->@*;
+    , sync => delete $args{sync}, %args)->@*;
 
   foreach my $line (@out) {
     my $depargs = BS::Package::Meta->parse_dep($line, %args);

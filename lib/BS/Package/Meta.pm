@@ -116,7 +116,7 @@ method parse_dep :common ($line, %args) {
     $dep_pkgargs{file} //= $depname;
     my @out = ();
     my $res =  BS::Common->bsx([ qw(sudo pacman)
-                                 , @fquery_args, $dep_pkgargs{file} ]
+                               , @fquery_args, $dep_pkgargs{file} ]
                                , in => undef, out => \@out);
 
     my $match = $res->out->[-1];
