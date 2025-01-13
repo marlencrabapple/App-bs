@@ -8,6 +8,7 @@ use BS::Package::Meta;
 use utf8;
 use v5.40;
 
+use List::Util 'uniq';
 use Data::Printer;
 
 method list_deps :common ($pkgstr, %args) {
@@ -31,12 +32,17 @@ method list_deps :common ($pkgstr, %args) {
 
   foreach my $line (@out) {
     my $depargs = BS::Package::Meta->parse_dep($line, %args);
-    push @deps, $$depargs{name} unless $$depargs{name} eq $pkgstr
+    push @deps, $$depargs{base} // $$depargs{name} 
+      unless $$depargs{name} eq $pkgstr
   }
 
-  join $args{sep} // ' ', ($args{order} !~ $altorder_re
+  p @deps if $ENV{DEBUG};
+
+  @deps = ($args{order} !~ $altorder_re)
     ? @deps
-    : reverse @deps)
+    : reverse @deps;
+
+  join $args{sep} // ' ', ($args{unique} ? reverse uniq reverse @deps : @deps)
 }
 
 method tree :common ($pkgstr, %args) {

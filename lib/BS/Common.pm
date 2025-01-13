@@ -61,6 +61,13 @@ method open_as_href :common ($in, %args) {
     next unless $key && $val;
 
     if ($$as_href{$key}) {
+      if ($args{no_dupes} && $args{dest}->{$key} 
+        && $$as_href{$key} eq $args{dest}->{$key}) {
+          p $line, $key, $val, $$as_href{$key}, $args{dest}->{$key}
+            if $ENV{DEBUG};
+          next
+      }
+
       $$as_href{$key} = [ $$as_href{$key} ]
         if ref $$as_href{$key} ne 'ARRAY';
       push $$as_href{$key}->@*, $val

@@ -125,10 +125,10 @@ method parse_dep :common ($line, %args) {
     ($dep_pkgargs{repo}, $dep_pkgargs{name}) = (split /\//, $match)
   }
 
-  if ($args{resolve_base}) {
+  if ($args{resolve_base} // $ENV{RESOLVE_BASE}) {
     try {
-      my $info = BS::Ext::pacinfo->info($dep_pkgargs{name});
-      $dep_pkgargs{base} = $$info{base}
+      my $info = BS::Ext::pacinfo->info($dep_pkgargs{name}, no_dupes => 1);
+      $dep_pkgargs{base} = $info->{base}[0] if $info->{base}[0]
     }
     catch ($e) {
       carp p $e

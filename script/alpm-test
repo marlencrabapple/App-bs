@@ -29,15 +29,15 @@ BEGIN {
   }
 
   $combstr .= path('./src/pacman/lib/libalpm/alpm_list.h')->slurp_utf8;
-  $combstr .= path('./src/pacman/lib/libalpm/alpm.h')->slurp_utf8;
-  $combstr .= q{typedef struct _alpm_list_t {
-	/** data held by the list node */
-	void *data;
-	/** pointer to the previous node */
-	struct _alpm_list_t *prev;
-	/** pointer to the next node */
-	struct _alpm_list_t *next;
-} alpm_list_t;};
+  #$combstr .= path('./src/pacman/lib/libalpm/alpm.h')->slurp_utf8;
+#   $combstr .= q{typedef struct _alpm_list_t {
+# 	/** data held by the list node */
+# 	void *data;
+# 	/** pointer to the previous node */
+# 	struct _alpm_list_t *prev;
+# 	/** pointer to the next node */
+# 	struct _alpm_list_t *next;
+# } alpm_list_t;};
 
   
   #foreach my $h (path('./src/pacman/lib/libalpm')->children(qr/(alpm)\.c\z/)) {
