@@ -1,10 +1,10 @@
 use Object::Pad;
 
-use utf8;
-use v5.40;
-
 package BS::Ext::pactree;
 role BS::Ext::pactree :does(BS::Package::Meta);
+
+use utf8;
+use v5.40;
 
 use Data::Printer;
 
@@ -55,7 +55,7 @@ method tree :common ($pkgstr, %args) {
   }
 
   my $res = BS::Common->bsx( [ 'pactree', ('-'. join '', @flagsargs)
-                           , @intsargs, $pkgstr ], %args,
+                                 , @intsargs, $pkgstr ], %args,
                            , out => \@out, in => undef, err => \$err );
   
   die "$err" if $err;

@@ -49,7 +49,7 @@ our %opts = (
 );
 
 our @queue;
-our $app = pkgdepends->new(getopts => [ "pkgbuild-repo|pkgmeta=s"
+our $app = pkgdepends->new(getopts => [ "pkgbuild-repo|pkgmeta:s"
                                       , "seperator:s"
                                       , "order|sort-direction|print-order:s"
                                       , "optional|o:i"
@@ -60,8 +60,8 @@ our $app = pkgdepends->new(getopts => [ "pkgbuild-repo|pkgmeta=s"
                                       , "debug"
                                       , "<>" => \&handle_barearg ],
 
-                           argv => \@ARGV,
-                           dest => \%opts,
+                           argv  => \@ARGV,
+                           dest  => \%opts,
                            queue => \@queue);
 
 sub handle_barearg ($str) {
