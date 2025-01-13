@@ -10,7 +10,7 @@ requires 'Syntax::Keyword::MultiSub';
 requires 'Syntax::Keyword::Dynamically';
 requires 'Data::Printer';
 requires 'Getopt::Long';
-requires 'Pod::Usage'
+requires 'Pod::Usage';
 requires 'Path::Tiny';
 requires 'File::chdir';
 requires 'IPC::Run3';

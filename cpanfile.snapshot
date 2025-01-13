@@ -219,8 +219,8 @@ DISTRIBUTIONS
       Test::More 0.88
       Tie::Hash 0
       perl 5.006
-  DBI-1.645
-    pathname: H/HM/HMBRAND/DBI-1.645.tgz
+  DBI-1.646
+    pathname: H/HM/HMBRAND/DBI-1.646.tar.gz
     provides:
       Bundle::DBI 12.008696
       DBD::DBM 0.08
@@ -276,7 +276,7 @@ DISTRIBUTIONS
       DBD::Sponge::dr 12.010003
       DBD::Sponge::st 12.010003
       DBDI 12.015129
-      DBI 1.645
+      DBI 1.646
       DBI::Const::GetInfo::ANSI 2.008697
       DBI::Const::GetInfo::ODBC 2.011374
       DBI::Const::GetInfoReturn 2.008697
@@ -316,7 +316,7 @@ DISTRIBUTIONS
       DBI::SQL::Nano::Table_ 1.015544
       DBI::Util::CacheMemory 0.010315
       DBI::Util::_accessor 0.009479
-      DBI::common 1.645
+      DBI::common 1.646
     requirements:
       ExtUtils::MakeMaker 6.48
       Test::Simple 0.90
@@ -642,6 +642,14 @@ DISTRIBUTIONS
       XS::Parse::Sublike 0.31
       XS::Parse::Sublike::Builder 0.31
       perl 5.016
+  Getopt-Long-2.58
+    pathname: J/JV/JV/Getopt-Long-2.58.tar.gz
+    provides:
+      Getopt::Long 2.58
+      Getopt::Long::Parser 2.58
+    requirements:
+      ExtUtils::MakeMaker 0
+      Pod::Usage 1.14
   Getopt-Long-Descriptive-0.116
     pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.116.tar.gz
     provides:
@@ -662,6 +670,22 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
+  HTTP-Tinyish-0.19
+    pathname: M/MI/MIYAGAWA/HTTP-Tinyish-0.19.tar.gz
+    provides:
+      HTTP::Tinyish 0.19
+      HTTP::Tinyish::Base undef
+      HTTP::Tinyish::Curl undef
+      HTTP::Tinyish::HTTPTiny undef
+      HTTP::Tinyish::LWP undef
+      HTTP::Tinyish::Wget undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Which 0
+      HTTP::Tiny 0.055
+      IPC::Run3 0
+      parent 0
+      perl 5.008001
   IO-Async-0.803
     pathname: P/PE/PEVANS/IO-Async-0.803.tar.gz
     provides:
