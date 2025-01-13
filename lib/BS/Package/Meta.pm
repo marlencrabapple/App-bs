@@ -6,6 +6,7 @@ role BS::Package::Meta :does(BS::Common);
 use utf8;
 use v5.40;
 
+use Carp;
 use List::Util qw(any);
 use Data::Printer;
 use Struct::Dumb;
@@ -15,7 +16,7 @@ use Syntax::Keyword::MultiSub;
 use BS::Ext::pacsift;
 use BS::Ext::pacinfo;
 
-use constant VALID_PKG_RE_CCLASS_START => "a-z0-9\@_\+";
+use constant VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
 use constant VALID_PKG_RE_NB => qr/[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+(\.so)|[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+/;
 
 struct PkgDepends => [qw(make optional check depends)];
@@ -124,8 +125,14 @@ method parse_dep :common ($line, %args) {
   }
 
   if ($args{resolve_base}) {
-    my $info = BS::Ext::pacinfo->info($dep_pkgargs{name});
-    $dep_pkgargs{base} = $$info{base}
+    try {
+      my $info = BS::Ext::pacinfo->info($dep_pkgargs{name});
+      $dep_pkgargs{base} = $$info{base}
+    }
+    catch ($e) {
+      carp p $e
+    }
+
   }
   
   \%dep_pkgargs
@@ -140,18 +147,18 @@ method from_srcinfo :common ($in, %args) {
 
 method parse_srcinfo :common ($in, %args) {
   my ($as_aref, $as_path);
-  BS::Common->open_as_href($in, %args, parse_line => sub ($line, $as_href) {
-    __PACKAGE__->parse_srcinfo_line($line, $as_href)
+  BS::Common->open_as_href($in, %args, parse_line => sub ($line, %args) {
+    __PACKAGE__->parse_srcinfo_line($line, %args)
   })
 }
 
-method parse_srcinfo_line :common ($line, $dest_href = undef) {
+method parse_srcinfo_line :common ($line, %args) {
   # Not sure if this bit is thread-safe, but there shouldn't be any
   # issues with usage in non-blocking event-loop or forking code
-  state $_res_buff = $dest_href;
-  $_res_buff = $dest_href if keys %$dest_href && $dest_href ne $_res_buff;
+  state $_res_buff = $args{dest};
+  $_res_buff = $args{dest} if keys $args{dest}->%* && $args{dest} ne $_res_buff;
 
-  use constant SRCINFO_LINE_RE => qr/^([a-z]+)\s*=\s*(.+)\n?$/;
+  use constant SRCINFO_LINE_RE => qr/^([a-z0-9_]+)\s*=\s*(.+)\n?$/i;
 
   my ($key, $val) = ($line =~  SRCINFO_LINE_RE);
   return undef unless $key && $val;
@@ -160,7 +167,7 @@ method parse_srcinfo_line :common ($line, $dest_href = undef) {
   #   if $srcinfo{$key} && ref $srcinfo{$key} eq '';
 
   if ($key =~ /depends/) {
-    $val = $class->parse_dep($val)
+    $val = $class->parse_dep($val, %args)
   }
 
   # if ($$_res_buff{$key}) {

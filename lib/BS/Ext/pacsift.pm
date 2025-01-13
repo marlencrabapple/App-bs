@@ -19,6 +19,6 @@ method owns_file :common ($filere, %args) {
 method sift :common ($ptn, $cmd, %args) {
   my @out = ();
   my $res = BS::Common->bsx([qw(pacsift), $cmd, $ptn
-                            , BS::Common->named2cli(\%args)]
-                          , out => \@out);
+                            , BS::Common->named2cli(\%args), '<&-']
+                          , in => undef, out => \@out);
 }

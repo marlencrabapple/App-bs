@@ -9,11 +9,14 @@ use v5.40;
 use Carp;
 use IPC::Run3;
 use Tie::File;
+use Data::Dumper;
 use Struct::Dumb qw( -named_constructors );
 use Data::Printer;
 
 use parent 'Exporter';
 our @EXPORT = qw(bsx);
+
+use constant TRIM_RE => qr/\s*(.+)\s*\n*/i;
 
 struct BsxResult => [qw(cmd in out err run3exit cmdexit)];
 
@@ -49,12 +52,13 @@ method open_as_href :common ($in, %args) {
 
   $as_aref = $class->tie_file($in, dest => $as_href, %args);
 
-  use constant TRIM_RE => qr/\s*(.+)\s*/;
-
   foreach my $line (@$as_aref) {
     $line =~ s/${\TRIM_RE}/$1/;
     
-    my ($key, $val) = $args{parse_line}->($line, $as_href);
+    my ($key, $val) = $args{parse_line}->($line, dest => $as_href, %args);
+    #carp Dumper($line, $key, $val) if $ENV{DEBUG};
+    
+    next unless $key && $val;
 
     if ($$as_href{$key}) {
       $$as_href{$key} = [ $$as_href{$key} ]
