@@ -3,6 +3,7 @@ requires 'perl', 'v5.40';
 requires 'DBI';
 requires 'DBD::SQLite';
 requires 'DBIx::Connector';
+requires 'Inline::C';
 requires 'Object::Pad';
 requires 'Syntax::Keyword::Try';
 requires 'Syntax::Keyword::Defer';
@@ -29,6 +30,9 @@ requires 'Const::Fast';
 
 on 'test' => sub {
   requires 'Test::More', '0.98';
+  requires 'Test::CPAN::Meta', '0.25',
+  requires 'Test::PAUSE::Permissions';
+  requires 'Test::Spellunker'
 };
 
 use constant DEV_PREREQS => sub {
@@ -42,3 +46,4 @@ use constant DEV_PREREQS => sub {
 
 on 'build' => DEV_PREREQS;
 on 'develop' => DEV_PREREQS;
+
