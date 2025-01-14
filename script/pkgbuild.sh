@@ -78,13 +78,16 @@ pacinfo_import() {
 
 update_pkgbuild_repo() {
   branches=($(git branch -a))
-  
+     git config --global --add safe.directory "$(pwd)"
+
+    git reset --hard;
+    git clean -f; 
   echo "Attempting to update PKGBUILD repo..."
   for branch in "${branches[*]:0:1}" main master; do
-    git config --global --add safe.directory "$(pwd)"
-    git switch -c pkgbuild-$(date +%s)
-    git add -A
-    git commit -m "Misc changes"
+
+    #git switch -c pkgbuild-$(date +%s)
+    #git add -A
+    #git commit -m "Misc changes"
     # git switch "$curr_branch"
     git pull origin "$branch" --rebase
     err=$?
@@ -159,6 +162,8 @@ buildpkg() {
     --makepkg-conf="$makepkg_conf" --pacman-conf="$pacman_conf" \
     ${PB_TMPCHROOT:+--temp} ${PB_REBUILDALL:+-f} \
     -d universe --root "$AURDIT_ROOT/repo/${target:-"$CARCH"}" -c -D $CHROOT
+
+  sudo pacman -Scc
 
   err=$?
 

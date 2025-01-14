@@ -125,13 +125,27 @@ method parse_dep :common ($line, %args) {
     ($dep_pkgargs{repo}, $dep_pkgargs{name}) = (split /\//, $match)
   }
 
-  if ($args{resolve_base} // $ENV{RESOLVE_BASE}) {
+  if ($args{resolve_base} // $ENV{RESOLVE_BASE} // 1) {
     try {
       my $info = BS::Ext::pacinfo->info($dep_pkgargs{name}, no_dupes => 1);
-      $dep_pkgargs{base} = $info->{base}[0] if $info->{base}[0]
+      $dep_pkgargs{base} = ref $$info{base} eq 'ARRAY'
+        ? $info->{base}[0] : $$info{base}
     }
     catch ($e) {
-      carp p $e
+      my @out;
+      my $res = BS::Common->bsx([ qw(sudo pacman -Sqs), $dep_pkgargs{name} ]
+                                    , in => undef, out => \@out);
+
+      chomp $out[0];
+
+      try {
+        my $info = BS::Ext::pacinfo->info($out[0], no_dupes => 1);
+        $dep_pkgargs{base} = ref $$info{base} eq 'ARRAY'
+          ? $info->{base}[0] : $$info{base}
+      }
+      catch ($e) {
+        carp np $e
+      }
     }
 
   }
