@@ -1,0 +1,40 @@
+use Object::Pad;
+
+package BS::Ext::pacman;
+role BS::Ext::pacman :does(BS::Common);
+
+use utf8;
+use v5.40;
+
+use Carp;
+use Data::Printer;
+
+method file_query :common ($filestr, %args) {
+  my $now = time;
+  state $sync = $now;
+  $class->query($filestr, qurey_opts => '-Fq', now => $now
+    , sync => $sync)
+}
+
+method pkg_query :common ($pkgstr, %args) {
+  my $now = time;
+  state $sync = $now;
+  $class->query("^$pkgstr\$", query_opts => '-Sqs', now => $now
+    , sync => $sync)
+}
+
+method query :common ($str, %args) {
+  $args{dest} //= [];
+  $args{now} //= time;
+
+  carp np $str, %args if $ENV{DEBUG};
+
+  if ($args{sync} || ($args{last_sync} && $args{now} == $args{sync})) {
+    push $args{query_opts}->@*, '-yy'
+  }
+
+  my $res = BS::Common->bsx([ qw(sudo pacman), $args{query_opts}->@*, $str ]
+                            , in => undef, out => $args{dest});
+
+  $args{dest}
+}

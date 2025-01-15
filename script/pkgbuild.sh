@@ -78,17 +78,13 @@ pacinfo_import() {
 
 update_pkgbuild_repo() {
   branches=($(git branch -a))
-     git config --global --add safe.directory "$(pwd)"
+  git config --global --add safe.directory "$(pwd)"
 
-    git reset --hard;
-    git clean -f; 
+  git reset --hard;
+  git clean -f; 
+
   echo "Attempting to update PKGBUILD repo..."
   for branch in "${branches[*]:0:1}" main master; do
-
-    #git switch -c pkgbuild-$(date +%s)
-    #git add -A
-    #git commit -m "Misc changes"
-    # git switch "$curr_branch"
     git pull origin "$branch" --rebase
     err=$?
     [[ err -eq 0 ]] && break
@@ -140,7 +136,7 @@ clone_arch_remote() {
 
   git clone --bare \
     "$arch_pkgbuildrepo_uri/${pkgbase}.git" \
-    "$pkgbase"
+    "${pkgbase:-$pkgstr}"
   
   local err=$?
   return $err
@@ -158,7 +154,7 @@ buildpkg() {
   
   env SRCDEST="$SRCDEST/pkgbuild-$(epoch)" aur build -v -f -S \
     --cargs="C,u,n${PB_CHROOTCLEAN:+,c}" \
-    --margs="L,A,s,f,i${PB_MAKEPKG_CLEANALL:+,C,c}" --syncdeps --pkgver \
+    --margs="L,A,s,i${PB_MAKEPKG_CLEANALL:+,C,c}" --syncdeps --pkgver \
     --makepkg-conf="$makepkg_conf" --pacman-conf="$pacman_conf" \
     ${PB_TMPCHROOT:+--temp} ${PB_REBUILDALL:+-f} \
     -d universe --root "$AURDIT_ROOT/repo/${target:-"$CARCH"}" -c -D $CHROOT
@@ -249,7 +245,9 @@ findpkg() {
   pkgrepo=${pkgfields[*]:0:1}
   pkgstr=${pkgfields[*]:1:1}
 
-  [[ -z "$pkgstr" ]] && pkgstr="$pkgrepo"
+  [[ -z "$pkgstr" ]] && ($(pacman -Syyqs "^$pkg\$"))
+
+  #[[ -z "$pkgstr" ]] && pkgstr="$pkgrepo"
 
   pacinfo="$(pacinfo_import "$pkgstr")"
 

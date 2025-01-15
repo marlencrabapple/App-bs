@@ -25,7 +25,10 @@ class pkgdepends :isa(App::BS::CLI)
   field $setup :param(getopts);
 
   ADJUST {
-    GetOptions($cliopts, $setup->@*)
+    GetOptions($cliopts
+      , $setup->@*, "debug+"
+      , "version" => sub { VersionMessage() }
+      , "help" => sub { HelpMessage() })
   }
 
   method run (%runopts) {
@@ -68,9 +71,8 @@ our $app = pkgdepends->new(getopts => [ "pkgbuild-repo|pkgmeta:s"
                                       , "optional|o:i"
                                       , "depth|max-depth:i"
                                       , "delimiter:s"
-                                      , "sync=i"
+                                      , "sync!"
                                       , "unique"
-                                      , "debug"
                                       , "<>" => \&handle_barearg ],
 
                            argv  => \@ARGV,

@@ -103,22 +103,9 @@ method parse_dep :common ($line, %args) {
   }
 
   if ($soext) {
-    my @fquery_args = qw(-Fq);
-    my $now = time;
-    state $fdbsync = $now;
-
-    # TODO: Track "top level" package progress and time since last refresh
-    # to reset this in addition to resetting per run
-    if ($args{sync} || ($now == $fdbsync)) {
-      push @fquery_args, qw(-y -y)
-    }
-
     $dep_pkgargs{file} //= $depname;
-    my @out = ();
-    my $res =  BS::Common->bsx([ qw(sudo pacman)
-                               , @fquery_args, $dep_pkgargs{file} ]
-                               , in => undef, out => \@out);
 
+    my $res = BS::Ext::pacman->pkg_query($dep_pkgargs{name});
     my $match = $res->out->[-1];
     chomp $match;
 
@@ -127,21 +114,16 @@ method parse_dep :common ($line, %args) {
 
   if ($args{resolve_base} // $ENV{RESOLVE_BASE} // 1) {
     try {
-      my $info = BS::Ext::pacinfo->info($dep_pkgargs{name}, no_dupes => 1);
-      $dep_pkgargs{base} = ref $$info{base} eq 'ARRAY'
-        ? $info->{base}[0] : $$info{base}
+      $dep_pkgargs{base} //= BS::Ext::pacinfo->pkgbase($dep_pkgargs{name}
+        , no_dupes => 1)
     }
     catch ($e) {
-      my @out;
-      my $res = BS::Common->bsx([ qw(sudo pacman -Sqs), $dep_pkgargs{name} ]
-                                    , in => undef, out => \@out);
-
-      chomp $out[0];
+      my $res = BS::Ext::pacman->pkg_query($dep_pkgargs{name});
+      chomp $res->out->[-1];
 
       try {
-        my $info = BS::Ext::pacinfo->info($out[0], no_dupes => 1);
-        $dep_pkgargs{base} = ref $$info{base} eq 'ARRAY'
-          ? $info->{base}[0] : $$info{base}
+        $dep_pkgargs{base} //= BS::Ext::pacinfo->pkgbase($res->out->[-1]
+          , no_dupes => 1)
       }
       catch ($e) {
         carp np $e

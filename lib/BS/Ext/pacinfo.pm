@@ -9,9 +9,9 @@ use v5.40;
 use Carp;
 use Data::Dumper;
 
-# use constant VALID_KEYS => qw(Name Base Repository);
-
-# use constant VALID_KEY_RE => map { qr/$_/ } join '|', (VALID_KEYS);
+use constant VALID_KEYS => qw(Name Base Repository);
+use constant VALID_KEY_RE => map { qr/^($_)$/ } join '|', (VALID_KEYS);
+use constant DEPKEY_RE => qr/^(Requires|Optional Deps)$/;
 
 method info :common ($pkgstr, %args) {
   my (@out, $in, $err);
@@ -23,34 +23,33 @@ method info :common ($pkgstr, %args) {
 
   my %info = ();
 
-  $class->pacinfo_parse(\@out, %args, dest => \%info)
-
-  # my @deps = ();
-
-  # foreach my $line (@out) {
-  #   my $depargs = BS::Package::Meta->parse_dep($line);
-  #   push @deps, $$depargs{name}
-  # }
-
-  #\@deps 
+  $class->to_href(\@out, %args, dest => \%info)
 }
 
-method pacinfo_parse :common ($in, %args) {
+method pkgbase :common ($pkgstr, %args) {
+  my $info = $class->info($pkgstr, %args);
+  ref $$info{base} eq 'ARRAY' ? $info->{base}[0] : $$info{base}
+}
+
+method to_href :common ($in, %args) {
   carp Dumper($in, %args) if $ENV{DEBUG};
   BS::Common->open_as_href($in, %args
     , parse_line => sub ($line, %args) {
-      __PACKAGE__->pacinfo_parseline($line, %args)
+      __PACKAGE__->line($line, %args)
     })
 }
 
-method pacinfo_parseline :common ($line, %args) {
-  my ($key, $value) = map { $_ =~ s/${\BS::Common::TRIM_RE}/$1/; $_ } (split /:/, $line);
+method line :common ($line, %args) {
+  my ($key, $value) = map {
+    $_ =~ s/${\BS::Common::TRIM_RE}/$1/; $_
+  } (split /:/, $line);
+  
   $key = lc($key);
 
   say Dumper($line, $key, $value) if $ENV{DEBUG};
   
   $value = BS::Package::Meta->parse_dep($value)
-    if $key =~ /^Requires|Optional Deps$/;
+    if $key =~ DEPKEY_RE;
 
   return undef unless $key && $value;
 
