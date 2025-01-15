@@ -16,6 +16,7 @@ use Syntax::Keyword::MultiSub;
 #use BS::Package;
 use BS::Ext::pacsift;
 use BS::Ext::pacinfo;
+use BS::Ext::pacman;
 
 use constant VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
 use constant VALID_PKG_RE_NB => qr/[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+(\.so)|[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+/;
@@ -105,7 +106,7 @@ method parse_dep :common ($line, %args) {
   if ($soext) {
     $dep_pkgargs{file} //= $depname;
 
-    my $res = BS::Ext::pacman->pkg_query($dep_pkgargs{name});
+    my $res = BS::Ext::pacman->file_query($dep_pkgargs{name});
     my $match = $res->out->[-1];
     chomp $match;
 

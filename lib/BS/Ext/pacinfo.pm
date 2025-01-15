@@ -10,8 +10,8 @@ use Carp;
 use Data::Dumper;
 
 use constant VALID_KEYS => qw(Name Base Repository);
-use constant VALID_KEY_RE => map { qr/^($_)$/ } join '|', (VALID_KEYS);
-use constant DEPKEY_RE => qr/^(Requires|Optional Deps)$/;
+use constant VALID_KEY_RE => map { qr/^($_)$/i } join '|', (VALID_KEYS);
+use constant DEPKEY_RE => qr/^(Requires|Optional Deps)$/i;
 
 method info :common ($pkgstr, %args) {
   my (@out, $in, $err);
@@ -33,17 +33,19 @@ method pkgbase :common ($pkgstr, %args) {
 
 method to_href :common ($in, %args) {
   carp Dumper($in, %args) if $ENV{DEBUG};
-  BS::Common->open_as_href($in, %args
+  my $res = BS::Common->open_as_href($in, %args
     , parse_line => sub ($line, %args) {
-      __PACKAGE__->line($line, %args)
-    })
+      $class->parse_line($line, %args)
+    });
+
+  $res->out
 }
 
-method line :common ($line, %args) {
+method parse_line :common ($line, %args) {
   my ($key, $value) = map {
     $_ =~ s/${\BS::Common::TRIM_RE}/$1/; $_
   } (split /:/, $line);
-  
+
   $key = lc($key);
 
   say Dumper($line, $key, $value) if $ENV{DEBUG};
