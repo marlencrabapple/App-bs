@@ -32,17 +32,21 @@ method list_deps :common ($pkgstr, %args) {
 
   foreach my $line (@out) {
     my $depargs = BS::Package::Meta->parse_dep($line, %args);
-    push @deps, $$depargs{base} // $$depargs{name} 
-      unless $$depargs{name} eq $pkgstr
+    my $depid = $$depargs{base} // $$depargs{name};
+
+    push @deps, $depid
+      unless $depid eq $pkgstr
   }
 
   p @deps if $ENV{DEBUG};
+
+  @deps = $args{unique} ? reverse uniq reverse @deps : @deps;
 
   @deps = ($args{order} !~ $altorder_re)
     ? @deps
     : reverse @deps;
 
-  join $args{sep} // ' ', ($args{unique} ? reverse uniq reverse @deps : @deps)
+  join $args{sep} // ' ', @deps
 }
 
 method tree :common ($pkgstr, %args) {

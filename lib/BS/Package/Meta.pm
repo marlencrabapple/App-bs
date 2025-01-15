@@ -106,7 +106,7 @@ method parse_dep :common ($line, %args) {
   if ($soext) {
     $dep_pkgargs{file} //= $depname;
 
-    my $res = BS::Ext::pacman->file_query($dep_pkgargs{name});
+    my $res = BS::Ext::pacman->file_query($depname);
     my $match = $res->out->[-1];
     chomp $match;
 
@@ -116,7 +116,7 @@ method parse_dep :common ($line, %args) {
   if ($args{resolve_base} // $ENV{RESOLVE_BASE} // 1) {
     try {
       $dep_pkgargs{base} //= BS::Ext::pacinfo->pkgbase($dep_pkgargs{name}
-        , no_dupes => 1)
+        , resolve_deps => 0, no_dupes => 1)
     }
     catch ($e) {
       my $res = BS::Ext::pacman->pkg_query($dep_pkgargs{name});
@@ -124,7 +124,7 @@ method parse_dep :common ($line, %args) {
 
       try {
         $dep_pkgargs{base} //= BS::Ext::pacinfo->pkgbase($res->out->[-1]
-          , no_dupes => 1)
+          , resolve_deps => 0, no_dupes => 1)
       }
       catch ($e) {
         carp np $e
@@ -160,22 +160,10 @@ method parse_srcinfo_line :common ($line, %args) {
 
   my ($key, $val) = ($line =~  SRCINFO_LINE_RE);
   return undef unless $key && $val;
-    
-  # $srcinfo{$key} = [ $srcinfo{$key}, $val ]
-  #   if $srcinfo{$key} && ref $srcinfo{$key} eq '';
 
   if ($key =~ /depends/) {
     $val = $class->parse_dep($val, %args)
   }
-
-  # if ($$_res_buff{$key}) {
-  #   $$_res_buff{$key} = [ $$_res_buff{$key} ]
-  #     if ref $$_res_buff{$key} ne 'ARRAY';
-  #   push $$_res_buff{$key}->@*, $val
-  # }
-  # else {
-  #   $$_res_buff{$key} = $val
-  # }
 
   return $key, $val
 }

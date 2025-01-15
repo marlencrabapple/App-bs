@@ -12,15 +12,15 @@ use Data::Printer;
 method file_query :common ($filestr, %args) {
   my $now = time;
   state $sync = $now;
-  $class->query($filestr, qurey_opts => ['-Fq'], now => $now
-    , sync => $sync)
+  $class->query($filestr, query_opts => ['-Fq'], now => $now
+    , %args, last_sync => $sync)
 }
 
 method pkg_query :common ($pkgstr, %args) {
   my $now = time;
   state $sync = $now;
   $class->query($pkgstr, query_opts => ['-Sqs'], now => $now
-    , sync => $sync)
+    , %args, last_sync => $sync)
 }
 
 method query :common ($str, %args) {
@@ -29,12 +29,12 @@ method query :common ($str, %args) {
 
   carp np $str, %args if $ENV{DEBUG};
 
-  if ($args{sync} || ($args{last_sync} && $args{now} == $args{sync})) {
-    push $args{query_opts}->@*, '-yy'
+  if ($args{sync} || ($args{last_sync} && $args{now} == $args{last_sync})) {
+    push $args{query_opts}->@*, qw(-y -y)
   }
 
   my $res = BS::Common->bsx([ qw(sudo pacman), $args{query_opts}->@*, $str ]
-                            , in => undef, out => $args{dest});
+                            , %args, in => undef, out => $args{dest});
 
   $res
 }

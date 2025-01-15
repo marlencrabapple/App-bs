@@ -21,7 +21,7 @@ use constant TRIM_RE => qr/\s*(.+)\s*\n*/i;
 struct BsxResult => [qw(cmd in out err run3exit cmdexit)];
 
 method bsx :common ($cmd_aref, %args) {
-  %args = (in => undef, out => '', err => '') unless scalar keys %args;
+  %args = (in => undef, out => [], err => '') unless scalar keys %args;
 
   if ($args{debug}) {
     say "${class}::bsx([ '$$cmd_aref[0]', ... ], ...) args:";

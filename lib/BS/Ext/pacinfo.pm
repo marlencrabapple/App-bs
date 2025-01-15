@@ -7,6 +7,7 @@ use utf8;
 use v5.40;
 
 use Carp;
+use Data::Printer;
 use Data::Dumper;
 
 use constant VALID_KEYS => qw(Name Base Repository);
@@ -32,13 +33,12 @@ method pkgbase :common ($pkgstr, %args) {
 }
 
 method to_href :common ($in, %args) {
-  carp Dumper($in, %args) if $ENV{DEBUG};
   my $res = BS::Common->open_as_href($in, %args
     , parse_line => sub ($line, %args) {
       $class->parse_line($line, %args)
     });
 
-  $res->out
+  $res
 }
 
 method parse_line :common ($line, %args) {
@@ -47,11 +47,9 @@ method parse_line :common ($line, %args) {
   } (split /:/, $line);
 
   $key = lc($key);
-
-  say Dumper($line, $key, $value) if $ENV{DEBUG};
   
-  $value = BS::Package::Meta->parse_dep($value)
-    if $key =~ DEPKEY_RE;
+  $value = BS::Package::Meta->parse_dep($value, %args)
+    if ($args{resolve_deps} // 1) && $key =~ DEPKEY_RE;
 
   return undef unless $key && $value;
 
