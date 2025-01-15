@@ -7,11 +7,11 @@ use utf8;
 use v5.40;
 
 method updchecksums :common {
-  __CLASS__->bsx(['updchecksums'])
+  $class->bsx(['updchecksums'])
 }
 
 method writesrcinfo :common ($out, @makepkg_args) {
-  __CLASS__->printsrcinfo($out, @makepkg_args)->out
+  $class->printsrcinfo($out, @makepkg_args)->out
 }
 
 method printsrcinfo :common ($out, @makepkg_args) {

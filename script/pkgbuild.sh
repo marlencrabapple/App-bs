@@ -50,7 +50,7 @@ pacinfo_import() {
   pacinfo="$(pacinfo "$pkgstr" <&-)"
   err=$?
      
-  if [[ $err -eq 0 ]]; then
+  if [[ "$err" -eq 0 ]]; then
     local pkgbase=""
     local pkgrepo=""
 
@@ -59,7 +59,7 @@ pacinfo_import() {
     local err=$?
 
     [[ -z "$pkgbase" ]] && [[ -z "$pkgrepo" ]] && return $err
-    [[ $err -eq 0 ]] || return $err
+    [[ "$err" -eq 0 ]] || return $err
     
     export pkgbase="$pkgbase"
     export pkgrepo="$pkgrepo"
@@ -87,7 +87,7 @@ update_pkgbuild_repo() {
   for branch in "${branches[*]:0:1}" main master; do
     git pull origin "$branch" --rebase
     err=$?
-    [[ err -eq 0 ]] && break
+    [[ "$err" -eq 0 ]] && break
   done
 }
 
@@ -103,7 +103,7 @@ clone_aur_pkg() {
 
   err=$?
 
-  if [[ $err -eq 0 ]]; then 
+  if [[ "$err" -eq 0 ]]; then 
     echo "$pkgstr" && return 0
   fi
   
@@ -159,9 +159,17 @@ buildpkg() {
     ${PB_TMPCHROOT:+--temp} ${PB_REBUILDALL:+-f} \
     -d universe --root "$AURDIT_ROOT/repo/${target:-"$CARCH"}" -c -D $CHROOT
 
-  sudo pacman -Scc
-
   err=$?
+
+  [[ $err -ne 0 ]] \
+    && echo "$target $pkg $pkgstr $makepkg_conf $pacman_conf $err" \
+    >> "pkgbuild.sh-error-$started.txt"
+
+  sudo rm -r "/var/cache/pacman/pkg/"*
+
+  [[ $err -ne 0 ]] \
+    && echo "$target $pkg $pkgstr $makepkg_conf $pacman_conf $err" \
+    >> "pkgbuild.sh-error-$started.txt"
 
   [[ $PB_DEBUG -ne 0 ]] || set +x
   return $err
@@ -223,7 +231,7 @@ addpkgmeta() {
     fi
   fi
 
-  if [[ $err -ne 0 ]] || [[ ! -d "$pkg" ]]; then
+  if [[ ! -d "$pkg" ]]; then
     clone_arch_remote "$pkg" "$pkgstr"
     [[ $? -eq 0 ]] && return 0
 
@@ -316,7 +324,7 @@ buildpkgs() {
 
     err=$?
   
-    [[ $err -eq 0 ]] && echo "Successfully built '$pkgbase'!!"
+    [[ "$err" -eq 0 ]] && echo "Successfully built '$pkgbase'!!"
     
     exit_pkgbuilddir
   done

@@ -24,7 +24,7 @@ field $env;
 field $_config_path :param(config) = path(DEFAULT_CONFIGPATH);
 field $config;
 field $getopts_setup :param(getopts);
-field $cliopts :param(optdest) = {};
+field $cliopts :param(dest) = {};
 field %aliases;
 field @queue = ();
 

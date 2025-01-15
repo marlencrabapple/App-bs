@@ -30,10 +30,10 @@ state %instances;
 field $env;
 field $argv :param = \@ARGV;
 field $opts :param;
-field $package :param;
-field $pkgbuild_file = $package->pkgbuild_file;
-field $pkgbuild_dir = $package->dir;
-field $srcinfo_file = $package->srcinfo_file;
+field $curr_package :param;
+# field $pkgbuild_file = $package->pkgbuild_file;
+# field $pkgbuild_dir = $package->dir;
+# field $srcinfo_file = $package->srcinfo_file;
 field $startdir;
 field $stay_fresh;
 
@@ -72,7 +72,7 @@ method handle_pkglist ($pkgiden) {
   }
 }
 
-multi method buildpkg ($package     = $self->package
+multi method buildpkg ($package     = $self->curr_package
                      , $build_dirty = !$stay_fresh) {
   state $fresh = 1;
   state $firstrun = 1;
@@ -111,27 +111,27 @@ method buildpkgs :common ($packages, %args) {
   }
 }
 
-method build_self (%args) {
-  if ($args{update_repo}) {
-    __CLASS__->vcs_git_update_all
-  }
+# multi method build_pkg (%args) {
+#   if ($args{update_repo}) {
+#     __CLASS__->vcs_git_update_all
+#   }
 
-  if ($args{printsrcinfo}) {
-    $package->writesrcinfo
-  }
+#   if ($args{printsrcinfo}) {
+#     $curr_package->writesrcinfo
+#   }
 
-  if($args{updpkgsums}) {
-    $package->updpkgsums;
-    $package->writesrcinfo
-  }
+#   if($args{updpkgsums}) {
+#     $curr_package->updpkgsums;
+#     $curr_package->writesrcinfo
+#   }
 
-  $self->buildpkg
-}
+#   $self->buildpkg
+# }
 
 multi method build_pkg :common ($pkgiden, %args) {
   my $builder = $class->new( package => $pkgiden, %args );
 
-  $builder->package->pkgbuild_dir_exec(sub (%args) { 
+  $builder->package->pbx(sub (%args) { 
     $builder->build_self(delete $args{$pkgiden} // undef)
   }, %args);
 
