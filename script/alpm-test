@@ -16,47 +16,47 @@ use Syntax::Keyword::Try;
 our $alpmabs = path('./src/pacman/lib/libalpm')->absolute;
 our $combfile;
 
-BEGIN {
-  our $combstr = "";
-  $combfile = File::Temp->new();
-  $alpmabs = path('./src/pacman/lib/libalpm')->absolute;
+# BEGIN {
+#   our $combstr = "";
+#   $combfile = File::Temp->new();
+#   $alpmabs = path('./src/pacman/lib/libalpm')->absolute;
 
-  foreach my $h (path('./src/pacman/lib/libalpm')->children(qr/alpm_list\.h\z/)) {
-    next unless $h isa 'Path::Tiny';
-    my $hsrc = $h->slurp_utf8 . "\n";
-    #$hsrc =~ s/.*include.*//g;
-    $combstr .= $hsrc
-  }
+#   foreach my $h (path('./src/pacman/lib/libalpm')->children(qr/alpm\.h\z/)) {
+#     next unless $h isa 'Path::Tiny';
+#     my $hsrc = $h->slurp_utf8 . "\n";
+#     #$hsrc =~ s/.*include.*//g;
+#     $combstr .= $hsrc
+#   }
 
-  $combstr .= path('./src/pacman/lib/libalpm/alpm_list.h')->slurp_utf8;
-  #$combstr .= path('./src/pacman/lib/libalpm/alpm.h')->slurp_utf8;
-#   $combstr .= q{typedef struct _alpm_list_t {
-# 	/** data held by the list node */
-# 	void *data;
-# 	/** pointer to the previous node */
-# 	struct _alpm_list_t *prev;
-# 	/** pointer to the next node */
-# 	struct _alpm_list_t *next;
-# } alpm_list_t;};
+#   #$combstr .= path('./src/pacman/lib/libalpm/alpm_list.h')->slurp_utf8;
+#   #$combstr .= path('./src/pacman/lib/libalpm/alpm.h')->slurp_utf8;
+# #   $combstr .= q{typedef struct _alpm_list_t {
+# # 	/** data held by the list node */
+# # 	void *data;
+# # 	/** pointer to the previous node */
+# # 	struct _alpm_list_t *prev;
+# # 	/** pointer to the next node */
+# # 	struct _alpm_list_t *next;
+# # } alpm_list_t;};
 
   
-  #foreach my $h (path('./src/pacman/lib/libalpm')->children(qr/(alpm)\.c\z/)) {
-  #  next unless $h isa 'Path::Tiny';
-  #  my $hsrc = $h->slurp_utf8 . "\n";
-  #  $hsrc =~ s/.*include.*/\n/g;
-  #  $combstr .= $hsrc
-  #}
+#   #foreach my $h (path('./src/pacman/lib/libalpm')->children(qr/(alpm)\.c\z/)) {
+#   #  next unless $h isa 'Path::Tiny';
+#   #  my $hsrc = $h->slurp_utf8 . "\n";
+#   #  $hsrc =~ s/.*include.*/\n/g;
+#   #  $combstr .= $hsrc
+#   #}
 
-  say $combstr if $ENV{DEBUG};
+#   say $combstr if $ENV{DEBUG};
 
-  path($combfile->filename)->spew_utf8($combstr);
-}
+#   path($combfile->filename)->spew_utf8($combstr);
+# }
 
-use Inline C => Config => LIBS => "-L$alpmabs -lalpm";
+# use Inline C => Config => LIBS => "-L$alpmabs -lalpm";
 
-use Inline C => path($combfile)->absolute
-  , enable => 'autowrap',
-  , INC => path('./src/pacman/')->absolute;
+# use Inline C => path($combfile)->absolute
+#   , enable => 'autowrap',
+#   , INC => path('./src/pacman/')->absolute;
 
   use Inline C => "alpm_handle_t *alpm_initialize(const char *root, const char *dbpath);"
   , enable => 'autowrap',

@@ -21,12 +21,10 @@ class pkgdepends :isa(App::BS::CLI)
   Getopt::Long::Configure ("bundling");
 
   field $queue :mutator :param = [];
-  field $cliopts :param(dest) = {};
-  field $setup :param(getopts);
 
   ADJUST {
-    GetOptions($cliopts
-      , $setup->@*, "debug+"
+    GetOptions($self->cliopts
+      , $self->getopts_setup->@*, "debug+"
       , "version" => sub { VersionMessage() }
       , "help" => sub { HelpMessage() })
   }
@@ -35,15 +33,15 @@ class pkgdepends :isa(App::BS::CLI)
     $self->print_self if $ENV{DEBUG};
 
     foreach my $pkg (@$queue) {
-      state $sync = $$cliopts{sync};
+      state $sync = $self->cliopts->{sync};
 
-      print __CLASS__->list_deps( $pkg, %$cliopts, %runopts
+      print __CLASS__->list_deps( $pkg, $self->cliopts->%*, %runopts
                                       , sync => $sync )
         , $pkg ne $$queue[-1]
-            ? ($$cliopts{delimiter} // "\n\n")
+            ? ($self->cliopts->{delimiter} // "\n\n")
             : "\n";
 
-      $sync = 0 unless $$cliopts{sync} == -1
+      $sync = 0 unless $self->cliopts->{sync} == -1
     }
   }
 }

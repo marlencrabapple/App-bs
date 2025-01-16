@@ -23,16 +23,16 @@ use constant DEFAULT_CONFIGPATH => '/etc/pkgbuild/config.toml';
 field $env;
 field $_config_path :param(config) = path(DEFAULT_CONFIGPATH);
 field $config;
-field $getopts_setup :param(getopts);
-field $cliopts :param(dest) = {};
+field $getopts_setup :param(getopts) :accessor;
+field $cliopts :param(dest) :accessor = {};
 field %aliases;
 field @queue = ();
 
 ADJUST {
-  push @$getopts_setup
-    , "<>", sub { $self->handle_barearg(@_) };
+  # push @$getopts_setup
+  #   , "<>", sub { $self->handle_barearg(@_) };
 
-  GetOptions($cliopts, $getopts_setup->@*);
+  #GetOptions($cliopts, $getopts_setup->@*);
 
   #$env     = __CLASS__->filter_env;
   #$config  = __CLASS__->load_config;
