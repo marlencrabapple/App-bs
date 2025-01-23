@@ -39,6 +39,7 @@ MYMETA.*
 /.build
 /_build*
 /Build
+/_Inline
 MYMETA.*
 !META.json
 /.prove

@@ -40,7 +40,7 @@ method list_deps :common ($pkgstr, %args) {
 
   p @deps if $ENV{DEBUG};
 
-  @deps = $args{unique} ? uniq reverse @deps : @deps;
+  @deps = $args{unique} ? reverse uniq reverse @deps : @deps;
 
   @deps = ($args{order} !~ $altorder_re)
     ? @deps

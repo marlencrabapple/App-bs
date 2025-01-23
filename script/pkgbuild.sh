@@ -21,7 +21,8 @@ targets=("$HOME"/.local/share/bs/etc/default/target/*
 echo "${targets[@]}";
 echo "${BS_TARGETDIR[@]}"
 
-[[ ${#targets[*]} -eq 0 ]] && targets=("$HOME/.local/share/bs/target/$default_triple")
+[[ ${#targets[*]} -eq 0 ]] \
+  && targets=("$HOME/.local/share/bs/target/$default_triple")
 
 pacman_conf_reporemote() {
   local searchrepo="$1"
@@ -77,14 +78,14 @@ pacinfo_import() {
 }
 
 update_pkgbuild_repo() {
-  branches=($(git branch -a))
+  #branches=($(git branch -a))
   git config --global --add safe.directory "$(pwd)"
 
   git reset --hard;
   git clean -f; 
 
   echo "Attempting to update PKGBUILD repo..."
-  for branch in "${branches[*]:0:1}" main master; do
+  for branch in main master; do
     git pull origin "$branch" --rebase
     err=$?
     [[ "$err" -eq 0 ]] && break
@@ -139,6 +140,12 @@ clone_arch_remote() {
     "${pkgbase:-$pkgstr}"
   
   local err=$?
+  
+  [[ $err -ne 0 ]] && pkgctl repo clone --protocol=https \
+    "${pkgbase:-$pkgstr}"
+
+  err=$?
+  
   return $err
 }
 
