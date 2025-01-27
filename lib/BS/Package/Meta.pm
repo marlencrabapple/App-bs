@@ -78,7 +78,7 @@ method _srcinfo_unpack_into {
   }
 }
 
-method parse_dep :common ($line, %args) {
+method resolve_base :common ($line, %args) {
   use constant PACINFO_SO_PREFIX => qr/(?:lib\:)?/;
   use constant DEP_SO_RE => qr/\.so/;
   use constant VALID_DEPIDEN_RE => qr/${\PACINFO_SO_PREFIX}(${\VALID_PKG_RE_NB})(?:${\DEP_SO_RE})?/;
@@ -134,6 +134,10 @@ method parse_dep :common ($line, %args) {
   }
   
   \%dep_pkgargs
+}
+
+method parse_dep :common ($line, %args) {
+  $class->resolve_base($line, %args)
 }
 
 method from_srcinfo :common ($in, %args) {

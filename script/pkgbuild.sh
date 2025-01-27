@@ -16,7 +16,7 @@ default_triple="${PB_TRIPLE:-"$default_repo-$default_carch-$default_target"}"
 
 targets=("$HOME"/.local/share/bs/etc/default/target/*
          "${AURDIT_TARGETS[@]}"
-         "${BS_TARGETDIR[@]}");
+         "${BS_TARGETDIR}/"*s);
 
 echo "${targets[@]}";
 echo "${BS_TARGETDIR[@]}"
@@ -188,7 +188,7 @@ enter_pkgbuilddir() {
   workdir=$(mktemp -d -p .)
   cd "$workdir"
   git clone "../../$(basename "$pkg")" .
-  cd "$(basename "$pkg")"
+  #cd "$(basename "$pkg")"
   return 0
 }
 

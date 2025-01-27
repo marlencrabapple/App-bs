@@ -18,3 +18,7 @@ method printsrcinfo :common ($out, @makepkg_args) {
   $class->bsx(['makepkg', '--printsrcinfo', @makepkg_args]
               , out => (ref $out eq 'ARRAY' ? $out : \$out));
 }
+
+method fetch :common ($pkgstr, %args) {
+  my $pkgargs = BS::Package::Meta->resolve_base($pkgstr);
+}

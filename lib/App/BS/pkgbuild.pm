@@ -1,7 +1,8 @@
 use Object::Pad;
 
 package App::BS::pkgbuild;
-class App::BS::pkgbuild :does(BS::pkgbuild)
+class App::BS::pkgbuild :isa(App::BS::CLI)
+                        :does(BS::pkgbuild)
                         :does(App::BS::Common)
                         :does(App::BS::CLI::Util);
 
@@ -27,9 +28,6 @@ use constant CLI_OPTION_KEYS => qw(pacman-conf makepkg-conf debug verbose);
 
 state %instances;
 
-field $env;
-field $argv :param = \@ARGV;
-field $opts :param;
 field $curr_package :param;
 # field $pkgbuild_file = $package->pkgbuild_file;
 # field $pkgbuild_dir = $package->dir;
@@ -42,17 +40,16 @@ field $margs = [qw(L s i f C c A)];
 
 ADJUST {
   $startdir //= path($CWD);
-  $env = $self->env;
   
-  my $ret = GetOptionsFromArray(
-    $argv, $opts,
-    'config=s',
-    'makepkg-conf=s', 'pacman-conf=s',
-    'debug=s', 'verbose=s',
-    'aur-build-args|bs-args=s@',
-    'bs-cmds=s@',
-    '<>' => sub { $self->handle_pkglist(@_) }
-  );
+  # my $ret = GetOptionsFromArray(
+  #   $argv, $opts,
+  #   'config=s',
+  #   'makepkg-conf=s', 'pacman-conf=s',
+  #   'debug=s', 'verbose=s',
+  #   'aur-build-args|bs-args=s@',
+  #   'bs-cmds=s@',
+  #   '<>' => sub { $self->handle_pkglist(@_) }
+  # );
 
   # $package //= ref $package eq 'App::BS::Package'
   #   ? $package
@@ -90,11 +87,11 @@ multi method buildpkg ($package     = $self->curr_package
   state @bs_cmds = qw(aur build);
   state @bs_args = ('--cargs', "C,u,n$clean_chroot",
                     '--margs', "L,A,s,f,i$makepkg_cleanall",
-	                  '--makepkg_args', $$env{makepkg_conf},
-                    '--pacman-conf', $$env{pacman_conf},
+	                  '--makepkg_args', $self->env->{makepkg_conf},
+                    '--pacman-conf', $self->env->{pacman_conf},
                     qw(--syncdeps --pkgver -d),
-                    first { $_ } $env->@[qw(repo reponame)],
-                    '--root', $$env{repo_path}, qw(-c -D), $$env{chroot});
+                    first { $_ } $self->env->@[qw(repo reponame)],
+                    '--root', $self->env->{repo_path}, qw(-c -D), $self->env->{chroot});
 
   my @bs_out;
   __CLASS__->bsx(\@bs_cmds, out => \@bs_out);
