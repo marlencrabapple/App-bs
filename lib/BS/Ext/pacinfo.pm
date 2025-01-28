@@ -24,11 +24,14 @@ method info :common ($pkgstr, %args) {
 
   my %info = ();
 
-  $class->to_href(\@out, %args, dest => \%info)
+  $class->to_href(\@out, %args, dest => \%info);
+
+  carp np @out if $ENV{DEBUG}
 }
 
 method pkgbase :common ($pkgstr, %args) {
   my $info = $class->info($pkgstr, %args);
+  carp np $info if $ENV{DEBUG};
   ref $$info{base} eq 'ARRAY' ? $info->{base}[0] : $$info{base}
 }
 
@@ -52,6 +55,9 @@ method parse_line :common ($line, %args) {
     if ($args{resolve_deps} // 1) && $key =~ DEPKEY_RE;
 
   return undef unless $key && $value;
+  
+  my %debug = (key => $key, val => $value);
+  carp np %debug;
 
-  lc($key), $value
+  $key, $value
 }

@@ -8,14 +8,13 @@ use BS::Package::Meta;
 use utf8;
 use v5.40;
 
+use Carp;
 use List::Util 'uniq';
 use Data::Printer;
 
 method list_deps :common ($pkgstr, %args) {
-  if ($args{debug}) {
-    say "${class}::list_deps('$pkgstr', ...) args:";
-    p %args
-  }
+  carp "${class}::list_deps('$pkgstr', ...) args:\n\n" . np %args
+    if $args{debug} // $ENV{DEBUG};
 
   use constant DEFORDER_RE => qr/^asc.*/i;
 
@@ -38,7 +37,7 @@ method list_deps :common ($pkgstr, %args) {
       unless $depid eq $pkgstr
   }
 
-  p @deps if $ENV{DEBUG};
+  carp np @deps if $ENV{DEBUG};
 
   @deps = $args{unique} ? reverse uniq reverse @deps : @deps;
 
@@ -54,6 +53,9 @@ method tree :common ($pkgstr, %args) {
     say "${class}::tree('$pkgstr', ...) args:";
     p %args
   }
+
+  carp "${class}::tree('$pkgstr', ...) args:"
+    if $args{debug} // $ENV{DEBUG};
 
   my (@flagsargs, @intsargs, @out, $in, $err);
   $args{optional} //= 1;
@@ -72,6 +74,8 @@ method tree :common ($pkgstr, %args) {
   
   die "$err" if $err;
   die "$?: $!" if $res->cmdexit->[0] != 0;
+
+  carp np @out if $ENV{DEBUG};
 
   \@out
 }
