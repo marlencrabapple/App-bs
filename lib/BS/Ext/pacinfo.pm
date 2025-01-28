@@ -47,7 +47,7 @@ method to_href :common ($in, %args) {
 method parse_line :common ($line, %args) {
   my ($key, $value) = map {
     $_ =~ s/${\BS::Common::TRIM_RE}/$1/; $_
-  } (split /:/, $line);
+  } (split /:/, $line, 1);
 
   $key = lc($key);
   
@@ -57,7 +57,7 @@ method parse_line :common ($line, %args) {
   return undef unless $key && $value;
   
   my %debug = (key => $key, val => $value);
-  carp np %debug;
+  #carp np %debug;
 
   $key, $value
 }
