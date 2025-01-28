@@ -24,10 +24,12 @@ Getopt::Long::Configure("Bundling");
 
 #use BS::Package;
 
+use constant PKGBUILD_DEFAULT_CONF => "/etc/bs/pkgbuild";
 use constant CLI_OPTION_KEYS => qw(pacman-conf makepkg-conf debug verbose);
 
 state %instances;
 
+field $config_path = [ PKGBUILD_DEFAULT_CONF ];
 field $curr_package :param;
 # field $pkgbuild_file = $package->pkgbuild_file;
 # field $pkgbuild_dir = $package->dir;

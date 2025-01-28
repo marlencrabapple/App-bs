@@ -10,15 +10,16 @@ use Carp;
 use IPC::Run3;
 use Path::Tiny;
 use TOML::Tiny;
+use List::Util 'uniq';
 use Struct::Dumb;
 use Data::Printer;
 use Syntax::Keyword::Dynamically;
 
 use constant DEFAULT_ENVPREFIXRE => qr/^BS_(.+)/;
-use constant DEFAULT_CONFIGPATH => '/etc/pkgbuild/config.toml';
+use constant DEFAULT_CONFIGPATH => '/etc/bs/config.toml';
 
 field $env;
-field $_config_path :param(config) = path(DEFAULT_CONFIGPATH);
+field $config_path :param(config) :accessor = [ path(DEFAULT_CONFIGPATH) ];
 field $config;
 field $getopts_setup :param(getopts) :accessor;
 field $cliopts :param(dest) :accessor = {};
@@ -30,6 +31,10 @@ ADJUST {
   #   , "<>", sub { $self->handle_barearg(@_) };
 
   #GetOptions($cliopts, $getopts_setup->@*);
+
+  @$config_path = uniq (@$config_path, (ref $self->config_path ne 'ARRAY'
+    ? $self->config_path
+    : $self->config_path->@*));
 
   $env      = __CLASS__->filter_env;
   $config   = __CLASS__->load_config;
@@ -49,15 +54,23 @@ method handle_barearg ($str) {
   }
 }
 
+method add_config ($path) {
+  $config = { %$config, __CLASS__->read_config($path) };
+  %$aliases = __CLASS__->alias_namedopt2env($config);
+  
+  $env = __CLASS__->setup_env( __CLASS__->env2namedopt(
+                                  env => $env
+                                , aliases => $aliases )
+                             , $config, $cliopts )
+}
+
 method env2namedopt :common (%args) {
   $args{env} = $class->filter_env() unless scalar %args;
   map { $args{aliases}->{$_} => delete $args{env}->{$_} } keys $args{env}->%*
 }
 
 method load_config :common ($config_path = path(DEFAULT_CONFIGPATH)) {
-  my $config = $class->read_config($config_path);
-  #{ %$config, __CLASS__->conf2env($config, '') }
-  $config
+  $class->read_config($config_path)
 }
 
 method read_config :common ($config_path = path(DEFAULT_CONFIGPATH)) {
