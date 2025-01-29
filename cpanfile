@@ -28,6 +28,8 @@ requires 'Future::AsyncAwait';
 requires 'IO::Async';
 requires 'IO::Async::SSL';
 requires 'Const::Fast';
+requires 'File::chdir';
+requires 'Devel::CheckBin';
 
 on 'test' => sub {
   requires 'Test::More', '0.98';
@@ -47,7 +49,8 @@ use constant DEV_PREREQS => sub {
   requires 'Inline';
   requires 'Inline::C';
   requires 'Inline::MakeMaker';
-  requires 'ExtUtils::MakeMaker'
+  requires 'ExtUtils::MakeMaker';
+  requires 'Devel::StackTrace::WithLexicals', '2.01';
 };
 
 on 'build' => DEV_PREREQS;

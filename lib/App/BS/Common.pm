@@ -42,7 +42,9 @@ ADJUST {
   
   $env = __CLASS__->setup_env(__CLASS__->env2namedopt(env => $env,
                              aliases => $aliases),
-                             $config, $cliopts)
+                             $config, $cliopts);
+
+  p $env, $config, $cliopts;
 }
 
 method handle_barearg ($str) {

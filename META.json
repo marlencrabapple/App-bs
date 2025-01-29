@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Build system for PKGBUILD based Linux distributions",
    "author" : [
       "Ian P Bradley <ian.bradley@studiocrabapple.com>"
    ],
@@ -29,6 +29,7 @@
       "build" : {
          "requires" : {
             "App::perlimports" : "0",
+            "Devel::StackTrace::WithLexicals" : "2.01",
             "ExtUtils::MakeMaker" : "0",
             "Inline" : "0",
             "Inline::C" : "0",
@@ -42,12 +43,15 @@
       },
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "6.64"
+            "Devel::CheckBin" : "0",
+            "Module::Build" : "0.4005",
+            "Module::Build::XSUtil" : "0.03"
          }
       },
       "develop" : {
          "requires" : {
             "App::perlimports" : "0",
+            "Devel::StackTrace::WithLexicals" : "2.01",
             "ExtUtils::MakeMaker" : "0",
             "Inline" : "0",
             "Inline::C" : "0",
@@ -71,6 +75,7 @@
             "DBI" : "0",
             "DBIx::Connector" : "0",
             "Data::Printer" : "0",
+            "Devel::CheckBin" : "0",
             "File::chdir" : "0",
             "Future::AsyncAwait" : "0",
             "Getopt::Long" : "0",
@@ -119,6 +124,7 @@
       }
    },
    "version" : "0.01",
+   "x_authority" : "cpan:CRABAPP",
    "x_serialization_backend" : "JSON::PP version 4.16",
-   "x_static_install" : 1
+   "x_static_install" : 0
 }

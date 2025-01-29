@@ -24,9 +24,10 @@ method info :common ($pkgstr, %args) {
 
   my %info = ();
 
-  $class->to_href(\@out, %args, dest => \%info);
+  $res = $class->to_href(\@out, %args, dest => \%info);
+  #carp np $res if $ENV{DEBUG};
 
-  carp np @out if $ENV{DEBUG}
+  \%info
 }
 
 method pkgbase :common ($pkgstr, %args) {

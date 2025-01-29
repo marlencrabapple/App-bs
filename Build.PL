@@ -13,6 +13,14 @@ use Module::Build::XSUtil;
 use File::Basename;
 use File::Spec;
 
+use Devel::CheckBin;
+
+check_bin('pacman');
+check_bin('pacinfo');
+check_bin('pactree');
+check_bin('pacsift');
+check_bin('arch-rebuild-order');
+
 my %args = (
     license              => 'perl_5',
     dynamic_config       => 0,
@@ -27,6 +35,7 @@ my %args = (
         'DBI' => '0',
         'DBIx::Connector' => '0',
         'Data::Printer' => '0',
+        'Devel::CheckBin' => '0',
         'File::chdir' => '0',
         'Future::AsyncAwait' => '0',
         'Getopt::Long' => '0',
@@ -35,6 +44,7 @@ my %args = (
         'IO::Async::SSL' => '0',
         'IO::Socket::SSL' => '0',
         'IPC::Run3' => '0',
+        'Inline' => '0',
         'Inline::C' => '0',
         'JSON::MaybeXS' => '0',
         'List::AllUtils' => '0',
@@ -59,7 +69,11 @@ my %args = (
 
     build_requires => {
         'App::perlimports' => '0',
+        'Devel::StackTrace::WithLexicals' => '2.01',
+        'ExtUtils::MakeMaker' => '0',
+        'Inline' => '0',
         'Inline::C' => '0',
+        'Inline::MakeMaker' => '0',
         'Minilla' => '0',
         'Minilla::Profile::ModuleBuildTiny' => '0',
         'Perl::Critic' => '0',
@@ -86,7 +100,7 @@ my %args = (
     recursive_test_files => 1,
 
 
-    needs_compiler_c99 => 1,
+    needs_compiler_c99 => 0,
     needs_compiler_cpp => 0,
     generate_ppport_h => '1',
     generate_xshelper_h => '1',

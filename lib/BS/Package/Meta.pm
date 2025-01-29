@@ -13,7 +13,6 @@ use Data::Printer;
 use Struct::Dumb;
 use Syntax::Keyword::MultiSub;
 
-#use BS::Package;
 use BS::Ext::pacsift;
 use BS::Ext::pacinfo;
 use BS::Ext::pacman;
@@ -116,10 +115,13 @@ method resolve_base :common ($line, %args) {
   if ($args{resolve_base} // $ENV{RESOLVE_BASE} // 1) {
     try {
       $dep_pkgargs{base} //= BS::Ext::pacinfo->pkgbase($dep_pkgargs{name}
-        , resolve_deps => 0, no_dupes => 1)
+        , resolve_deps => 0, no_dupes => 1);
+
+      croak %dep_pkgargs unless $dep_pkgargs{base}
     }
     catch ($e) {
       my $res = BS::Ext::pacman->pkg_query($dep_pkgargs{name});
+      warn np $res if $ENV{DEBUG};
       chomp $res->out->[-1];
 
       try {
@@ -127,10 +129,13 @@ method resolve_base :common ($line, %args) {
           , resolve_deps => 0, no_dupes => 1)
       }
       catch ($e) {
-        carp np $e
+        croak np $e
       }
     }
+  }
 
+  if ($args{fetch}) {
+    $class->fetch($dep_pkgargs{base}, %args)
   }
   
   \%dep_pkgargs

@@ -49,11 +49,6 @@ method list_deps :common ($pkgstr, %args) {
 }
 
 method tree :common ($pkgstr, %args) {
-  if ($args{debug}) {
-    say "${class}::tree('$pkgstr', ...) args:";
-    p %args
-  }
-
   carp "${class}::tree('$pkgstr', ...) args:"
     if $args{debug} // $ENV{DEBUG};
 
