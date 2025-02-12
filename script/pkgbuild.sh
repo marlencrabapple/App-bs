@@ -15,11 +15,12 @@ default_target="${PB_TARGET:-default}"
 default_triple="${PB_TRIPLE:-"$default_repo-$default_carch-$default_target"}"
 
 targets=("$HOME"/.local/share/bs/etc/default/target/*
-         "${AURDIT_TARGETS[@]}"
-         "${BS_TARGETDIR}/"*s);
+         "${BS_TARGETDIR}/"*);
 
-echo "${targets[@]}";
-echo "${BS_TARGETDIR[@]}"
+if [[ "$BS_DEBUG" ]]; then
+  echo "\$targets: ${targets[@]}";
+  echo "\$BS_TARGETDIR\[*\]: ${BS_TARGETDIR[*]}"
+fi
 
 [[ ${#targets[*]} -eq 0 ]] \
   && targets=("$HOME/.local/share/bs/target/$default_triple")
