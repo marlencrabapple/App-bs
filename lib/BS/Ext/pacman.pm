@@ -9,6 +9,34 @@ use v5.40;
 use Carp;
 use Data::Printer;
 
+field $sync;
+
+method sync :common (%args) {
+  $args{package} //= 1;
+  $args{file} //= 1;
+  
+  my $now = time;
+  state $sync = $now;
+
+  $args{res} //= {};
+  $args{dest} //= [];
+  $args{now} //= time;
+
+  my (@query_opts, %res);
+
+  if ($args{sync} || ($args{last_sync} && $args{now} == $args{last_sync})) {
+    push @query_opts, qw(-y -y)
+  }
+
+  $res{package} = BS::Common->bsx([ qw(sudo pacman -Su), @query_opts ], %args)
+    if $args{package};
+  
+  $res{file} = BS::Common->bsx([ qw(sudo pacman -F), @query_opts ], %args)
+    if $args{file};
+
+  %res->(qw(package file))
+}
+
 method file_query :common ($filestr, %args) {
   my $now = time;
   state $sync = $now;

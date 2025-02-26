@@ -2272,23 +2272,23 @@ DISTRIBUTIONS
       Compiler::Lexer 0.23
       Module::Build::Tiny 0.035
       perl 5.008005
-  Perl-Tidy-20250105
-    pathname: S/SH/SHANCOCK/Perl-Tidy-20250105.tar.gz
+  Perl-Tidy-20250214
+    pathname: S/SH/SHANCOCK/Perl-Tidy-20250214.tar.gz
     provides:
-      Perl::Tidy 20250105
-      Perl::Tidy::Debugger 20250105
-      Perl::Tidy::Diagnostics 20250105
-      Perl::Tidy::FileWriter 20250105
-      Perl::Tidy::Formatter 20250105
-      Perl::Tidy::HtmlWriter 20250105
-      Perl::Tidy::IOScalar 20250105
-      Perl::Tidy::IOScalarArray 20250105
-      Perl::Tidy::IndentationItem 20250105
-      Perl::Tidy::Logger 20250105
-      Perl::Tidy::Tokenizer 20250105
-      Perl::Tidy::VerticalAligner 20250105
-      Perl::Tidy::VerticalAligner::Alignment 20250105
-      Perl::Tidy::VerticalAligner::Line 20250105
+      Perl::Tidy 20250214
+      Perl::Tidy::Debugger 20250214
+      Perl::Tidy::Diagnostics 20250214
+      Perl::Tidy::FileWriter 20250214
+      Perl::Tidy::Formatter 20250214
+      Perl::Tidy::HtmlWriter 20250214
+      Perl::Tidy::IOScalar 20250214
+      Perl::Tidy::IOScalarArray 20250214
+      Perl::Tidy::IndentationItem 20250214
+      Perl::Tidy::Logger 20250214
+      Perl::Tidy::Tokenizer 20250214
+      Perl::Tidy::VerticalAligner 20250214
+      Perl::Tidy::VerticalAligner::Alignment 20250214
+      Perl::Tidy::VerticalAligner::Line 20250214
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008
@@ -2496,49 +2496,49 @@ DISTRIBUTIONS
       Test::Warn 0
       XSLoader 0
       perl 5.008
-  Specio-0.49
-    pathname: D/DR/DROLSKY/Specio-0.49.tar.gz
+  Specio-0.50
+    pathname: D/DR/DROLSKY/Specio-0.50.tar.gz
     provides:
-      Specio 0.49
-      Specio::Coercion 0.49
-      Specio::Constraint::AnyCan 0.49
-      Specio::Constraint::AnyDoes 0.49
-      Specio::Constraint::AnyIsa 0.49
-      Specio::Constraint::Enum 0.49
-      Specio::Constraint::Intersection 0.49
-      Specio::Constraint::ObjectCan 0.49
-      Specio::Constraint::ObjectDoes 0.49
-      Specio::Constraint::ObjectIsa 0.49
-      Specio::Constraint::Parameterizable 0.49
-      Specio::Constraint::Parameterized 0.49
-      Specio::Constraint::Role::CanType 0.49
-      Specio::Constraint::Role::DoesType 0.49
-      Specio::Constraint::Role::Interface 0.49
-      Specio::Constraint::Role::IsaType 0.49
-      Specio::Constraint::Simple 0.49
-      Specio::Constraint::Structurable 0.49
-      Specio::Constraint::Structured 0.49
-      Specio::Constraint::Union 0.49
-      Specio::Declare 0.49
-      Specio::DeclaredAt 0.49
-      Specio::Exception 0.49
-      Specio::Exporter 0.49
-      Specio::Helpers 0.49
-      Specio::Library::Builtins 0.49
-      Specio::Library::Numeric 0.49
-      Specio::Library::Perl 0.49
-      Specio::Library::String 0.49
-      Specio::Library::Structured 0.49
-      Specio::Library::Structured::Dict 0.49
-      Specio::Library::Structured::Map 0.49
-      Specio::Library::Structured::Tuple 0.49
-      Specio::OO 0.49
-      Specio::PartialDump 0.49
-      Specio::Registry 0.49
-      Specio::Role::Inlinable 0.49
-      Specio::Subs 0.49
-      Specio::TypeChecks 0.49
-      Test::Specio 0.49
+      Specio 0.50
+      Specio::Coercion 0.50
+      Specio::Constraint::AnyCan 0.50
+      Specio::Constraint::AnyDoes 0.50
+      Specio::Constraint::AnyIsa 0.50
+      Specio::Constraint::Enum 0.50
+      Specio::Constraint::Intersection 0.50
+      Specio::Constraint::ObjectCan 0.50
+      Specio::Constraint::ObjectDoes 0.50
+      Specio::Constraint::ObjectIsa 0.50
+      Specio::Constraint::Parameterizable 0.50
+      Specio::Constraint::Parameterized 0.50
+      Specio::Constraint::Role::CanType 0.50
+      Specio::Constraint::Role::DoesType 0.50
+      Specio::Constraint::Role::Interface 0.50
+      Specio::Constraint::Role::IsaType 0.50
+      Specio::Constraint::Simple 0.50
+      Specio::Constraint::Structurable 0.50
+      Specio::Constraint::Structured 0.50
+      Specio::Constraint::Union 0.50
+      Specio::Declare 0.50
+      Specio::DeclaredAt 0.50
+      Specio::Exception 0.50
+      Specio::Exporter 0.50
+      Specio::Helpers 0.50
+      Specio::Library::Builtins 0.50
+      Specio::Library::Numeric 0.50
+      Specio::Library::Perl 0.50
+      Specio::Library::String 0.50
+      Specio::Library::Structured 0.50
+      Specio::Library::Structured::Dict 0.50
+      Specio::Library::Structured::Map 0.50
+      Specio::Library::Structured::Tuple 0.50
+      Specio::OO 0.50
+      Specio::PartialDump 0.50
+      Specio::Registry 0.50
+      Specio::Role::Inlinable 0.50
+      Specio::Subs 0.50
+      Specio::TypeChecks 0.50
+      Test::Specio 0.50
     requirements:
       B 0
       Carp 0
@@ -2765,15 +2765,15 @@ DISTRIBUTIONS
       Types::Serialiser 0
       parent 0
       perl 5.010000
-  TOML-Tiny-0.18
-    pathname: O/OA/OALDERS/TOML-Tiny-0.18.tar.gz
+  TOML-Tiny-0.19
+    pathname: O/OA/OALDERS/TOML-Tiny-0.19.tar.gz
     provides:
-      TOML::Tiny 0.18
-      TOML::Tiny::Grammar 0.18
-      TOML::Tiny::Parser 0.18
-      TOML::Tiny::Tokenizer 0.18
-      TOML::Tiny::Util 0.18
-      TOML::Tiny::Writer 0.18
+      TOML::Tiny 0.19
+      TOML::Tiny::Grammar 0.19
+      TOML::Tiny::Parser 0.19
+      TOML::Tiny::Tokenizer 0.19
+      TOML::Tiny::Util 0.19
+      TOML::Tiny::Writer 0.19
     requirements:
       Carp 0
       Data::Dumper 0
@@ -3458,12 +3458,12 @@ DISTRIBUTIONS
       File::ShareDir 1.00
       Module::Build 0.4004
       perl 5.014
-  XS-Parse-Sublike-0.36
-    pathname: P/PE/PEVANS/XS-Parse-Sublike-0.36.tar.gz
+  XS-Parse-Sublike-0.37
+    pathname: P/PE/PEVANS/XS-Parse-Sublike-0.37.tar.gz
     provides:
-      Sublike::Extended 0.36
-      XS::Parse::Sublike 0.36
-      XS::Parse::Sublike::Builder 0.36
+      Sublike::Extended 0.37
+      XS::Parse::Sublike 0.37
+      XS::Parse::Sublike::Builder 0.37
     requirements:
       ExtUtils::CBuilder 0
       File::ShareDir 1.00
@@ -3484,42 +3484,42 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       YAML::PP 0.018
       perl 5.008001
-  YAML-PP-v0.38.1
-    pathname: T/TI/TINITA/YAML-PP-v0.38.1.tar.gz
+  YAML-PP-v0.39.0
+    pathname: T/TI/TINITA/YAML-PP-v0.39.0.tar.gz
     provides:
-      YAML::PP v0.38.1
-      YAML::PP::Common v0.38.1
-      YAML::PP::Constructor v0.38.1
-      YAML::PP::Dumper v0.38.1
-      YAML::PP::Emitter v0.38.1
-      YAML::PP::Exception v0.38.1
-      YAML::PP::Grammar v0.38.1
-      YAML::PP::Highlight v0.38.1
-      YAML::PP::Lexer v0.38.1
-      YAML::PP::Loader v0.38.1
-      YAML::PP::Parser v0.38.1
-      YAML::PP::Perl v0.38.1
-      YAML::PP::Preserve::Array v0.38.1
-      YAML::PP::Preserve::Hash v0.38.1
-      YAML::PP::Preserve::Scalar v0.38.1
-      YAML::PP::Reader v0.38.1
-      YAML::PP::Reader::File v0.38.1
-      YAML::PP::Render v0.38.1
-      YAML::PP::Representer v0.38.1
-      YAML::PP::Schema v0.38.1
-      YAML::PP::Schema::Binary v0.38.1
-      YAML::PP::Schema::Catchall v0.38.1
-      YAML::PP::Schema::Core v0.38.1
-      YAML::PP::Schema::Failsafe v0.38.1
-      YAML::PP::Schema::Include v0.38.1
-      YAML::PP::Schema::JSON v0.38.1
-      YAML::PP::Schema::Merge v0.38.1
-      YAML::PP::Schema::Perl v0.38.1
-      YAML::PP::Schema::Tie::IxHash v0.38.1
-      YAML::PP::Schema::YAML1_1 v0.38.1
-      YAML::PP::Type::MergeKey v0.38.1
-      YAML::PP::Writer v0.38.1
-      YAML::PP::Writer::File v0.38.1
+      YAML::PP v0.39.0
+      YAML::PP::Common v0.39.0
+      YAML::PP::Constructor v0.39.0
+      YAML::PP::Dumper v0.39.0
+      YAML::PP::Emitter v0.39.0
+      YAML::PP::Exception v0.39.0
+      YAML::PP::Grammar v0.39.0
+      YAML::PP::Highlight v0.39.0
+      YAML::PP::Lexer v0.39.0
+      YAML::PP::Loader v0.39.0
+      YAML::PP::Parser v0.39.0
+      YAML::PP::Perl v0.39.0
+      YAML::PP::Preserve::Array v0.39.0
+      YAML::PP::Preserve::Hash v0.39.0
+      YAML::PP::Preserve::Scalar v0.39.0
+      YAML::PP::Reader v0.39.0
+      YAML::PP::Reader::File v0.39.0
+      YAML::PP::Render v0.39.0
+      YAML::PP::Representer v0.39.0
+      YAML::PP::Schema v0.39.0
+      YAML::PP::Schema::Binary v0.39.0
+      YAML::PP::Schema::Catchall v0.39.0
+      YAML::PP::Schema::Core v0.39.0
+      YAML::PP::Schema::Failsafe v0.39.0
+      YAML::PP::Schema::Include v0.39.0
+      YAML::PP::Schema::JSON v0.39.0
+      YAML::PP::Schema::Merge v0.39.0
+      YAML::PP::Schema::Perl v0.39.0
+      YAML::PP::Schema::Tie::IxHash v0.39.0
+      YAML::PP::Schema::YAML1_1 v0.39.0
+      YAML::PP::Type::MergeKey v0.39.0
+      YAML::PP::Writer v0.39.0
+      YAML::PP::Writer::File v0.39.0
     requirements:
       B 0
       B::Deparse 0

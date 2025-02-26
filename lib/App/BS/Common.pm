@@ -63,7 +63,7 @@ method add_config ($path) {
   $env = __CLASS__->setup_env( __CLASS__->env2namedopt(
                                   env => $env
                                 , aliases => $aliases )
-                             , $config, $cliopts )
+                                , $config, $cliopts )
 }
 
 method env2namedopt :common (%args) {
