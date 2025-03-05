@@ -1416,16 +1416,16 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  Object-Pad-0.819
-    pathname: P/PE/PEVANS/Object-Pad-0.819.tar.gz
+  Object-Pad-0.820
+    pathname: P/PE/PEVANS/Object-Pad-0.820.tar.gz
     provides:
-      Object::Pad 0.819
-      Object::Pad::ExtensionBuilder 0.819
-      Object::Pad::MOP::Class 0.819
-      Object::Pad::MOP::Field 0.819
-      Object::Pad::MOP::FieldAttr 0.819
-      Object::Pad::MOP::Method 0.819
-      Object::Pad::MetaFunctions 0.819
+      Object::Pad 0.820
+      Object::Pad::ExtensionBuilder 0.820
+      Object::Pad::MOP::Class 0.820
+      Object::Pad::MOP::Field 0.820
+      Object::Pad::MOP::FieldAttr 0.820
+      Object::Pad::MOP::Method 0.820
+      Object::Pad::MetaFunctions 0.820
     requirements:
       ExtUtils::CBuilder 0
       File::ShareDir 1.00

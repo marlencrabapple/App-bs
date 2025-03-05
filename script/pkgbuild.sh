@@ -15,7 +15,7 @@ default_target="${PB_TARGET:-default}"
 default_triple="${PB_TRIPLE:-"$default_repo-$default_carch-$default_target"}"
 
 targets=("$HOME"/.local/share/bs/etc/default/target/*
-         "${BS_TARGETDIR}/"*);
+         "${BS_TARGETDIR:-$AURDIT_TARGET}/"*);
 
 if [[ "$BS_DEBUG" ]]; then
   echo "\$targets: ${targets[@]}";
@@ -87,7 +87,7 @@ update_pkgbuild_repo() {
 
   echo "Attempting to update PKGBUILD repo..."
   for branch in main master; do
-    git pull origin "$branch" --rebase
+    git pull origin "$branch" --rebase -f
     err=$?
     [[ "$err" -eq 0 ]] && break
   done
