@@ -25,7 +25,6 @@ method info :common ($pkgstr, %args) {
   my %info = ();
 
   $res = $class->to_href(\@out, %args, dest => \%info);
-  #carp np $res if $ENV{DEBUG};
 
   \%info
 }
@@ -58,7 +57,6 @@ method parse_line :common ($line, %args) {
   return undef unless $key && $value;
   
   my %debug = (key => $key, val => $value);
-  #carp np %debug;
 
   $key, $value
 }

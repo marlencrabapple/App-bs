@@ -1,0 +1,14 @@
+#!/usr/bin/env bash 
+ 
+[[ -n "$BS_DEBUG" ]] && set -x 
+ 
+for repo in "$(ls .)"; do 
+  cd "$repo" || continue 
+  git reset --hard 
+  git clean -f 
+  for remote in origin our; do 
+    for branch in main master; do 
+    git pull "$remote" "$branch" --rebase -f
+    cd .. done
+  done
+done
