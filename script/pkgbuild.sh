@@ -14,11 +14,10 @@ default_carch="${PB_CARCH:-${CARCH:-x86_64}}"
 default_target="${PB_TARGET:-default}"
 default_triple="${PB_TRIPLE:-"$default_repo-$default_carch-$default_target"}"
 
-targets=("$HOME"/.local/share/bs/etc/default/target/*
-         "${BS_TARGETDIR:-$AURDIT_TARGET}/"*);
+targets=("${BS_TARGETDIR:-"$HOME/.local/share/bs/etc/default/target"}"/*)
 
-if [[ "$BS_DEBUG" ]]; then
-  echo "\$targets: ${targets[@]}";
+if [[ ! -z "$BS_DEBUG" ]]; then
+  echo "\$targets: ${targets[*]}";
   echo "\$BS_TARGETDIR\[*\]: ${BS_TARGETDIR[*]}"
 fi
 
@@ -79,8 +78,8 @@ pacinfo_import() {
 }
 
 update_pkgbuild_repo() {
-  #branches=($(git branch -a))
-  git config --global --add safe.directory "$(pwd)"
+  branches=("$(git branch -a)")
+  # git config --global --add safe.directory "$(pwd)"
 
   git reset --hard;
   git clean -f; 
