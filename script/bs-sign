@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 shopt -s nullglob
-[ ${AURDIT_DEBUG:-0} -ne 0 ] && set -x;
+[ ${BS_DEBUG:-0} -ne 0 ] && set -x;
 
 scriptdir="${0//\/$(basename "$0")}"
-repodb="${BS_REPO:-$AURDIT_REPO}/universe.db.tar.zst"
+repodir=${BS_REPO}
+repodb="${BS_REPO}/universe.db.tar.zst"
 
 signpkgs() {
   _sign_rel_flow "$@"
@@ -40,10 +41,10 @@ signpkg() {
   if [[ -f "$f.sig" ]]; then
     echo "[◎] Signature file already exists for '$f'. Skipping..."
   else
-    gpg -u "${AURDIT_GPGKEYID:-$GPGKEYID}" -sb "$f"
+    gpg -u "${BS_GPG_PUBID:-$GPGKEYID}" -sb "$f"
     gpgerr=$?
     [[ gpgerr -eq 0 ]] \
-      && echo "[●] Signed '$f' with '${AURDIT_GPGKEYID:-$GPGKEYID}'"
+      && echo "[●] Signed '$f' with '${BS_GPG_PUBID:-$GPGKEYID}'"
   fi
 
   return $gpgerr
@@ -52,16 +53,16 @@ signpkg() {
 copy2repo() {
   f="$1"
 
-  if [[ -f "$AURDIT_REPO/$(basename $f)" ]]; then
+  if [[ -f "$bs_repo/$(basename $f)" ]]; then
     printf "[◎] Package with identical filename '%s' already exists " \
       "$(basename "$f")"
     
     printf "in repo '%s'. Skipping...\n" "$AURDIT_REPO"
   else
-    cp -vaf "$f" "${f}.sig" "$AURDIT_REPO" 2>&1
+    cp -vaf "$f" "${f}.sig" "$bs_repo" 2>&1
     cpstatus=$?
     [[ cpstatus -eq 0 ]] \
-      && echo "[●] Copied '$f' to repo '$AURDIT_REPO'..."
+      && echo "[●] Copied '$f' to repo '$bs_repo'..."
   fi
 
   return $cpstatus
@@ -71,7 +72,7 @@ repoadd() {
   f="$1"
 
   repo-add -npsv --include-sigs "$repodb" \
-    "$AURDIT_REPO/$(basename "$f")"
+    "$repodir/$(basename "$f")"
 
   repoaddexit=$?
   if [[ $repoaddexit -eq 0 ]]; then
@@ -82,3 +83,4 @@ repoadd() {
 
   return $repoaddexit
 }
+
