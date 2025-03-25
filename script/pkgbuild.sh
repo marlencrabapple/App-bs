@@ -2,7 +2,9 @@
 
 shopt -s nullglob
 
-[[ -n "$PB_DEBUG" ]] && set -x;
+dbgmode="${BS_DEBUG:-PB_DEBUG}"
+
+[[ -n "$dbgmode" ]] && set -x;
 [[ -n "$PB_PKGSYNC" ]] && pacman -Syy;
 
 arch_pkgbuildrepo_uri="https://gitlab.archlinux.org/archlinux/packaging/packages"
@@ -11,12 +13,14 @@ aur_repo_uri="https://aur.archlinux.org/"
 
 default_repo="${PB_PKGDEST_REPO:-universe}"
 default_carch="${PB_CARCH:-${CARCH:-x86_64}}"
+default_targetdir="$HOME/.local/share/bs/etc/default/target"
 default_target="${PB_TARGET:-default}"
 default_triple="${PB_TRIPLE:-"$default_repo-$default_carch-$default_target"}"
 
-targets=("${BS_TARGETDIR:-"$HOME/.local/share/bs/etc/default/target"}"/*)
+targetdir="${PB_TARGETDIR:-${BS_TARGETDIR:-$default_targetdir}}"
+targets=("$targetdir"/*)
 
-if [[ ! -z "$BS_DEBUG" ]]; then
+if [[ ! -z "$dbgmode" ]]; then
   echo "\$targets: ${targets[*]}";
   echo "\$BS_TARGETDIR\[*\]: ${BS_TARGETDIR[*]}"
 fi
@@ -178,7 +182,7 @@ buildpkg() {
     && echo "$target $pkg $pkgstr $makepkg_conf $pacman_conf $err" \
     >> "pkgbuild.sh-error-$started.txt"
 
-  [[ $PB_DEBUG -ne 0 ]] || set +x
+  [[ $dbgmode -ne 0 ]] || set +x
   return $err
 }
 

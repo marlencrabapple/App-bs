@@ -4,7 +4,7 @@ shopt -s nullglob
 [ ${BS_DEBUG:-0} -ne 0 ] && set -x;
 
 scriptdir="${0//\/$(basename "$0")}"
-repodir=${BS_REPO}
+repodir="$BS_REPO"
 repodb="${BS_REPO}/universe.db.tar.zst"
 
 signpkgs() {
@@ -53,16 +53,16 @@ signpkg() {
 copy2repo() {
   f="$1"
 
-  if [[ -f "$bs_repo/$(basename $f)" ]]; then
+  if [[ -f "$repodir/$(basename $f)" ]]; then
     printf "[◎] Package with identical filename '%s' already exists " \
       "$(basename "$f")"
     
-    printf "in repo '%s'. Skipping...\n" "$AURDIT_REPO"
+    printf "in repo '%s'. Skipping...\n" "$repodb"
   else
-    cp -vaf "$f" "${f}.sig" "$bs_repo" 2>&1
+    cp -vaf "$f" "${f}.sig" "$repodir" 2>&1
     cpstatus=$?
     [[ cpstatus -eq 0 ]] \
-      && echo "[●] Copied '$f' to repo '$bs_repo'..."
+      && echo "[●] Copied '$f' to repo '$repodir'..."
   fi
 
   return $cpstatus
