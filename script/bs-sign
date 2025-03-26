@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
 shopt -s nullglob
-[ ${BS_DEBUG:-0} -ne 0 ] && set -x;
 
-scriptdir="${0//\/$(basename "$0")}"
-repodir="$BS_REPO"
-repodb="${BS_REPO}/universe.db.tar.zst"
+[[ ${BS_DEBUG:-0} -ne 0 ]] && set -x;
+
+export scriptdir="${0//\/$(basename "$0")}"
+export repodb="${BS_REPO:-$AURDIT_REPO}/universe.db.tar.zst"
+export gpgpubid="${BS_GPG_PUBID:-${BS_GPGFPR:-${GPGKEYID}}}"
+export pkgdest="${BS_PKGDEST:-$PKGDEST}"
 
 signpkgs() {
   _sign_rel_flow "$@"
@@ -13,10 +15,12 @@ signpkgs() {
 
 _sign_rel_flow() {
   files=("$@")
-  [[ -f "${files[*]:0:1}" ]] || files=("$PKGDEST"/*.pkg.tar.zst)
+  echo "Signing ${files[*]}..."
+
+  [[ -e "${files[*]:0:1}" ]] || files=("$pkgdest"/*.pkg.tar.zst)
   complete=()
 
-  for f in "$PKGDEST"/*.pkg.tar.zst; do
+  for f in "${files[@]}"; do
     for pkg in "${complete[@]}"; do
       [[ -z "${f//$pkg}" ]] && echo "[◎] Already signed '$f'. Skipping..." \
         && continue 2
@@ -41,10 +45,10 @@ signpkg() {
   if [[ -f "$f.sig" ]]; then
     echo "[◎] Signature file already exists for '$f'. Skipping..."
   else
-    gpg -u "${BS_GPG_PUBID:-$GPGKEYID}" -sb "$f"
+    gpg -u "$gpgpubid" -sb "$f"
     gpgerr=$?
     [[ gpgerr -eq 0 ]] \
-      && echo "[●] Signed '$f' with '${BS_GPG_PUBID:-$GPGKEYID}'"
+      && echo "[●] Signed '$f' with '$gpgpubid'"
   fi
 
   return $gpgerr
@@ -53,7 +57,7 @@ signpkg() {
 copy2repo() {
   f="$1"
 
-  if [[ -f "$repodir/$(basename $f)" ]]; then
+  if [[ -f "$repodir/$(basename $f)" ]] && [[ $BS_CLOBBER -ne 1 ]]; then
     printf "[◎] Package with identical filename '%s' already exists " \
       "$(basename "$f")"
     
@@ -71,8 +75,8 @@ copy2repo() {
 repoadd() {
   f="$1"
 
-  repo-add -npsv --include-sigs "$repodb" \
-    "$repodir/$(basename "$f")"
+  repo-add -$([[ $BS_CLOBBER -ne 1 ]] && printf "%s" "n")psv --include-sigs \
+   -k${gpgpubid} "${repodb}" "${repodir}/$(basename "$f")"
 
   repoaddexit=$?
   if [[ $repoaddexit -eq 0 ]]; then
@@ -83,4 +87,3 @@ repoadd() {
 
   return $repoaddexit
 }
-
