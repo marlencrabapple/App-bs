@@ -1,3 +1,11 @@
+use utf8;
+use v5.40;
+
+use Cwd 'abs_path';
+use Const::Fast;
+
+const our $PWD => abs_path;
+
 requires 'perl', 'v5.40';
 
 requires 'DBI';
@@ -31,6 +39,12 @@ requires 'Const::Fast';
 requires 'File::chdir';
 requires 'Devel::CheckBin';
 
+requires 'Plack'
+  , dist => "CRABAPP/Plack-1.5003-TRIAL"
+  , url  => "$PWD/vendor/Plack-1.5003-TRIAL.tar.gz";
+
+requires 'Plack::App::Directory';
+
 on 'test' => sub {
   requires 'Test::More', '0.98';
   requires 'Test::CPAN::Meta', '0.25',
@@ -54,5 +68,5 @@ use constant DEV_PREREQS => sub {
 };
 
 on 'build' => DEV_PREREQS;
-on 'develop' => DEV_PREREQS;
+on 'develop' => DEV_PREREQS
 
