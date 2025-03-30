@@ -7,6 +7,16 @@ DISTRIBUTIONS
       Algorithm::Diff::_impl 1.201
     requirements:
       ExtUtils::MakeMaker 0
+  Apache-LogFormat-Compiler-0.36
+    pathname: K/KA/KAZEBURO/Apache-LogFormat-Compiler-0.36.tar.gz
+    provides:
+      Apache::LogFormat::Compiler 0.36
+    requirements:
+      Module::Build::Tiny 0.035
+      POSIX 0
+      POSIX::strftime::Compiler 0.30
+      Time::Local 0
+      perl 5.008001
   App-cpanminus-1.7048
     pathname: M/MI/MIYAGAWA/App-cpanminus-1.7048.tar.gz
     provides:
@@ -230,6 +240,15 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
+  Cookie-Baker-0.12
+    pathname: K/KA/KAZEBURO/Cookie-Baker-0.12.tar.gz
+    provides:
+      Cookie::Baker 0.12
+    requirements:
+      Exporter 0
+      Module::Build::Tiny 0.035
+      URI::Escape 0
+      perl 5.008001
   Cpanel-JSON-XS-4.39
     pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.39.tar.gz
     provides:
@@ -504,6 +523,13 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Devel-StackTrace-AsHTML-0.15
+    pathname: M/MI/MIYAGAWA/Devel-StackTrace-AsHTML-0.15.tar.gz
+    provides:
+      Devel::StackTrace::AsHTML 0.15
+    requirements:
+      Devel::StackTrace 0
+      ExtUtils::MakeMaker 0
   Devel-StackTrace-WithLexicals-2.01
     pathname: S/SA/SARTAK/Devel-StackTrace-WithLexicals-2.01.tar.gz
     provides:
@@ -526,6 +552,15 @@ DISTRIBUTIONS
       base 0
       strict 0
       warnings 0
+  Encode-Locale-1.05
+    pathname: G/GA/GAAS/Encode-Locale-1.05.tar.gz
+    provides:
+      Encode::Locale 1.05
+    requirements:
+      Encode 2
+      Encode::Alias 0
+      ExtUtils::MakeMaker 0
+      perl 5.008
   Eval-Closure-0.14
     pathname: D/DO/DOY/Eval-Closure-0.14.tar.gz
     provides:
@@ -801,6 +836,13 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Filesys-Notify-Simple-0.14
+    pathname: M/MI/MIYAGAWA/Filesys-Notify-Simple-0.14.tar.gz
+    provides:
+      Filesys::Notify::Simple 0.14
+    requirements:
+      ExtUtils::MakeMaker 0
+      perl 5.008001
   Future-0.51
     pathname: P/PE/PEVANS/Future-0.51.tar.gz
     provides:
@@ -874,6 +916,82 @@ DISTRIBUTIONS
       Time::Zone 0
       perl 5.006002
       strict 0
+  HTTP-Entity-Parser-0.25
+    pathname: K/KA/KAZEBURO/HTTP-Entity-Parser-0.25.tar.gz
+    provides:
+      HTTP::Entity::Parser 0.25
+      HTTP::Entity::Parser::JSON undef
+      HTTP::Entity::Parser::MultiPart undef
+      HTTP::Entity::Parser::OctetStream undef
+      HTTP::Entity::Parser::UrlEncoded undef
+    requirements:
+      Encode 0
+      File::Temp 0
+      HTTP::MultiPartParser 0
+      Hash::MultiValue 0
+      JSON::MaybeXS 1.003007
+      Module::Build::Tiny 0.035
+      Module::Load 0
+      Stream::Buffered 0
+      WWW::Form::UrlEncoded 0.23
+      perl 5.008001
+  HTTP-Headers-Fast-0.22
+    pathname: T/TO/TOKUHIROM/HTTP-Headers-Fast-0.22.tar.gz
+    provides:
+      HTTP::Headers::Fast 0.22
+    requirements:
+      HTTP::Date 0
+      Module::Build::Tiny 0.035
+      perl 5.008001
+  HTTP-Message-7.00
+    pathname: O/OA/OALDERS/HTTP-Message-7.00.tar.gz
+    provides:
+      HTTP::Config 7.00
+      HTTP::Headers 7.00
+      HTTP::Headers::Auth 7.00
+      HTTP::Headers::ETag 7.00
+      HTTP::Headers::Util 7.00
+      HTTP::Message 7.00
+      HTTP::Request 7.00
+      HTTP::Request::Common 7.00
+      HTTP::Response 7.00
+      HTTP::Status 7.00
+    requirements:
+      Carp 0
+      Clone 0.46
+      Compress::Raw::Bzip2 0
+      Compress::Raw::Zlib 2.062
+      Encode 3.01
+      Encode::Locale 1
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      File::Spec 0
+      HTTP::Date 6
+      IO::Compress::Bzip2 2.021
+      IO::Compress::Deflate 0
+      IO::Compress::Gzip 0
+      IO::HTML 0
+      IO::Uncompress::Inflate 0
+      IO::Uncompress::RawInflate 0
+      LWP::MediaTypes 6
+      MIME::Base64 2.1
+      MIME::QuotedPrint 0
+      URI 1.10
+      parent 0
+      perl 5.008001
+      strict 0
+      warnings 0
+  HTTP-MultiPartParser-0.02
+    pathname: C/CH/CHANSEN/HTTP-MultiPartParser-0.02.tar.gz
+    provides:
+      HTTP::MultiPartParser 0.02
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 6.59
+      Scalar::Util 0
+      Test::Deep 0
+      Test::More 0.88
+      perl 5.008001
   HTTP-Tinyish-0.19
     pathname: M/MI/MIYAGAWA/HTTP-Tinyish-0.19.tar.gz
     provides:
@@ -889,6 +1007,13 @@ DISTRIBUTIONS
       HTTP::Tiny 0.055
       IPC::Run3 0
       parent 0
+      perl 5.008001
+  Hash-MultiValue-0.16
+    pathname: A/AR/ARISTOTLE/Hash-MultiValue-0.16.tar.gz
+    provides:
+      Hash::MultiValue 0.16
+    requirements:
+      ExtUtils::MakeMaker 0
       perl 5.008001
   IO-Async-0.803
     pathname: P/PE/PEVANS/IO-Async-0.803.tar.gz
@@ -957,6 +1082,16 @@ DISTRIBUTIONS
       IO::Socket::SSL 2.003
       Module::Build 0.4004
       perl 5.014
+  IO-HTML-1.004
+    pathname: C/CJ/CJM/IO-HTML-1.004.tar.gz
+    provides:
+      IO::HTML 1.004
+    requirements:
+      Carp 0
+      Encode 2.10
+      Exporter 5.57
+      ExtUtils::MakeMaker 0
+      perl 5.008
   IO-Socket-SSL-2.089
     pathname: S/SU/SULLR/IO-Socket-SSL-2.089.tar.gz
     provides:
@@ -1033,6 +1168,18 @@ DISTRIBUTIONS
       JSON::PP 2.27300
       Scalar::Util 0
       perl 5.006
+  LWP-MediaTypes-6.04
+    pathname: O/OA/OALDERS/LWP-MediaTypes-6.04.tar.gz
+    provides:
+      LWP::MediaTypes 6.04
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      Scalar::Util 0
+      perl 5.006002
+      strict 0
   Lingua-EN-Inflect-1.905
     pathname: D/DC/DCONWAY/Lingua-EN-Inflect-1.905.tar.gz
     provides:
@@ -1504,6 +1651,17 @@ DISTRIBUTIONS
       perl 5.010000
       strict 0
       warnings 0
+  POSIX-strftime-Compiler-0.46
+    pathname: K/KA/KAZEBURO/POSIX-strftime-Compiler-0.46.tar.gz
+    provides:
+      POSIX::strftime::Compiler 0.46
+    requirements:
+      Carp 0
+      Exporter 0
+      Module::Build::Tiny 0.035
+      POSIX 0
+      Time::Local 0
+      perl 5.008001
   PPI-1.281
     pathname: M/MI/MITHALDU/PPI-1.281.tar.gz
     provides:
@@ -2337,6 +2495,105 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008
+  Plack-1.0051
+    pathname: M/MI/MIYAGAWA/Plack-1.0051.tar.gz
+    provides:
+      HTTP::Message::PSGI undef
+      HTTP::Server::PSGI undef
+      Plack 1.0051
+      Plack::App::CGIBin undef
+      Plack::App::Cascade undef
+      Plack::App::Directory undef
+      Plack::App::File undef
+      Plack::App::PSGIBin undef
+      Plack::App::URLMap undef
+      Plack::App::WrapCGI undef
+      Plack::Builder undef
+      Plack::Component undef
+      Plack::HTTPParser undef
+      Plack::HTTPParser::PP undef
+      Plack::Handler undef
+      Plack::Handler::Apache1 undef
+      Plack::Handler::Apache2 undef
+      Plack::Handler::Apache2::Registry undef
+      Plack::Handler::CGI undef
+      Plack::Handler::CGI::Writer undef
+      Plack::Handler::FCGI undef
+      Plack::Handler::HTTP::Server::PSGI undef
+      Plack::Handler::Standalone undef
+      Plack::LWPish undef
+      Plack::Loader undef
+      Plack::Loader::Delayed undef
+      Plack::Loader::Restarter undef
+      Plack::Loader::Shotgun undef
+      Plack::MIME undef
+      Plack::Middleware undef
+      Plack::Middleware::AccessLog undef
+      Plack::Middleware::AccessLog::Timed undef
+      Plack::Middleware::Auth::Basic undef
+      Plack::Middleware::BufferedStreaming undef
+      Plack::Middleware::Chunked undef
+      Plack::Middleware::Conditional undef
+      Plack::Middleware::ConditionalGET undef
+      Plack::Middleware::ContentLength undef
+      Plack::Middleware::ContentMD5 undef
+      Plack::Middleware::ErrorDocument undef
+      Plack::Middleware::HTTPExceptions undef
+      Plack::Middleware::Head undef
+      Plack::Middleware::IIS6ScriptNameFix undef
+      Plack::Middleware::IIS7KeepAliveFix undef
+      Plack::Middleware::JSONP undef
+      Plack::Middleware::LighttpdScriptNameFix undef
+      Plack::Middleware::Lint undef
+      Plack::Middleware::Log4perl undef
+      Plack::Middleware::LogDispatch undef
+      Plack::Middleware::NullLogger undef
+      Plack::Middleware::RearrangeHeaders undef
+      Plack::Middleware::Recursive undef
+      Plack::Middleware::Refresh undef
+      Plack::Middleware::Runtime undef
+      Plack::Middleware::SimpleContentFilter undef
+      Plack::Middleware::SimpleLogger undef
+      Plack::Middleware::StackTrace undef
+      Plack::Middleware::Static undef
+      Plack::Middleware::XFramework undef
+      Plack::Middleware::XSendfile undef
+      Plack::Recursive::ForwardRequest undef
+      Plack::Request 1.0051
+      Plack::Request::Upload undef
+      Plack::Response 1.0051
+      Plack::Runner undef
+      Plack::TempBuffer undef
+      Plack::Test undef
+      Plack::Test::MockHTTP undef
+      Plack::Test::Server undef
+      Plack::Test::Suite undef
+      Plack::Util undef
+      Plack::Util::Accessor undef
+      Plack::Util::IOWithPath undef
+      Plack::Util::Prototype undef
+    requirements:
+      Apache::LogFormat::Compiler 0.33
+      Cookie::Baker 0.07
+      Devel::StackTrace 1.23
+      Devel::StackTrace::AsHTML 0.11
+      ExtUtils::MakeMaker 0
+      File::ShareDir 1.00
+      File::ShareDir::Install 0.06
+      Filesys::Notify::Simple 0
+      HTTP::Entity::Parser 0.25
+      HTTP::Headers::Fast 0.18
+      HTTP::Message 5.814
+      HTTP::Tiny 0.034
+      Hash::MultiValue 0.05
+      Pod::Usage 1.36
+      Stream::Buffered 0.02
+      Test::TCP 2.15
+      Try::Tiny 0
+      URI 1.59
+      WWW::Form::UrlEncoded 0.23
+      parent 0
+      perl 5.012000
   Pod-Markdown-3.400
     pathname: R/RW/RWSTAUNER/Pod-Markdown-3.400.tar.gz
     provides:
@@ -2644,6 +2901,16 @@ DISTRIBUTIONS
       parent 0
       perl 5.008001
       version 0
+  Stream-Buffered-0.03
+    pathname: D/DO/DOY/Stream-Buffered-0.03.tar.gz
+    provides:
+      Stream::Buffered 0.03
+      Stream::Buffered::Auto undef
+      Stream::Buffered::File undef
+      Stream::Buffered::PerlIO undef
+    requirements:
+      ExtUtils::MakeMaker 6.30
+      IO::File 1.14
   String-Format-1.18
     pathname: S/SR/SREZIC/String-Format-1.18.tar.gz
     provides:
@@ -2677,38 +2944,38 @@ DISTRIBUTIONS
       Sub::Exporter::Progressive 0.001013
     requirements:
       ExtUtils::MakeMaker 0
-  Sub-HandlesVia-0.050001
-    pathname: T/TO/TOBYINK/Sub-HandlesVia-0.050001.tar.gz
+  Sub-HandlesVia-0.050002
+    pathname: T/TO/TOBYINK/Sub-HandlesVia-0.050002.tar.gz
     provides:
-      Sub::HandlesVia 0.050001
-      Sub::HandlesVia::CodeGenerator 0.050001
-      Sub::HandlesVia::Declare 0.050001
-      Sub::HandlesVia::Handler 0.050001
-      Sub::HandlesVia::Handler::CodeRef 0.050001
-      Sub::HandlesVia::Handler::Traditional 0.050001
-      Sub::HandlesVia::HandlerLibrary 0.050001
-      Sub::HandlesVia::HandlerLibrary::Array 0.050001
-      Sub::HandlesVia::HandlerLibrary::Blessed 0.050001
-      Sub::HandlesVia::HandlerLibrary::Bool 0.050001
-      Sub::HandlesVia::HandlerLibrary::Code 0.050001
-      Sub::HandlesVia::HandlerLibrary::Counter 0.050001
-      Sub::HandlesVia::HandlerLibrary::Enum 0.050001
-      Sub::HandlesVia::HandlerLibrary::Hash 0.050001
-      Sub::HandlesVia::HandlerLibrary::Number 0.050001
-      Sub::HandlesVia::HandlerLibrary::Scalar 0.050001
-      Sub::HandlesVia::HandlerLibrary::String 0.050001
+      Sub::HandlesVia 0.050002
+      Sub::HandlesVia::CodeGenerator 0.050002
+      Sub::HandlesVia::Declare 0.050002
+      Sub::HandlesVia::Handler 0.050002
+      Sub::HandlesVia::Handler::CodeRef 0.050002
+      Sub::HandlesVia::Handler::Traditional 0.050002
+      Sub::HandlesVia::HandlerLibrary 0.050002
+      Sub::HandlesVia::HandlerLibrary::Array 0.050002
+      Sub::HandlesVia::HandlerLibrary::Blessed 0.050002
+      Sub::HandlesVia::HandlerLibrary::Bool 0.050002
+      Sub::HandlesVia::HandlerLibrary::Code 0.050002
+      Sub::HandlesVia::HandlerLibrary::Counter 0.050002
+      Sub::HandlesVia::HandlerLibrary::Enum 0.050002
+      Sub::HandlesVia::HandlerLibrary::Hash 0.050002
+      Sub::HandlesVia::HandlerLibrary::Number 0.050002
+      Sub::HandlesVia::HandlerLibrary::Scalar 0.050002
+      Sub::HandlesVia::HandlerLibrary::String 0.050002
       Sub::HandlesVia::Mite undef
-      Sub::HandlesVia::Toolkit 0.050001
-      Sub::HandlesVia::Toolkit::Mite 0.050001
-      Sub::HandlesVia::Toolkit::Moo 0.050001
-      Sub::HandlesVia::Toolkit::Moose 0.050001
-      Sub::HandlesVia::Toolkit::Moose::PackageTrait 0.050001
-      Sub::HandlesVia::Toolkit::Moose::RoleTrait 0.050001
-      Sub::HandlesVia::Toolkit::Mouse 0.050001
-      Sub::HandlesVia::Toolkit::Mouse::PackageTrait 0.050001
-      Sub::HandlesVia::Toolkit::Mouse::RoleTrait 0.050001
-      Sub::HandlesVia::Toolkit::ObjectPad 0.050001
-      Sub::HandlesVia::Toolkit::Plain 0.050001
+      Sub::HandlesVia::Toolkit 0.050002
+      Sub::HandlesVia::Toolkit::Mite 0.050002
+      Sub::HandlesVia::Toolkit::Moo 0.050002
+      Sub::HandlesVia::Toolkit::Moose 0.050002
+      Sub::HandlesVia::Toolkit::Moose::PackageTrait 0.050002
+      Sub::HandlesVia::Toolkit::Moose::RoleTrait 0.050002
+      Sub::HandlesVia::Toolkit::Mouse 0.050002
+      Sub::HandlesVia::Toolkit::Mouse::PackageTrait 0.050002
+      Sub::HandlesVia::Toolkit::Mouse::RoleTrait 0.050002
+      Sub::HandlesVia::Toolkit::ObjectPad 0.050002
+      Sub::HandlesVia::Toolkit::Plain 0.050002
     requirements:
       Class::Method::Modifiers 0
       Exporter::Shiny 0
@@ -2862,60 +3129,60 @@ DISTRIBUTIONS
       Test::Builder 0
       Test::Builder::Tester 0
       Test::More 0.70
-  Test-Deep-1.204
-    pathname: R/RJ/RJBS/Test-Deep-1.204.tar.gz
+  Test-Deep-1.205
+    pathname: R/RJ/RJBS/Test-Deep-1.205.tar.gz
     provides:
-      Test::Deep 1.204
-      Test::Deep::All 1.204
-      Test::Deep::Any 1.204
-      Test::Deep::Array 1.204
-      Test::Deep::ArrayEach 1.204
-      Test::Deep::ArrayElementsOnly 1.204
-      Test::Deep::ArrayLength 1.204
-      Test::Deep::ArrayLengthOnly 1.204
-      Test::Deep::Blessed 1.204
-      Test::Deep::Boolean 1.204
-      Test::Deep::Cache 1.204
-      Test::Deep::Cache::Simple 1.204
-      Test::Deep::Class 1.204
-      Test::Deep::Cmp 1.204
-      Test::Deep::Code 1.204
-      Test::Deep::Hash 1.204
-      Test::Deep::HashEach 1.204
-      Test::Deep::HashElements 1.204
-      Test::Deep::HashKeys 1.204
-      Test::Deep::HashKeysOnly 1.204
-      Test::Deep::Ignore 1.204
-      Test::Deep::Isa 1.204
-      Test::Deep::ListMethods 1.204
-      Test::Deep::MM 1.204
-      Test::Deep::Methods 1.204
-      Test::Deep::NoTest 1.204
-      Test::Deep::None 1.204
-      Test::Deep::Number 1.204
-      Test::Deep::Obj 1.204
-      Test::Deep::Ref 1.204
-      Test::Deep::RefType 1.204
-      Test::Deep::Regexp 1.204
-      Test::Deep::RegexpMatches 1.204
-      Test::Deep::RegexpOnly 1.204
-      Test::Deep::RegexpRef 1.204
-      Test::Deep::RegexpRefOnly 1.204
-      Test::Deep::RegexpVersion 1.204
-      Test::Deep::ScalarRef 1.204
-      Test::Deep::ScalarRefOnly 1.204
-      Test::Deep::Set 1.204
-      Test::Deep::Shallow 1.204
-      Test::Deep::Stack 1.204
-      Test::Deep::String 1.204
-      Test::Deep::SubHash 1.204
-      Test::Deep::SubHashElements 1.204
-      Test::Deep::SubHashKeys 1.204
-      Test::Deep::SubHashKeysOnly 1.204
-      Test::Deep::SuperHash 1.204
-      Test::Deep::SuperHashElements 1.204
-      Test::Deep::SuperHashKeys 1.204
-      Test::Deep::SuperHashKeysOnly 1.204
+      Test::Deep 1.205
+      Test::Deep::All 1.205
+      Test::Deep::Any 1.205
+      Test::Deep::Array 1.205
+      Test::Deep::ArrayEach 1.205
+      Test::Deep::ArrayElementsOnly 1.205
+      Test::Deep::ArrayLength 1.205
+      Test::Deep::ArrayLengthOnly 1.205
+      Test::Deep::Blessed 1.205
+      Test::Deep::Boolean 1.205
+      Test::Deep::Cache 1.205
+      Test::Deep::Cache::Simple 1.205
+      Test::Deep::Class 1.205
+      Test::Deep::Cmp 1.205
+      Test::Deep::Code 1.205
+      Test::Deep::Hash 1.205
+      Test::Deep::HashEach 1.205
+      Test::Deep::HashElements 1.205
+      Test::Deep::HashKeys 1.205
+      Test::Deep::HashKeysOnly 1.205
+      Test::Deep::Ignore 1.205
+      Test::Deep::Isa 1.205
+      Test::Deep::ListMethods 1.205
+      Test::Deep::MM 1.205
+      Test::Deep::Methods 1.205
+      Test::Deep::NoTest 1.205
+      Test::Deep::None 1.205
+      Test::Deep::Number 1.205
+      Test::Deep::Obj 1.205
+      Test::Deep::Ref 1.205
+      Test::Deep::RefType 1.205
+      Test::Deep::Regexp 1.205
+      Test::Deep::RegexpMatches 1.205
+      Test::Deep::RegexpOnly 1.205
+      Test::Deep::RegexpRef 1.205
+      Test::Deep::RegexpRefOnly 1.205
+      Test::Deep::RegexpVersion 1.205
+      Test::Deep::ScalarRef 1.205
+      Test::Deep::ScalarRefOnly 1.205
+      Test::Deep::Set 1.205
+      Test::Deep::Shallow 1.205
+      Test::Deep::Stack 1.205
+      Test::Deep::String 1.205
+      Test::Deep::SubHash 1.205
+      Test::Deep::SubHashElements 1.205
+      Test::Deep::SubHashKeys 1.205
+      Test::Deep::SubHashKeysOnly 1.205
+      Test::Deep::SuperHash 1.205
+      Test::Deep::SuperHashElements 1.205
+      Test::Deep::SuperHashKeys 1.205
+      Test::Deep::SuperHashKeysOnly 1.205
     requirements:
       ExtUtils::MakeMaker 6.78
       List::Util 1.09
@@ -2983,6 +3250,20 @@ DISTRIBUTIONS
       Parse::LocalDistribution 0.08
       Parse::PMFile 0.15
       parent 0
+  Test-SharedFork-0.35
+    pathname: E/EX/EXODIST/Test-SharedFork-0.35.tar.gz
+    provides:
+      Test::SharedFork 0.35
+      Test::SharedFork::Array undef
+      Test::SharedFork::Scalar undef
+      Test::SharedFork::Store undef
+    requirements:
+      ExtUtils::MakeMaker 6.64
+      File::Temp 0
+      Test::Builder 0.32
+      Test::Builder::Module 0
+      Test::More 0.88
+      perl 5.008_001
   Test-Simple-1.302210
     pathname: E/EX/EXODIST/Test-Simple-1.302210.tar.gz
     provides:
@@ -3197,6 +3478,20 @@ DISTRIBUTIONS
       overload 0
       perl 5.006002
       utf8 0
+  Test-TCP-2.22
+    pathname: M/MI/MIYAGAWA/Test-TCP-2.22.tar.gz
+    provides:
+      Net::EmptyPort undef
+      Test::TCP 2.22
+      Test::TCP::CheckPort undef
+    requirements:
+      ExtUtils::MakeMaker 6.64
+      IO::Socket::INET 0
+      IO::Socket::IP 0
+      Test::More 0
+      Test::SharedFork 0.29
+      Time::HiRes 0
+      perl 5.008001
   Test-Warn-0.37
     pathname: B/BI/BIGJ/Test-Warn-0.37.tar.gz
     provides:
@@ -3327,60 +3622,60 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Type-Tiny-2.006000
-    pathname: T/TO/TOBYINK/Type-Tiny-2.006000.tar.gz
+  Type-Tiny-2.008000
+    pathname: T/TO/TOBYINK/Type-Tiny-2.008000.tar.gz
     provides:
-      Devel::TypeTiny::Perl58Compat 2.006000
-      Error::TypeTiny 2.006000
-      Error::TypeTiny::Assertion 2.006000
-      Error::TypeTiny::Compilation 2.006000
-      Error::TypeTiny::WrongNumberOfParameters 2.006000
-      Eval::TypeTiny 2.006000
-      Eval::TypeTiny::CodeAccumulator 2.006000
-      Reply::Plugin::TypeTiny 2.006000
-      Test::TypeTiny 2.006000
-      Type::Coercion 2.006000
-      Type::Coercion::FromMoose 2.006000
-      Type::Coercion::Union 2.006000
-      Type::Library 2.006000
-      Type::Params 2.006000
-      Type::Params::Alternatives 2.006000
-      Type::Params::Parameter 2.006000
-      Type::Params::Signature 2.006000
-      Type::Parser 2.006000
-      Type::Parser::AstBuilder 2.006000
-      Type::Parser::Token 2.006000
-      Type::Parser::TokenStream 2.006000
-      Type::Registry 2.006000
-      Type::Tie 2.006000
-      Type::Tie::ARRAY 2.006000
-      Type::Tie::BASE 2.006000
-      Type::Tie::HASH 2.006000
-      Type::Tie::SCALAR 2.006000
-      Type::Tiny 2.006000
-      Type::Tiny::Bitfield 2.006000
-      Type::Tiny::Class 2.006000
-      Type::Tiny::ConstrainedObject 2.006000
-      Type::Tiny::Duck 2.006000
-      Type::Tiny::Enum 2.006000
-      Type::Tiny::Intersection 2.006000
-      Type::Tiny::Role 2.006000
-      Type::Tiny::Union 2.006000
-      Type::Utils 2.006000
-      Types::Common 2.006000
-      Types::Common::Numeric 2.006000
-      Types::Common::String 2.006000
-      Types::Standard 2.006000
-      Types::Standard::ArrayRef 2.006000
-      Types::Standard::CycleTuple 2.006000
-      Types::Standard::Dict 2.006000
-      Types::Standard::HashRef 2.006000
-      Types::Standard::Map 2.006000
-      Types::Standard::ScalarRef 2.006000
-      Types::Standard::StrMatch 2.006000
-      Types::Standard::Tied 2.006000
-      Types::Standard::Tuple 2.006000
-      Types::TypeTiny 2.006000
+      Devel::TypeTiny::Perl58Compat 2.008000
+      Error::TypeTiny 2.008000
+      Error::TypeTiny::Assertion 2.008000
+      Error::TypeTiny::Compilation 2.008000
+      Error::TypeTiny::WrongNumberOfParameters 2.008000
+      Eval::TypeTiny 2.008000
+      Eval::TypeTiny::CodeAccumulator 2.008000
+      Reply::Plugin::TypeTiny 2.008000
+      Test::TypeTiny 2.008000
+      Type::Coercion 2.008000
+      Type::Coercion::FromMoose 2.008000
+      Type::Coercion::Union 2.008000
+      Type::Library 2.008000
+      Type::Params 2.008000
+      Type::Params::Alternatives 2.008000
+      Type::Params::Parameter 2.008000
+      Type::Params::Signature 2.008000
+      Type::Parser 2.008000
+      Type::Parser::AstBuilder 2.008000
+      Type::Parser::Token 2.008000
+      Type::Parser::TokenStream 2.008000
+      Type::Registry 2.008000
+      Type::Tie 2.008000
+      Type::Tie::ARRAY 2.008000
+      Type::Tie::BASE 2.008000
+      Type::Tie::HASH 2.008000
+      Type::Tie::SCALAR 2.008000
+      Type::Tiny 2.008000
+      Type::Tiny::Bitfield 2.008000
+      Type::Tiny::Class 2.008000
+      Type::Tiny::ConstrainedObject 2.008000
+      Type::Tiny::Duck 2.008000
+      Type::Tiny::Enum 2.008000
+      Type::Tiny::Intersection 2.008000
+      Type::Tiny::Role 2.008000
+      Type::Tiny::Union 2.008000
+      Type::Utils 2.008000
+      Types::Common 2.008000
+      Types::Common::Numeric 2.008000
+      Types::Common::String 2.008000
+      Types::Standard 2.008000
+      Types::Standard::ArrayRef 2.008000
+      Types::Standard::CycleTuple 2.008000
+      Types::Standard::Dict 2.008000
+      Types::Standard::HashRef 2.008000
+      Types::Standard::Map 2.008000
+      Types::Standard::ScalarRef 2.008000
+      Types::Standard::StrMatch 2.008000
+      Types::Standard::Tied 2.008000
+      Types::Standard::Tuple 2.008000
+      Types::TypeTiny 2.008000
     requirements:
       Exporter::Tiny 1.006000
       ExtUtils::MakeMaker 6.17
@@ -3501,6 +3796,15 @@ DISTRIBUTIONS
       base 0
       lib 0
       perl 5.008
+  WWW-Form-UrlEncoded-0.26
+    pathname: K/KA/KAZEBURO/WWW-Form-UrlEncoded-0.26.tar.gz
+    provides:
+      WWW::Form::UrlEncoded 0.26
+      WWW::Form::UrlEncoded::PP undef
+    requirements:
+      Exporter 0
+      Module::Build 0.4005
+      perl 5.008001
   XS-Parse-Keyword-0.48
     pathname: P/PE/PEVANS/XS-Parse-Keyword-0.48.tar.gz
     provides:

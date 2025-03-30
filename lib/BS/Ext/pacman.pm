@@ -27,14 +27,6 @@ method sync :common (%args) {
   if ($args{sync} || ($args{last_sync} && $args{now} == $args{last_sync})) {
     push @query_opts, qw(-y -y)
   }
-
-  $res{package} = BS::Common->bsx([ qw(sudo pacman -Su), @query_opts ], %args)
-    if $args{package};
-  
-  $res{file} = BS::Common->bsx([ qw(sudo pacman -F), @query_opts ], %args)
-    if $args{file};
-
-  %res->(qw(package file))
 }
 
 method file_query :common ($filestr, %args) {
@@ -63,6 +55,14 @@ method query :common ($str, %args) {
 
   my $res = BS::Common->bsx([ qw(sudo pacman), $args{query_opts}->@*, $str ]
                             , %args, in => undef, out => $args{dest});
+
+  $res{package} = BS::Common->bsx([ qw(sudo pacman -Su), @query_opts ], %args)
+    if $args{package};
+  
+  $res{file} = BS::Common->bsx([ qw(sudo pacman -F), @query_opts ], %args)
+    if $args{file};
+
+  %res->(qw(package file))
 
   $res
 }

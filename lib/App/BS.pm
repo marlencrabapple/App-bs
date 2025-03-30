@@ -1,13 +1,13 @@
-package App::BS;
-use 5.008001;
-use strict;
-use warnings;
+use Object::Pad qw(:experimental(:all));
+
+package App::BS 0.01;
+role App::BS;
+
+use utf8;
+use v5.40;
 
 our $VERSION = "0.01";
 
-
-
-1;
 __END__
 
 =encoding utf-8

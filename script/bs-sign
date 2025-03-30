@@ -6,7 +6,7 @@ shopt -s nullglob
 
 export scriptdir="${0//\/$(basename "$0")}"
 export repodb="${BS_REPO:-$AURDIT_REPO}/universe.db.tar.zst"
-export gpgpubid="${BS_GPG_PUBID:-${BS_GPGFPR:-${GPGKEYID}}}"
+export gpgpubid="${BS_GPG_PUBID:-${BS_GPGFPR:-${GPGKEYID}}}" 
 export pkgdest="${BS_PKGDEST:-$PKGDEST}"
 
 signpkgs() {
@@ -76,7 +76,7 @@ repoadd() {
   f="$1"
 
   repo-add -$([[ $BS_CLOBBER -ne 1 ]] && printf "%s" "n")psv --include-sigs \
-   -k${gpgpubid} "${repodb}" "${repodir}/$(basename "$f")"
+   -k"${gpgpubid}" "${repodb}" "${repodir}/$(basename "$f")"
 
   repoaddexit=$?
   if [[ $repoaddexit -eq 0 ]]; then
