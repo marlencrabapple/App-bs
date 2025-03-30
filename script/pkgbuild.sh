@@ -5,7 +5,7 @@ shopt -s nullglob
 dbgmode="${BS_DEBUG:-PB_DEBUG}"
 
 [[ -n "$dbgmode" ]] && set -x;
-[[ -n "$PB_PKGSYNC" ]] && pacman -Syy;
+[[ -n "$PB_PKGSYNC" ]] && sudo pacman -Syy;
 
 arch_pkgbuildrepo_uri="https://gitlab.archlinux.org/archlinux/packaging/packages"
 
@@ -27,6 +27,22 @@ fi
 
 [[ ${#targets[*]} -eq 0 ]] \
   && targets=("$HOME/.local/share/bs/target/$default_triple")
+
+printy() {
+  echo "y"
+}
+
+printY() {
+  echo "Y"
+}
+
+printN() {
+  echo "N"
+}
+
+printn() {
+  echo "n"
+}
 
 pacman_conf_reporemote() {
   local searchrepo="$1"
@@ -85,37 +101,48 @@ update_pkgbuild_repo() {
   branches=("$(git branch -a)")
   # git config --global --add safe.directory "$(pwd)"
 
+  git stash;
+
   git reset --hard;
   git clean -f; 
 
   echo "Attempting to update PKGBUILD repo..."
+  err=0
+
   for branch in main master; do
-    git pull origin "$branch" --rebase -f
-    err=$?
+    git pull "$branch" --rebase -f
+    err=$? 
     [[ "$err" -eq 0 ]] && break
   done
+
+  return $?
 }
 
 clone_aur_pkg() {
-  local remoteuri
-  local err=0
+  local pkgbase="$1"
+  local pkgstr="$2"
+
+  remoteuri="${3:-$aur_repo_uri}"
+  err=0
 
   echo "Attempting to clone '$pkg' from AUR.."
 
   git clone --bare \
-    "$aur_repo_uri/${pkgstr}.git" \
-    "$pkgstr"
+    "$remoteuri/${pkgbase}.git" \
+    "$pkgbase"
 
   err=$?
 
   if [[ "$err" -eq 0 ]]; then 
-    echo "$pkgstr" && return 0
+    echo "$pkgbase:3" && return 0
   fi
   
   return $err
 }
 
 clone_custom_repo_remote() {
+  local pkgbase="$1"
+  local pkgstr="$2"
   local remoteuri="$(pacman_conf_reporemote "$pkgrepo")"
   local pacinierr=$?
 
@@ -176,7 +203,8 @@ buildpkg() {
     && echo "$target $pkg $pkgstr $makepkg_conf $pacman_conf $err" \
     >> "pkgbuild.sh-error-$started.txt"
 
-  sudo rm -r "/var/cache/pacman/pkg/"*
+  #sudo rm -r "/var/cache/pacman/pkg/"*
+  yes | sudo pacman -Scc
 
   [[ $err -ne 0 ]] \
     && echo "$target $pkg $pkgstr $makepkg_conf $pacman_conf $err" \
@@ -264,7 +292,7 @@ findpkg() {
   pkgrepo=${pkgfields[*]:0:1}
   pkgstr=${pkgfields[*]:1:1}
 
-  [[ -z "$pkgstr" ]] && ($(pacman -Syyqs "^$pkg\$"))
+  [[ -z "$pkgstr" ]] && echo "$(sudo pacman -Syyqs "^$pkg\$")"
 
   #[[ -z "$pkgstr" ]] && pkgstr="$pkgrepo"
 
@@ -293,7 +321,7 @@ parse_repopkgstr() {
 
   if [[ -z "${pkg//$pkgrepo/}" ]]; then
     pkgrepo=""
-  fi;
+  fi
 
   echo "$pkgrepo"
   echo "${pkgstr:-$pkg}"

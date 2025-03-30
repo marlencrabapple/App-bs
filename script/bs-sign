@@ -6,6 +6,8 @@ shopt -s nullglob
 
 export scriptdir="${0//\/$(basename "$0")}"
 export repodb="${BS_REPO:-$AURDIT_REPO}/universe.db.tar.zst"
+export repodb_base="$(basename $repodb)"
+export repodir="${repodb//$repodb_base/}"
 export gpgpubid="${BS_GPG_PUBID:-${BS_GPGFPR:-${GPGKEYID}}}"
 export pkgdest="${BS_PKGDEST:-$PKGDEST}"
 
@@ -47,7 +49,7 @@ signpkg() {
   else
     gpg -u "$gpgpubid" -sb "$f"
     gpgerr=$?
-    [[ gpgerr -eq 0 ]] \
+    [[ $gpgerr -eq 0 ]] \
       && echo "[●] Signed '$f' with '$gpgpubid'"
   fi
 
@@ -65,7 +67,7 @@ copy2repo() {
   else
     cp -vaf "$f" "${f}.sig" "$repodir" 2>&1
     cpstatus=$?
-    [[ cpstatus -eq 0 ]] \
+    [[ $cpstatus -eq 0 ]] \
       && echo "[●] Copied '$f' to repo '$repodir'..."
   fi
 
@@ -76,7 +78,7 @@ repoadd() {
   f="$1"
 
   repo-add -$([[ $BS_CLOBBER -ne 1 ]] && printf "%s" "n")psv --include-sigs \
-   -k${gpgpubid} "${repodb}" "${repodir}/$(basename "$f")"
+   -k"${gpgpubid}" "${repodb}" "${repodir}/$(basename "$f")"
 
   repoaddexit=$?
   if [[ $repoaddexit -eq 0 ]]; then

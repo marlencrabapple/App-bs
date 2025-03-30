@@ -16,14 +16,14 @@ our $app = sub {
   #  , [[ 'Content-Type' => 'application/json' ]]
   #  , encode_json({ hello => "world" })]
 
-  Plack::App::Directory->new({ root => $_[0] // "$ENV{BS_ROOT}/repo" } )->to_app;
+  Plack::App::Directory->new({ root => $_[0] // "$ENV{BS_ROOT}/repo" })->to_app;
 };
 
 unless (caller) {
   require Plack::Runner;
   Plack::Runner->parse_options(@ARGV)->run($app);
-  exit $? // 0
+  exit ($? // 0)
 }
 
 $app
-
+ 
