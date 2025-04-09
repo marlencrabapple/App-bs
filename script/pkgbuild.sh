@@ -197,14 +197,16 @@ buildpkg() {
     ${PB_TMPCHROOT:+--temp} ${PB_REBUILDALL:+-f} \
     -d universe --root "$AURDIT_ROOT/repo/${target:-"$CARCH"}" -c -D $CHROOT
 
+  makechrootpkg -Cunc -r$CHROOT -- -LACcif
+
   err=$?
 
   [[ $err -ne 0 ]] \
     && echo "$target $pkg $pkgstr $makepkg_conf $pacman_conf $err" \
     >> "pkgbuild.sh-error-$started.txt"
 
-  #sudo rm -r "/var/cache/pacman/pkg/"*
-  yes | sudo pacman -Scc
+  sudo rm -r "/var/cache/pacman/pkg/"*
+  #yes | sudo pacman -Scc
 
   [[ $err -ne 0 ]] \
     && echo "$target $pkg $pkgstr $makepkg_conf $pacman_conf $err" \
