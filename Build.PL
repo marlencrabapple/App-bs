@@ -31,6 +31,7 @@ my %args = (
 
     requires => {
         'Const::Fast' => '0',
+        'Cwd' => '0',
         'DBD::SQLite' => '0',
         'DBI' => '0',
         'DBIx::Connector' => '0',
@@ -52,7 +53,6 @@ my %args = (
         'Object::Pad' => '0',
         'Path::Tiny' => '0',
         'Plack' => '0',
-        'Plack::App::Directory' => '0',
         'Pod::Usage' => '0',
         'Struct::Dumb' => '0',
         'Syntax::Keyword::Defer' => '0',

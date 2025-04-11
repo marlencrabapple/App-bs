@@ -73,14 +73,15 @@ get_pkgbuild() {
 sync_pkgbuild() {
   (pkg="$1"
    target="$2"
+   currbranch="$(git branch)" 
    
-   cd "$BS_ROOT/pkgbuild/$pkg";
-    
+   cd "$BS_ROOT/pkgbuild/$pkg"
+
    git switch -c buildpkg-$(epoch)
    git add -A
    git commit -S -m "Unsynced changed prior to running buildpkg.sh"
 
-   if [[ !-d "$BS_ROOT/pkgmeta/$(basename $pkg)" ]]; then
+   if [[ ! -d "$BS_ROOT/pkgmeta/$(basename $pkg)" ]]; then
      git clone --bare . "$BS_ROOT/pkgmeta/$(basename $pkg)"
      git remote add bs-pkgmeta "$BS_ROOT/pkgmeta/$(basename $pkg)"
    else
@@ -129,8 +130,8 @@ build_pkg() {
 }
 
 for pkg in "${queue[@]}"; do
-  repopkgstr=$(resolve_pkgbase "$pkg")
-  pkgbase=$(parse_repopkgstr "$repopkgstr")
+  repopkgstr=($(resolve_pkgbase "$pkg"))
+  repopkg=($(parse_repopkgstr "$repopkgstr"))
 
   if [[ ! -d "$pkg" ]]; then
     get_pkgbuild "$pkg" "$target"
