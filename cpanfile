@@ -44,7 +44,7 @@ requires 'Devel::CheckBin';
 
 requires 'Plack'
   , dist => "CRABAPP/Plack-1.5003-TRIAL"
-  , url  => "$PWD/vendor/Plack-1.5003-TRIAL.tar.gz";
+  , url  => "file://$PWD/vendor/Plack-1.5003-TRIAL.tar.gz";
 
 on 'test' => sub {
   requires 'Test::More', '0.98';

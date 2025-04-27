@@ -20,100 +20,107 @@ use constant TRIM_RE => qr/\s*(.+)\s*\n*/i;
 
 struct BsxResult => [qw(cmd in out err run3exit cmdexit)];
 
-method bsx :common ($cmd_aref, %args) {
-  %args = (in => undef, out => [], err => '') unless scalar keys %args;
+method bsx : common ($cmd_aref, %args) {
+    %args = ( in => undef, out => [], err => '' ) unless scalar keys %args;
 
-  if ($args{debug}) {
-    say "${class}::bsx([ '$$cmd_aref[0]', ... ], ...) args:";
-    p $cmd_aref, %args
-  }
+    if ( $args{debug} ) {
+        say "${class}::bsx([ '$$cmd_aref[0]', ... ], ...) args:";
+        p $cmd_aref, %args;
+    }
 
-  my $ret = run3($cmd_aref, map {
-    ref $_ ? $_ : defined $_ ? \$_ : undef 
-  } @args{qw(in out err)});
-  
-  my $res = BsxResult( cmd => $cmd_aref,
-                       %args{qw(in out err)},
-                       run3exit => $ret,
-                       cmdexit => [$?, $!] );
+    my $ret = run3( $cmd_aref,
+        map { ref $_ ? $_ : defined $_ ? \$_ : undef } @args{qw(in out err)} );
 
-  if ($args{err} && ${$args{err}} || $ret != 1) {
-      $args{on_err} && ref $args{on_err} eq 'CODE'
-        ? $args{on_err}->($ret, $args{err}, $args{out})
-        : croak " > $ret: ${$args{err}}", $res
-  }
+    my $res = BsxResult(
+        cmd => $cmd_aref,
+        %args{qw(in out err)},
+        run3exit => $ret,
+        cmdexit  => [ $?, $! ]
+    );
 
-  $res
+    if ( $args{err} && ${ $args{err} } || $ret != 1 ) {
+        $args{on_err} && ref $args{on_err} eq 'CODE'
+          ? $args{on_err}->( $ret, $args{err}, $args{out} )
+          : croak " > $ret: ${$args{err}}", $res;
+    }
+
+    $res;
 }
 
-method open_as_href :common ($in, %args) {
-  my ($as_aref, $as_path);
-  my $as_href = delete $args{dest} // {};
+method open_as_href : common ($in, %args) {
+    my ( $as_aref, $as_path );
+    my $as_href = delete $args{dest} // {};
 
-  $as_aref = $class->tie_file($in, dest => $as_href, %args);
+    $as_aref = $class->tie_file( $in, dest => $as_href, %args );
 
-  foreach my $line (@$as_aref) {
-    $line =~ s/${\TRIM_RE}/$1/;
-    
-    my ($key, $val) = $args{parse_line}->($line, dest => $as_href, %args);
-    #carp Dumper($line, $key, $val) if $ENV{DEBUG};
-    
-    next unless $key && $val;
+    foreach my $line (@$as_aref) {
+        $line =~ s/${\TRIM_RE}/$1/;
 
-    if ($$as_href{$key}) {
-      if ($args{no_dupes} && $args{dest}->{$key} 
-        && $$as_href{$key} eq $args{dest}->{$key}) {
-          p $line, $key, $val, $$as_href{$key}, $args{dest}->{$key}
-            if $ENV{DEBUG};
-          next
-      }
+        my ( $key, $val ) =
+          $args{parse_line}->( $line, dest => $as_href, %args );
 
-      $$as_href{$key} = [ $$as_href{$key} ]
-        if ref $$as_href{$key} ne 'ARRAY';
-      push $$as_href{$key}->@*, $val
+        #carp Dumper($line, $key, $val) if $ENV{DEBUG};
+
+        next unless $key && $val;
+
+        if ( $$as_href{$key} ) {
+            if (   $args{no_dupes}
+                && $args{dest}->{$key}
+                && $$as_href{$key} eq $args{dest}->{$key} )
+            {
+                p $line, $key, $val, $$as_href{$key}, $args{dest}->{$key}
+                  if $ENV{DEBUG};
+                next;
+            }
+
+            $$as_href{$key} = [ $$as_href{$key} ]
+              if ref $$as_href{$key} ne 'ARRAY';
+            push $$as_href{$key}->@*, $val;
+        }
+        else {
+            $$as_href{$key} = $val;
+        }
     }
-    else {
-      $$as_href{$key} = $val
-    }
-  }
 
-  $as_href
+    $as_href;
 }
 
-method tie_file :common ($in, %args) {
-  my $as_aref = [];
-  my $as_href = $args{dest} // {};
+method tie_file : common ($in, %args) {
+    my $as_aref = [];
+    my $as_href = $args{dest} // {};
 
-  # if (any { ref $in eq $_ } qw(Path::Tiny GLOB)) {
-  #   p ($in);
-  #   tie @$as_aref, 'Tie::File', "$in"
-  # }
-  if ($in isa Path::Tiny) {
-    tie @$as_aref, 'Tie::File', "$in"
-  }
-  elsif (ref $in eq 'GLOB') {
-    tie @$as_aref, 'Tie::File', $in
-  }
-  elsif (ref $in eq 'ARRAY') {
-    #$as_aref = $in
-    return $in
-  }
-  elsif (!ref $in) {
-    if (-e "$in") {
-      my $as_path = path($in);
-      tie @$as_aref, 'Tie::File', "$in"
+    # if (any { ref $in eq $_ } qw(Path::Tiny GLOB)) {
+    #   p ($in);
+    #   tie @$as_aref, 'Tie::File', "$in"
+    # }
+    if ( $in isa Path::Tiny ) {
+        tie @$as_aref, 'Tie::File', "$in";
     }
-    elsif ($args{out}) {
-      @$as_aref =  split /\n/, $in;
-      tie @$as_aref, 'Tie::File', $args{out} if $args{out};
-      ...
+    elsif ( ref $in eq 'GLOB' ) {
+        tie @$as_aref, 'Tie::File', $in;
     }
-  }
-  # else {
-  #   if (ref $in eq 'HASH') {
-  #     return $in
-  #   }
-  # }
+    elsif ( ref $in eq 'ARRAY' ) {
 
-  $as_aref
+        #$as_aref = $in
+        return $in;
+    }
+    elsif ( !ref $in ) {
+        if ( -e "$in" ) {
+            my $as_path = path($in);
+            tie @$as_aref, 'Tie::File', "$in";
+        }
+        elsif ( $args{out} ) {
+            @$as_aref = split /\n/, $in;
+            tie @$as_aref, 'Tie::File', $args{out} if $args{out};
+            ...;
+        }
+    }
+
+    # else {
+    #   if (ref $in eq 'HASH') {
+    #     return $in
+    #   }
+    # }
+
+    $as_aref;
 }

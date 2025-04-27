@@ -1,62 +1,68 @@
 use Object::Pad;
 
 package BS::Ext::pacinfo;
-role BS::Ext::pacinfo :does(BS::Package::Meta);
+role BS::Ext::pacinfo : does(BS::Package::Meta);
 
 use utf8;
 use v5.40;
 
 use Carp;
 use Data::Printer;
-use Data::Dumper;
 
-use constant VALID_KEYS => qw(Name Base Repository);
+use constant VALID_KEYS   => qw(Name Base Repository);
 use constant VALID_KEY_RE => map { qr/^($_)$/i } join '|', (VALID_KEYS);
-use constant DEPKEY_RE => qr/^(Requires|Optional Deps)$/i;
+use constant DEPKEY_RE    => qr/^(Requires|Optional Deps)$/i;
 
-method info :common ($pkgstr, %args) {
-  my (@out, $in, $err);
-  my $res = BS::Common->bsx([ 'pacinfo', $pkgstr ]
-                            , out => \@out, in => undef, err => \$err);
-  
-  die "$err" if $err;
-  die "$?: $!" if $res->cmdexit->[0] != 0;
+method info : common ($pkgstr, %args) {
+    my ( @out, $in, $err );
+    my $res = BS::Common->bsx(
+        [ 'pacinfo', $pkgstr ],
+        out => \@out,
+        in  => undef,
+        err => \$err
+    );
 
-  my %info = ();
+    die "$err"   if $err;
+    die "$?: $!" if $res->cmdexit->[0] != 0;
 
-  $res = $class->to_href(\@out, %args, dest => \%info);
+    my %info = ();
 
-  \%info
+    $res = $class->to_href( \@out, %args, dest => \%info );
+
+    \%info;
 }
 
-method pkgbase :common ($pkgstr, %args) {
-  my $info = $class->info($pkgstr, %args);
-  carp np $info if $ENV{DEBUG};
-  ref $$info{base} eq 'ARRAY' ? $info->{base}[0] : $$info{base}
+method pkgbase : common ($pkgstr, %args) {
+    my $info = $class->info( $pkgstr, %args );
+    carp np $info if $ENV{DEBUG};
+    ref $$info{base} eq 'ARRAY' ? $info->{base}[0] : $$info{base};
 }
 
-method to_href :common ($in, %args) {
-  my $res = BS::Common->open_as_href($in, %args
-    , parse_line => sub ($line, %args) {
-      $class->parse_line($line, %args)
-    });
+method to_href : common ($in, %args) {
+    my $res = BS::Common->open_as_href(
+        $in, %args,
+        parse_line => sub ( $line, %args ) {
+            $class->parse_line( $line, %args );
+        }
+    );
 
-  $res
+    $res;
 }
 
-method parse_line :common ($line, %args) {
-  my ($key, $value) = map {
-    $_ =~ s/${\BS::Common::TRIM_RE}/$1/; $_
-  } (split /:/, $line, 1);
+method parse_line : common ($line, %args) {
+    my ( $key, $value ) = map {
+        $_ =~ s/${\BS::Common::TRIM_RE}/$1/;
+        $_
+    } ( split /:/, $line, 1 );
 
-  $key = lc($key);
-  
-  $value = BS::Package::Meta->parse_dep($value, %args)
-    if ($args{resolve_deps} // 1) && $key =~ DEPKEY_RE;
+    $key = lc($key);
 
-  return undef unless $key && $value;
-  
-  my %debug = (key => $key, val => $value);
+    $value = BS::Package::Meta->parse_dep( $value, %args )
+      if ( $args{resolve_deps} // 1 ) && $key =~ DEPKEY_RE;
 
-  $key, $value
+    return undef unless $key && $value;
+
+    my %debug = ( key => $key, val => $value );
+
+    $key, $value;
 }

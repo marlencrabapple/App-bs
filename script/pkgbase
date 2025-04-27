@@ -1,0 +1,12 @@
+#!/usr/bin/env perl
+
+use v5.40;
+use utf8;
+
+use lib 'lib';
+
+use BS::Ext::pacinfo;
+
+#$(perl -e 'use v5.40; my (%matches) = $ARGV[0] =~ /(Base|Repository):\s+([a-z0-9\-_]+)/g; say join "\n", map { "export pkg" . lc substr($_, 0, 4) . "=$matches{$_}" } keys %matches' "$pacinfo")
+
+#echo "$(perl -e 'use v5.40; use List::Util; say join " ", List::Util::uniqstr @ARGV' "${res[@]}")"

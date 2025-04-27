@@ -1,10 +1,8 @@
 use Object::Pad;
 
-use lib 'lib';
-
 package App::BS::pkgdepends;
 class App::BS::pkgdepends :isa(App::BS::CLI)
-                 :does(BS::Ext::pactree);
+                          :does(BS::Ext::pactree);
 
 use utf8;
 use v5.40;

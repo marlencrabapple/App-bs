@@ -1,13 +1,12 @@
+use Object::Pad qw(:experimental(:all));
+
 package App::BS;
-use 5.008001;
-use strict;
-use warnings;
+class App::BS 0.01;
+
+use Const::Fast;
 
 our $VERSION = "0.01";
 
-
-
-1;
 __END__
 
 =encoding utf-8
