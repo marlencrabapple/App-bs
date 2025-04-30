@@ -4,10 +4,11 @@ use utf8;
 use v5.40;
 
 requires 'Cwd';
-requires 'Const::Fast';
 
 use Cwd 'abs_path';
+
 use Const::Fast;
+use Const::Fast::Exporter;
 
 const our $PWD => abs_path;
 
@@ -54,7 +55,7 @@ on 'test' => sub {
   requires 'Test::MinimumVersion::Fast';
 };
 
-use constant DEV_PREREQS => sub {
+const our $DEV_PREREQS => sub {
   requires 'Minilla';
   requires 'Minilla::Profile::ModuleBuildTiny';
   requires 'Perl::Critic';
@@ -68,5 +69,5 @@ use constant DEV_PREREQS => sub {
   requires 'Devel::StackTrace::WithLexicals', '2.01';
 };
 
-on 'build' => DEV_PREREQS;
-on 'develop' => DEV_PREREQS
+on 'build' => $DEV_PREREQS;
+on 'develop' => $DEV_PREREQS

@@ -1,12 +1,204 @@
 #!/usr/bin/env perl
 
-use v5.40;
-use utf8;
+package pkgbase;
+use Object::Pad qw(:experimental(:all));
 
 use lib 'lib';
 
-use BS::Ext::pacinfo;
+class Pkgbase
+  : isa(App::BS::CLI) : does(BS::Ext::pacman) : does(App::BS::CLI::Barearg);
 
-#$(perl -e 'use v5.40; my (%matches) = $ARGV[0] =~ /(Base|Repository):\s+([a-z0-9\-_]+)/g; say join "\n", map { "export pkg" . lc substr($_, 0, 4) . "=$matches{$_}" } keys %matches' "$pacinfo")
+use utf8;
+use v5.40;
 
-#echo "$(perl -e 'use v5.40; use List::Util; say join " ", List::Util::uniqstr @ARGV' "${res[@]}")"
+use List::Util qw(any uniqstr);
+use Syntax::Keyword::Dynamically;
+use Syntax::Keyword::Try;
+use Data::Dumper;
+use Const::Fast;
+use IPC::Run3;
+use Const::Fast;
+
+const our $VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
+const our $VALID_PKG_RE_NB =>
+qr/[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+(\.so)|[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+/;
+const our $PACINFO_SO_PREFIX => qr/(?:lib\:)?/;
+const our $DEP_SO_RE         => qr/\.so/;
+const our $VALID_DEPIDEN_RE =>
+  qr/$PACINFO_SO_PREFIX($VALID_PKG_RE_NB)(?:$DEP_SO_RE)?/;
+const our $DEP_ATTRSEP_RE => qr/(?:\=)|(?:[\<\>]\=?)|(?:(?:\:))|(?:\.)/;
+const our $DEP_ATTR_RE =>
+  qr/^$VALID_DEPIDEN_RE(?:\s*($DEP_ATTRSEP_RE)\s*(.+))?\n?$/;
+
+method parse_pkgstr : common ($pkgstr, %opts) {
+    my ( $depname, $soext, $sep, $attr ) = $pkgstr =~ $DEP_ATTR_RE;
+    my %pkgstub = ();
+
+    $pkgstub{name} = $depname;
+
+    if ($sep) {
+        if ( $sep ne ':' ) {
+            $pkgstub{version} = $attr;
+            $pkgstub{cmp_op}  = $sep;
+            $pkgstub{file}    = $depname if $soext;
+        }
+        elsif ( $sep eq ':' ) {    # Optional dependency most likely
+                                   # Will have parsed that out elsewhere
+            $pkgstub{description} = $attr;
+            $pkgstub{name}        = $depname;
+        }
+    }
+
+    if ($soext) {
+        $pkgstub{file} //= $depname;
+
+        my $res   = BS::Ext::pacman->file_query($depname);
+        my $match = $res->out->[-1];
+        chomp $match;
+
+        ( $pkgstub{repo}, $pkgstub{name} ) = ( split /\//, $match );
+    }
+
+    warn Dumper( { pkgstub => \%pkgstub } ) if $ENV{DEBUG};
+
+    \%pkgstub;
+}
+
+method parse_pacinfo_line : common ($line, %opts) {
+    const my $DEPKEY_RE => qr/^(Requires|Optional Deps)$/i;
+
+    my ( $key, $value ) = map {
+        $_ =~ s/$BS::Common::TRIM_RE/$1/;
+        $_
+    } ( split /:/, $line, 2 );
+
+    return undef unless $key && $value;
+
+    $key = lc($key);
+    $key =~ s/[^a-z0-9]+/_/;
+
+    $value = $class->pkgbase(
+        $class->parse_pkgstr( ref $value eq 'ARRAY' ? $$value[0] : $value ),
+        %opts )
+      if ( $opts{resolve_deps} // 0 ) && $key =~ $DEPKEY_RE;
+
+    $key, $value;
+}
+
+method parse_pacinfo : common ($aref, %opts) {
+    const my @VALID_KEYS => qw(Name Base Repository);
+
+    const my $VALID_KEY_RE => map { qr/^($_)$/i } join '|',
+      (@VALID_KEYS);
+
+    my $pacinfo_href = {};
+
+    foreach my $line (@$aref) {
+        chomp $line;
+
+        $line =~ s/$BS::Common::TRIM_RE/$1/;
+
+        my ( $key, $val ) = $class->parse_pacinfo_line( $line, %opts );
+
+        next unless $key && $val;
+
+        if ( $$pacinfo_href{$key} ) {
+            next
+              if ( $opts{no_dupes}
+                && $opts{dest}->{$key}
+                && $$pacinfo_href{$key} eq $opts{dest}->{$key} );
+
+            $$pacinfo_href{$key} = [ $$pacinfo_href{$key} ]
+              if ref $$pacinfo_href{$key} ne 'ARRAY';
+
+            push $$pacinfo_href{$key}->@*, $val;
+        }
+        else {
+            $$pacinfo_href{$key} = $val;
+        }
+    }
+
+    $pacinfo_href;
+}
+
+method pacinfo : common ($pkgname, %opts) {
+    my ( @out, $err );
+    run3 [ 'pacinfo', $pkgname ], \undef, \@out, \$err;
+    $class->parse_pacinfo( \@out, %opts );
+}
+
+method pkgbase : common ($pkgstr, %opts) {
+    my $base = $class->pacinfo( $pkgstr, %opts )->{base};
+    ref $base eq 'ARRAY' ? $$base[0] : $base;
+}
+
+method handle_barearg ($str) {
+    if ( length $str == 1 && $ARGV[-1] eq $str ) {
+        $self->cliopts->{seperator} = $str;
+    }
+    else {
+        push $self->queue->@*, $str;
+    }
+}
+
+method run {
+    my @pkgbase = ();
+
+    const my $DEFORDER_RE => qr/^asc.*/i;
+
+    state $altorder =
+      ( $self->cliopts->{default_order} // 'asc' ) =~ $DEFORDER_RE
+      ? 'desc'
+      : 'asc';
+
+    state $altorder_re = qr/^($altorder|r).*/i;
+
+    foreach my $pkgstr ( $self->queue->@* ) {
+        my $pkgstub = Pkgbase->parse_pkgstr( $pkgstr, $self->cliopts->%* );
+        my $pkgbase = Pkgbase->pkgbase( $$pkgstub{name}, $self->cliopts->%* );
+
+        warn Dumper(
+            {
+                pkgstr  => "$pkgstr",
+                pkgstub => $pkgstub,
+                pkgbase => $pkgbase
+            }
+        ) if $self->debug;
+
+        push @pkgbase, $pkgbase;
+    }
+
+    @pkgbase = $self->cliopts->{unique} ? uniqstr @pkgbase : @pkgbase;
+
+    @pkgbase =
+      ( $self->cliopts->{order} !~ $altorder_re )
+      ? @pkgbase
+      : reverse @pkgbase;
+
+    say join $self->cliopts->{sep} // ' ',
+      $self->cliopts->{reverse} ? reverse @pkgbase : @pkgbase;
+}
+
+our %opts = (
+    unique => 1,
+    sync   => 1,
+    order  => 'asc'
+);
+
+package main;
+
+our @queue;
+
+my $app = Pkgbase->new(
+    getopts => [
+        "pkgbuild-repo|pkgmeta:s",            "seperator:s",
+        "order|sort-direction|print-order:s", "optional|o:i",
+        "reverse|r",                          "depth|max-depth:i",
+        "delimiter:s",                        "sync!",
+        "fetch",                              "unique!",
+        "updpkgsums",                         "update!",
+    ],
+    argv  => \@ARGV,
+    dest  => \%opts,
+    queue => \@queue
+)->run;

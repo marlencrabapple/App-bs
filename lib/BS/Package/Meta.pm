@@ -122,10 +122,13 @@ method resolve_base : common ($line, %args) {
                 no_dupes     => 1
             );
 
+            $dep_pkgargs{base} = $dep_pkgargs{base}->out if $dep_pkgargs{base};
+
             croak %dep_pkgargs unless $dep_pkgargs{base}
         }
         catch ($e) {
             my $res = BS::Ext::pacman->pkg_query( $dep_pkgargs{name} );
+
             warn np $res if $ENV{DEBUG};
             chomp $res->out->[-1];
 
@@ -134,7 +137,10 @@ method resolve_base : common ($line, %args) {
                     $res->out->[-1],
                     resolve_deps => 0,
                     no_dupes     => 1
-                )
+                );
+
+                $dep_pkgargs{base} = $dep_pkgargs{base}->out
+                  if $dep_pkgargs{base};
             }
             catch ($e) {
                 croak np $e

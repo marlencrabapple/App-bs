@@ -9,6 +9,8 @@ use v5.40;
 use Carp;
 use IPC::Run3;
 use Tie::File;
+use List::Util 'any';
+use Const::Fast;
 use Data::Dumper;
 use Struct::Dumb qw( -named_constructors );
 use Data::Printer;
@@ -16,16 +18,23 @@ use Data::Printer;
 use parent 'Exporter';
 our @EXPORT = qw(bsx);
 
-use constant TRIM_RE => qr/\s*(.+)\s*\n*/i;
+const our $DEBUG   => ( any { $_ } @ENV{qw(BS_DEBUG DEBUG)} ) || 0;
+const our $TRIM_RE => qr/\s*(.+)\s*\n*/i;
+
+field $debug : accessor : param = $DEBUG;
+
+ADJUST {
+    $ENV{DEBUG} = $debug = $self->cliopts->{debug} // $DEBUG
+};
 
 struct BsxResult => [qw(cmd in out err run3exit cmdexit)];
 
 method bsx : common ($cmd_aref, %args) {
     %args = ( in => undef, out => [], err => '' ) unless scalar keys %args;
 
-    if ( $args{debug} ) {
-        say "${class}::bsx([ '$$cmd_aref[0]', ... ], ...) args:";
-        p $cmd_aref, %args;
+    if ( $DEBUG // $args{debug} ) {
+        warn "${class}::bsx([ '$$cmd_aref[0]', ... ], ...) args:";
+        warn np $cmd_aref, %args;
     }
 
     my $ret = run3( $cmd_aref,
@@ -54,12 +63,10 @@ method open_as_href : common ($in, %args) {
     $as_aref = $class->tie_file( $in, dest => $as_href, %args );
 
     foreach my $line (@$as_aref) {
-        $line =~ s/${\TRIM_RE}/$1/;
+        $line =~ s/$TRIM_RE/$1/;
 
         my ( $key, $val ) =
           $args{parse_line}->( $line, dest => $as_href, %args );
-
-        #carp Dumper($line, $key, $val) if $ENV{DEBUG};
 
         next unless $key && $val;
 
@@ -68,8 +75,6 @@ method open_as_href : common ($in, %args) {
                 && $args{dest}->{$key}
                 && $$as_href{$key} eq $args{dest}->{$key} )
             {
-                p $line, $key, $val, $$as_href{$key}, $args{dest}->{$key}
-                  if $ENV{DEBUG};
                 next;
             }
 
@@ -82,6 +87,7 @@ method open_as_href : common ($in, %args) {
         }
     }
 
+    warn Dumper($as_href) if $ENV{DEBUG};
     $as_href;
 }
 
@@ -89,10 +95,6 @@ method tie_file : common ($in, %args) {
     my $as_aref = [];
     my $as_href = $args{dest} // {};
 
-    # if (any { ref $in eq $_ } qw(Path::Tiny GLOB)) {
-    #   p ($in);
-    #   tie @$as_aref, 'Tie::File', "$in"
-    # }
     if ( $in isa Path::Tiny ) {
         tie @$as_aref, 'Tie::File', "$in";
     }
@@ -115,12 +117,6 @@ method tie_file : common ($in, %args) {
             ...;
         }
     }
-
-    # else {
-    #   if (ref $in eq 'HASH') {
-    #     return $in
-    #   }
-    # }
 
     $as_aref;
 }
