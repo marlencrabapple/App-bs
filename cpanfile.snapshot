@@ -240,6 +240,16 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
+  Const-Fast-Exporter-0.02
+    pathname: N/NE/NEILB/Const-Fast-Exporter-0.02.tar.gz
+    provides:
+      Const::Fast::Exporter 0.02
+    requirements:
+      Const::Fast 0
+      ExtUtils::MakeMaker 0
+      perl 5.010
+      strict 0
+      warnings 0
   Cookie-Baker-0.12
     pathname: K/KA/KAZEBURO/Cookie-Baker-0.12.tar.gz
     provides:

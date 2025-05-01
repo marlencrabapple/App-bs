@@ -1,7 +1,7 @@
-use Object::Pad;
+use Object::Pad qw(:experimental(:all));
 
 package BS::Common;
-role BS::Common;
+role BS::Common : does(BS::Path);
 
 use utf8;
 use v5.40;
@@ -9,51 +9,141 @@ use v5.40;
 use Carp;
 use IPC::Run3;
 use Tie::File;
-use List::Util 'any';
-use Const::Fast;
+use List::AllUtils qw(singleton any);
 use Data::Dumper;
-use Struct::Dumb qw( -named_constructors );
-use Data::Printer;
+use Const::Fast;
+use Const::Fast::Exporter;
+use Syntax::Keyword::Dynamically;
+use Syntax::Keyword::Try;
+use BS::Path;
+use Time::Piece;
+
+use subs qw(dmsg bsx callstack __pkgfn__ const );
 
 use parent 'Exporter';
-our @EXPORT = qw(bsx);
+our @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
 
 const our $DEBUG   => ( any { $_ } @ENV{qw(BS_DEBUG DEBUG)} ) || 0;
 const our $TRIM_RE => qr/\s*(.+)\s*\n*/i;
 
-field $debug : accessor : param = $DEBUG;
+eval {
+    use Devel::StackTrace::WithLexicals;
+    use PadWalker qw(peek_my peek_our);
+    use Module::Metadata;
+} if $DEBUG;
 
-ADJUST {
-    $ENV{DEBUG} = $debug = $self->cliopts->{debug} // $DEBUG
+my class BsxResult {
+    use utf8;
+    use v5.40;
+
+    use subs qw(dmsg);
+
+    field $debug = $BS::Common::DEBUG;
+
+    field @out;
+    field @err;
+
+    field $cmd : param : reader;
+    field $inh : param(in) : reader = \undef;
+    field $outh : param(out) : reader(out) //= \@out;
+    field $errh : param(err) : reader //= \@err;
+    field $status : param : reader = 0;
+
+    ADJUST {
+        BS::Common::dmsg $self
+    }
 };
 
-struct BsxResult => [qw(cmd in out err run3exit cmdexit)];
+field $debug : accessor : param = $DEBUG;
+
+APPLY {
+    use utf8;
+    use v5.40;
+}
+
+ADJUST {
+    use utf8;
+    use v5.40;
+    $ENV{DEBUG} = $debug = $self->cliopts->{debug} // $BS::Common::DEBUG
+};
+
+method __pkgfn__ : common ($pkgname = undef) {
+    $pkgname //= $class;
+    "$pkgname.pm" =~ s/::/\//rg;
+}
+
+method callstack : common {
+    my @callstack;
+    my $i = 0;
+
+    while ( my @caller = caller $i ) {
+        {
+            no strict 'refs';
+            push @caller, \%{"$caller[0]\::"};
+            push @caller, $caller[0]->META() if ${"$caller[0]\::"}{META}
+        }
+
+        push @callstack, \@caller;
+    }
+    continue { $i++ }
+
+    @callstack;
+}
+
+sub dmsg (@msgs) {
+    my $self =    # Maybe there's a reason to make an anon class here?
+      blessed $msgs[0] && $msgs[0]->DOES('BS::Common') ? shift @msgs : undef;
+
+    if ( state $debug = $DEBUG // $ENV{DEBUG} // undef ) {
+
+        my @caller = caller 0;
+
+        my $out = "*** " . localtime->datetime . " - DEBUG MESSAGE ***\n\n";
+
+        {
+            local $Data::Dumper::Pad    = "  ";
+            local $Data::Dumper::Indent = 1;
+
+            $out .=
+                scalar @msgs > 1 ? Dumper(@msgs)
+              : ref $msgs[0]     ? Dumper(@msgs)
+              :   eval { my $s = $msgs[0] // 'undef'; "  $s\n" };
+
+            $out .= "\n"
+        }
+
+        $out .=
+          $ENV{DEBUG} && $ENV{DEBUG} == 2
+          ? join "\n",
+          map { ( my $line = $_ ) =~ s/^\t/  /; "  $line" } split /\R/,
+          Devel::StackTrace::WithLexicals->new(
+            indent      => 1,
+            skip_frames => 1
+          )->as_string
+          : "at $caller[1]:$caller[2]";
+
+        say STDERR "$out\n";
+        $out;
+    }
+}
 
 method bsx : common ($cmd_aref, %args) {
     %args = ( in => undef, out => [], err => '' ) unless scalar keys %args;
 
-    if ( $DEBUG // $args{debug} ) {
-        warn "${class}::bsx([ '$$cmd_aref[0]', ... ], ...) args:";
-        warn np $cmd_aref, %args;
-    }
+    dmsg "${class}::bsx([ '$$cmd_aref[0]', ... ], ...) args:";
+    dmsg $cmd_aref, %args;
 
-    my $ret = run3( $cmd_aref,
+    run3( $cmd_aref,
         map { ref $_ ? $_ : defined $_ ? \$_ : undef } @args{qw(in out err)} );
 
-    my $res = BsxResult(
-        cmd => $cmd_aref,
-        %args{qw(in out err)},
-        run3exit => $ret,
-        cmdexit  => [ $?, $! ]
+    my $res = BsxResult->new(
+        cmd    => $cmd_aref,
+        status => $?,
+        %args{qw(in out err)}
     );
 
-    if ( $args{err} && ${ $args{err} } || $ret != 1 ) {
-        $args{on_err} && ref $args{on_err} eq 'CODE'
-          ? $args{on_err}->( $ret, $args{err}, $args{out} )
-          : croak " > $ret: ${$args{err}}", $res;
-    }
-
-    $res;
+    my %ret = map { $_ => $res->$_ } $args{fields}->@*;
+    scalar %ret ? \%ret : $res;
 }
 
 method open_as_href : common ($in, %args) {
@@ -87,7 +177,7 @@ method open_as_href : common ($in, %args) {
         }
     }
 
-    warn Dumper($as_href) if $ENV{DEBUG};
+    dmsg $as_href;
     $as_href;
 }
 

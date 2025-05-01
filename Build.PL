@@ -31,6 +31,7 @@ my %args = (
 
     requires => {
         'Const::Fast' => '0',
+        'Const::Fast::Exporter' => '0',
         'Cwd' => '0',
         'DBD::SQLite' => '0',
         'DBI' => '0',

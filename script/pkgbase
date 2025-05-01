@@ -6,29 +6,56 @@ use Object::Pad qw(:experimental(:all));
 use lib 'lib';
 
 class Pkgbase
-  : isa(App::BS::CLI) : does(BS::Ext::pacman) : does(App::BS::CLI::Barearg);
+  : isa(App::BS::CLI) : does(BS::Ext::pacman) : does(App::BS::CLI::Barearg) :
+  does(App::BS::Common);
 
 use utf8;
 use v5.40;
 
-use List::Util qw(any uniqstr);
+use Carp;
+use IPC::Run3;
+use List::Util qw(any uniqstr all);
+use Syntax::Keyword::MultiSub;
 use Syntax::Keyword::Dynamically;
 use Syntax::Keyword::Try;
-use Data::Dumper;
-use Const::Fast;
-use IPC::Run3;
 use Const::Fast;
 
 const our $VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
+
 const our $VALID_PKG_RE_NB =>
 qr/[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+(\.so)|[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+/;
+
 const our $PACINFO_SO_PREFIX => qr/(?:lib\:)?/;
 const our $DEP_SO_RE         => qr/\.so/;
+
 const our $VALID_DEPIDEN_RE =>
   qr/$PACINFO_SO_PREFIX($VALID_PKG_RE_NB)(?:$DEP_SO_RE)?/;
-const our $DEP_ATTRSEP_RE => qr/(?:\=)|(?:[\<\>]\=?)|(?:(?:\:))|(?:\.)/;
+
+const our $DEP_ATTRSEP_RE => qr/(?:\=)|(?:[\<\>]\=?)|(?:(?:\:)|(?:[\.\-]{1}))/;
+
+const our $PKGVER_FORBIDDENCH => quotemeta(':/-') . '\s';
+const our $PKGVER_RE          => qr/[^$PKGVER_FORBIDDENCH]+/;
+
 const our $DEP_ATTR_RE =>
-  qr/^$VALID_DEPIDEN_RE(?:\s*($DEP_ATTRSEP_RE)\s*(.+))?\n?$/;
+  qr/^$VALID_DEPIDEN_RE(?:\s*($DEP_ATTRSEP_RE)(?:\s*)($PKGVER_RE|.+))?\n?$/;
+
+BS::Common::dmsg $DEP_ATTR_RE, $PKGVER_FORBIDDENCH, $PKGVER_RE,
+  $DEP_ATTRSEP_RE, $VALID_DEPIDEN_RE;
+
+method pacman_query : common ($str, %opts) {
+    const my $FILEDB_RE      => qr/files?/;
+    const my $REPOPKG_SEP_RE => qr/\//;
+
+    my $res =
+      $opts{database} && $opts{database} =~ $FILEDB_RE
+      ? BS::Ext::pacman->file_query($str)
+      : BS::Ext::pacman->pkg_query($str);
+
+    my $match = $res->out->[0];
+    chomp $match;
+
+    [ split /$REPOPKG_SEP_RE/, $match ];
+}
 
 method parse_pkgstr : common ($pkgstr, %opts) {
     my ( $depname, $soext, $sep, $attr ) = $pkgstr =~ $DEP_ATTR_RE;
@@ -49,17 +76,15 @@ method parse_pkgstr : common ($pkgstr, %opts) {
         }
     }
 
-    if ($soext) {
+    if ( $soext || $opts{file} ) {
         $pkgstub{file} //= $depname;
 
-        my $res   = BS::Ext::pacman->file_query($depname);
-        my $match = $res->out->[-1];
-        chomp $match;
-
-        ( $pkgstub{repo}, $pkgstub{name} ) = ( split /\//, $match );
+        @pkgstub{qw(repo name)} =
+          $class->pacman_query( $depname, database => 'file' )->@*;
     }
 
-    warn Dumper( { pkgstub => \%pkgstub } ) if $ENV{DEBUG};
+    BS::Common::dmsg( $depname, $soext, $sep, $attr, pkgstub => \%pkgstub )
+      if $ENV{DEBUG};
 
     \%pkgstub;
 }
@@ -111,7 +136,7 @@ method parse_pacinfo : common ($aref, %opts) {
             $$pacinfo_href{$key} = [ $$pacinfo_href{$key} ]
               if ref $$pacinfo_href{$key} ne 'ARRAY';
 
-            push $$pacinfo_href{$key}->@*, $val;
+            unshift $$pacinfo_href{$key}->@*, $val;
         }
         else {
             $$pacinfo_href{$key} = $val;
@@ -119,12 +144,6 @@ method parse_pacinfo : common ($aref, %opts) {
     }
 
     $pacinfo_href;
-}
-
-method pacinfo : common ($pkgname, %opts) {
-    my ( @out, $err );
-    run3 [ 'pacinfo', $pkgname ], \undef, \@out, \$err;
-    $class->parse_pacinfo( \@out, %opts );
 }
 
 method pkgbase : common ($pkgstr, %opts) {
@@ -141,6 +160,12 @@ method handle_barearg ($str) {
     }
 }
 
+method pacinfo : common ($pkgstr, %opts) {
+    my ( @out, $err );
+    run3 [ 'pacinfo', $pkgstr ], \undef, \@out, \$err;
+    $class->parse_pacinfo( \@out, %opts );
+}
+
 method run {
     my @pkgbase = ();
 
@@ -154,16 +179,40 @@ method run {
     state $altorder_re = qr/^($altorder|r).*/i;
 
     foreach my $pkgstr ( $self->queue->@* ) {
+        state $arch_ptn_str = $self->env->{arch}->@*;
+        const my $PKGARCH_RE => qr/$arch_ptn_str/;
+
+        const my $PKGVER_RE => qr/()/;
+
+        const my $PKGEXT_REGESC =>
+          quotemeta( $self->env->{pkgext} // $ENV{PKGEXT} );
+
+        const my $PKGEXT_RE => qr/$PKGEXT_REGESC$/i;
+
+        if ( $pkgstr =~ $PKGEXT_RE ) {
+            if ( my $pkgfile = BS::Path->if_exists($pkgstr) ) {
+                $pkgstr = $pkgfile->basename(
+                    ext => ( $self->env->{pkgext} // $ENV{PKGEXT} ) );
+            }
+            else {
+                const my $S_PKGSTR_ISFILE_404 =>
+                  "'$pkgstr' was provided as a package file but was not "
+                  . "found in the current working directory!";
+
+                carp $S_PKGSTR_ISFILE_404;
+
+                $pkgstr =~ s/$PKGEXT_RE//i;
+            }
+        }
+
         my $pkgstub = Pkgbase->parse_pkgstr( $pkgstr, $self->cliopts->%* );
         my $pkgbase = Pkgbase->pkgbase( $$pkgstub{name}, $self->cliopts->%* );
 
-        warn Dumper(
-            {
-                pkgstr  => "$pkgstr",
-                pkgstub => $pkgstub,
-                pkgbase => $pkgbase
-            }
-        ) if $self->debug;
+        BS::Common::dmsg {
+            pkgstr  => "$pkgstr",
+            pkgstub => $pkgstub,
+            pkgbase => $pkgbase
+        };
 
         push @pkgbase, $pkgbase;
     }

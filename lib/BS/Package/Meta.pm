@@ -7,6 +7,7 @@ use utf8;
 use v5.40;
 
 use Carp;
+use Const::Fast;
 use List::Util qw(any);
 use Data::Printer;
 use Struct::Dumb;
@@ -16,9 +17,11 @@ use BS::Ext::pacsift;
 use BS::Ext::pacinfo;
 use BS::Ext::pacman;
 
-use constant VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
-use constant VALID_PKG_RE_NB =>
-qr/[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+(\.so)|[${\VALID_PKG_RE_CCLASS_START}]{1}[${\VALID_PKG_RE_CCLASS_START}\.\-]+/;
+const my $VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
+const my $VALID_PKG_RE_NB => (
+    qr/[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+(\.so)
+    |[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+/
+);
 
 struct PkgDepends   => [qw(make optional check depends)];
 struct PkgChecksums => [qw(ck md5 sha1 sha256 sha512 b2)];
@@ -57,36 +60,16 @@ ADJUSTPARAMS($params) {
     #$self->_srcinfo_unpack_into
 }
 
-method _srcinfo_unpack_into {
-    if ( $srcinfo eq 'HASH' ) {
-
-        #my $meta = Object::Pad::MOP::Class->for_caller;
-
-        $base = $$srcinfo{pkgbase};
-        $name = $$srcinfo{pkgname};
-
-        $depends = PkgDepends();
-
-        #$checksums = PkgChecksums();
-        #...
-    }
-    elsif ($srcinfo) {
-        $srcinfo =
-          __CLASS__->parse_srcinfo( __CLASS__->prepare_file($srcinfo) );
-        $self->_srcinfo_unpack_into;
-    }
-}
-
 method resolve_base : common ($line, %args) {
-    use constant PACINFO_SO_PREFIX => qr/(?:lib\:)?/;
-    use constant DEP_SO_RE         => qr/\.so/;
-    use constant VALID_DEPIDEN_RE =>
-      qr/${\PACINFO_SO_PREFIX}(${\VALID_PKG_RE_NB})(?:${\DEP_SO_RE})?/;
-    use constant DEP_ATTRSEP_RE => qr/(?:\=)|(?:[\<\>]\=?)|(?:(?:\:))|(?:\.)/;
-    use constant DEP_ATTR_RE =>
-      qr/^${\VALID_DEPIDEN_RE}(?:\s*(${\DEP_ATTRSEP_RE})\s*(.+))?\n?$/;
+    const my $PACINFO_SO_PREFIX => qr/(?:lib\:)?/;
+    const my $DEP_SO_RE         => qr/\.so/;
+    const my $VALID_DEPIDEN_RE =>
+      qr/$PACINFO_SO_PREFIX($VALID_PKG_RE_NB)(?:$DEP_SO_RE)?/;
+    const my $DEP_ATTRSEP_RE => qr/(?:\=)|(?:[\<\>]\=?)|(?:(?:\:))|(?:\.)/;
+    const my $DEP_ATTR_RE =>
+      qr/^$VALID_DEPIDEN_RE(?:\s*($DEP_ATTRSEP_RE)\s*(.+))?\n?$/;
 
-    my ( $depname, $soext, $sep, $attr ) = $line =~ DEP_ATTR_RE;
+    my ( $depname, $soext, $sep, $attr ) = $line =~ $DEP_ATTR_RE;
     my %dep_pkgargs = ();
 
     $dep_pkgargs{name} = $depname;
@@ -129,7 +112,7 @@ method resolve_base : common ($line, %args) {
         catch ($e) {
             my $res = BS::Ext::pacman->pkg_query( $dep_pkgargs{name} );
 
-            warn np $res if $ENV{DEBUG};
+            BS::Common::dmsg $res;
             chomp $res->out->[-1];
 
             try {
@@ -185,12 +168,14 @@ method parse_srcinfo_line : common ($line, %args) {
     $_res_buff = $args{dest}
       if keys $args{dest}->%* && $args{dest} ne $_res_buff;
 
-    use constant SRCINFO_LINE_RE => qr/^([a-z0-9_]+)\s*=\s*(.+)\n?$/i;
+    const my $SRCINFO_LINE_RE => qr/^([a-z0-9_]+)\s*=\s*(.+)\n?$/i;
 
-    my ( $key, $val ) = ( $line =~ SRCINFO_LINE_RE );
+    my ( $key, $val ) = ( $line =~ $SRCINFO_LINE_RE );
     return undef unless $key && $val;
 
-    if ( $key =~ /depends/ ) {
+    const my $DEPKEY_ANY_RE => qr/depends/i;
+
+    if ( $key =~ $DEPKEY_ANY_RE ) {
         $val = $class->parse_dep( $val, %args );
     }
 

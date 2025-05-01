@@ -7,6 +7,9 @@ requires 'Cwd';
 
 use Cwd 'abs_path';
 
+requires 'Const::Fast';
+requires 'Const::Fast::Exporter';
+
 use Const::Fast;
 use Const::Fast::Exporter;
 
@@ -39,7 +42,6 @@ requires 'Struct::Dumb';
 requires 'Future::AsyncAwait';
 requires 'IO::Async';
 requires 'IO::Async::SSL';
-requires 'Const::Fast';
 requires 'File::chdir';
 requires 'Devel::CheckBin';
 

@@ -1,0 +1,32 @@
+#!/usr/bin/env perl;
+
+use Object::Pad qw(:experimental(:all));
+
+use lib 'lib';
+
+package archrebuildorder_findargs;
+
+class archrebuildorder_findargs : does(App::BS::Common) :
+  does(App::BS::CLI::Barearg);
+
+use utf8;
+use v5.40;
+
+field $queue : param;
+field %pkgin;
+
+method handle_barearg ($arg) {
+    my $arg_novcs = $arg =~ s/-git|-svn|-hg|-cvs//r;
+
+    if ($arg) {
+    }
+    ...;
+}
+
+package main;
+
+use utf8;
+use v5.40;
+
+our $aroFindArgs = archrebuildorder_findargs->new;
+$aroFindArgs->run;
