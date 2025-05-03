@@ -5,16 +5,17 @@ use Object::Pad qw(:experimental(:all));
 
 use lib 'lib';
 
-class Pkgbase
-  : isa(App::BS::CLI) : does(BS::Ext::pacman) : does(App::BS::CLI::Barearg) :
-  does(App::BS::Common);
+class Pkgbase : isa(App::BS::CLI) : does(BS::Common) : does(BS::Ext::pacman) :
+  does(App::BS::CLI::Barearg);
 
 use utf8;
 use v5.40;
 
+use subs 'dmsg';
+
 use Carp;
 use IPC::Run3;
-use List::Util qw(any uniqstr all);
+use List::Util qw(any uniqstr all first);
 use Syntax::Keyword::MultiSub;
 use Syntax::Keyword::Dynamically;
 use Syntax::Keyword::Try;
@@ -42,19 +43,22 @@ const our $DEP_ATTR_RE =>
 BS::Common::dmsg $DEP_ATTR_RE, $PKGVER_FORBIDDENCH, $PKGVER_RE,
   $DEP_ATTRSEP_RE, $VALID_DEPIDEN_RE;
 
-method pacman_query : common ($str, %opts) {
+method pacman_query : common ($pkgstr, %opts) {
     const my $FILEDB_RE      => qr/files?/;
-    const my $REPOPKG_SEP_RE => qr/\//;
+    const my $REPOPKG_SEP_RE => qr/(^[^\/]+)?\/($VALID_PKG_RE_NB[^\n])$/;
 
     my $res =
       $opts{database} && $opts{database} =~ $FILEDB_RE
-      ? BS::Ext::pacman->file_query($str)
-      : BS::Ext::pacman->pkg_query($str);
+      ? BS::Ext::pacman->file_query($pkgstr)
+      : BS::Ext::pacman->pkg_query($pkgstr);
 
-    my $match = $res->out->[0];
-    chomp $match;
+    BS::Common::dmsg( __PACKAGE__, $class, __SUB__, $res );
 
-    [ split /$REPOPKG_SEP_RE/, $match ];
+    my $match = first { $_ } $res->dest->@*;
+
+    #chomp $match;
+
+    #[ split /$REPOPKG_SEP_RE/, $match ];
 }
 
 method parse_pkgstr : common ($pkgstr, %opts) {
@@ -79,12 +83,22 @@ method parse_pkgstr : common ($pkgstr, %opts) {
     if ( $soext || $opts{file} ) {
         $pkgstub{file} //= $depname;
 
-        @pkgstub{qw(repo name)} =
-          $class->pacman_query( $depname, database => 'file' )->@*;
+        my $res = $class->pacman_query( $depname, database => 'file' );
+
+        $pkgstub{repo} = $$res{repo} if $$res{repo};
+        $pkgstub{name} = $$res{name} if $$res{name};
+
     }
 
-    BS::Common::dmsg( $depname, $soext, $sep, $attr, pkgstub => \%pkgstub )
-      if $ENV{DEBUG};
+    BS::Common::dmsg(
+        {
+            depname => $depname,
+            soext   => $soext,
+            sep     => $sep,
+            attr    => $attr,
+            pkgstub => \%pkgstub
+        }
+    ) if $BS::Common::DEBUG;
 
     \%pkgstub;
 }
@@ -99,12 +113,17 @@ method parse_pacinfo_line : common ($line, %opts) {
 
     return undef unless $key && $value;
 
+    BS::Common::dmsg {
+        key   => $key,
+        value => $value,
+        line  => $line,
+        opts  => \%opts
+    };
+
     $key = lc($key);
     $key =~ s/[^a-z0-9]+/_/;
 
-    $value = $class->pkgbase(
-        $class->parse_pkgstr( ref $value eq 'ARRAY' ? $$value[0] : $value ),
-        %opts )
+    $value = $class->pkgbase( $class->parse_pkgstr($value), %opts )->{name}
       if ( $opts{resolve_deps} // 0 ) && $key =~ $DEPKEY_RE;
 
     $key, $value;
@@ -208,13 +227,22 @@ method run {
         my $pkgstub = Pkgbase->parse_pkgstr( $pkgstr, $self->cliopts->%* );
         my $pkgbase = Pkgbase->pkgbase( $$pkgstub{name}, $self->cliopts->%* );
 
-        BS::Common::dmsg {
-            pkgstr  => "$pkgstr",
-            pkgstub => $pkgstub,
-            pkgbase => $pkgbase
-        };
+        if ( all { $_ } ( $pkgstub, $pkgbase ) ) {
+            push @pkgbase, $pkgbase;
+        }
+        else {
+            const my $S_RESOLVEERR =>
+              "Could not resolve package for '$pkgstr!'";
 
-        push @pkgbase, $pkgbase;
+            warn $S_RESOLVEERR;
+            BS::Common::dmsg(
+                {
+                    pkgstr  => "$pkgstr",
+                    pkgstub => $pkgstub,
+                    pkgbase => $pkgbase
+                }
+            );
+        }
     }
 
     @pkgbase = $self->cliopts->{unique} ? uniqstr @pkgbase : @pkgbase;

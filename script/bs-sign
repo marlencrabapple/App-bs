@@ -5,6 +5,8 @@ shopt -s nullglob
 [[ ${BS_DEBUG:-0} -ne 0 ]] && set -x;
 
 export scriptdir="${0//\/$(basename "$0")}"
+. "$scriptdir/bs-common.sh"
+
 export repodb="${BS_REPO:-$AURDIT_REPO}/universe.db.tar.zst"
 export repodb_base="$(basename $repodb)"
 export repodir="${repodb//$repodb_base/}"
@@ -23,6 +25,9 @@ _sign_rel_flow() {
   complete=()
 
   for f in "${files[@]}"; do
+    if [[ ! -e "$f" ]]; then
+        echo "Could not locate package file '$f'!! Skipping..."
+    fi
     for pkg in "${complete[@]}"; do
       [[ -z "${f//$pkg}" ]] && echo "[◎] Already signed '$f'. Skipping..." \
         && continue 2
@@ -32,7 +37,7 @@ _sign_rel_flow() {
     copy2repo "$f"
     repoadd "$f"
     err=$?
-    
+
     echo ""
     complete+=("$f")
   done
@@ -45,12 +50,19 @@ signpkg() {
   f="$1"
 
   if [[ -f "$f.sig" ]]; then
-    echo "[◎] Signature file already exists for '$f'. Skipping..."
+    echo "[◎] Signature file already exists for '$f'."
+    if [[ "$BS_CLOBBER" -ne 1 ]]; then
+      echo "Skipping..."
+    else
+        rm -r "$f.sig"
+        signpkg "$f"
+    fi
   else
     gpg -u "$gpgpubid" -sb "$f"
     gpgerr=$?
     [[ $gpgerr -eq 0 ]] \
-      && echo "[●] Signed '$f' with '$gpgpubid'"
+       && echo "[●] Signed '$f' with '$gpgpubid'"
+    fi
   fi
 
   return $gpgerr
@@ -58,20 +70,20 @@ signpkg() {
 
 copy2repo() {
   f="$1"
+  status=0
 
-  if [[ -f "$repodir/$(basename $f)" ]] && [[ $BS_CLOBBER -ne 1 ]]; then
+  if [[ -f "$repodir/$(basename $f)" ]] && [[ "$BS_CLOBBER" -ne 1 ]]; then
     printf "[◎] Package with identical filename '%s' already exists " \
       "$(basename "$f")"
-    
     printf "in repo '%s'. Skipping...\n" "$repodb"
   else
     cp -vaf "$f" "${f}.sig" "$repodir" 2>&1
-    cpstatus=$?
-    [[ $cpstatus -eq 0 ]] \
+    status=$?
+    [[ $status -eq 0 ]] \
       && echo "[●] Copied '$f' to repo '$repodir'..."
   fi
 
-  return $cpstatus
+  return $status
 }
 
 repoadd() {

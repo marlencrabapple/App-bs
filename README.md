@@ -9,7 +9,7 @@ Using BS in your own script:
 
         use ut8;
         use v5.40;
-        
+
         use BS;
         ...
 

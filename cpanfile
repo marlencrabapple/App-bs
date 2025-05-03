@@ -4,18 +4,15 @@ use utf8;
 use v5.40;
 
 requires 'Cwd';
-
 use Cwd 'abs_path';
 
 requires 'Const::Fast';
-requires 'Const::Fast::Exporter';
-
 use Const::Fast;
-use Const::Fast::Exporter;
 
 const our $PWD => abs_path;
 
 requires 'DBI';
+requires 'Const::Fast::Exporter';
 requires 'DBD::SQLite';
 requires 'DBIx::Connector';
 requires 'Inline';
@@ -45,16 +42,16 @@ requires 'IO::Async::SSL';
 requires 'File::chdir';
 requires 'Devel::CheckBin';
 
-requires 'Plack'
-  , dist => "CRABAPP/Plack-1.5003-TRIAL"
-  , url  => "file://$PWD/vendor/Plack-1.5003-TRIAL.tar.gz";
+# requires 'Plack'
+#   , dist => "CRABAPP/Plack-1.5003-TRIAL"
+#   , url  => "file://$PWD/vendor/Plack-1.5003-TRIAL.tar.gz";
 
 on 'test' => sub {
   requires 'Test::More', '0.98';
   requires 'Test::CPAN::Meta', '0.25',
   requires 'Test::PAUSE::Permissions';
   requires 'Test::Spellunker';
-  requires 'Test::MinimumVersion::Fast';
+  requires 'Test::MinimumVersion::Fast'
 };
 
 const our $DEV_PREREQS => sub {
@@ -68,7 +65,7 @@ const our $DEV_PREREQS => sub {
   requires 'Inline::C';
   requires 'Inline::MakeMaker';
   requires 'ExtUtils::MakeMaker';
-  requires 'Devel::StackTrace::WithLexicals', '2.01';
+  requires 'Devel::StackTrace::WithLexicals', '2.01'
 };
 
 on 'build' => $DEV_PREREQS;

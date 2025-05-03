@@ -9,18 +9,18 @@ use v5.40;
 use Carp;
 use IPC::Run3;
 use Tie::File;
-use List::AllUtils qw(singleton any);
-use Data::Dumper;
 use Const::Fast;
+use Time::Piece;
+use Data::Dumper;
+use List::AllUtils qw(any all first);
+use Syntax::Keyword::Try;
 use Const::Fast::Exporter;
 use Syntax::Keyword::Dynamically;
-use Syntax::Keyword::Try;
-use BS::Path;
-use Time::Piece;
 
-use subs qw(dmsg bsx callstack __pkgfn__ const );
+#use BS::Path;
 
-use parent 'Exporter';
+use subs qw(dmsg bsx callstack __pkgfn__ const);
+
 our @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
 
 const our $DEBUG   => ( any { $_ } @ENV{qw(BS_DEBUG DEBUG)} ) || 0;
@@ -47,10 +47,11 @@ my class BsxResult {
     field $inh : param(in) : reader = \undef;
     field $outh : param(out) : reader(out) //= \@out;
     field $errh : param(err) : reader //= \@err;
+    field $dest : param : reader   = $outh;
     field $status : param : reader = 0;
 
     ADJUST {
-        BS::Common::dmsg $self
+        BS::Common::dmsg($self)
     }
 };
 
@@ -59,6 +60,10 @@ field $debug : accessor : param = $DEBUG;
 APPLY {
     use utf8;
     use v5.40;
+    use subs qw(dmsg bsx callstack __pkgfn__ const);
+    our @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
+
+    use parent 'Exporter'
 }
 
 ADJUST {
@@ -88,6 +93,10 @@ method callstack : common {
     continue { $i++ }
 
     @callstack;
+}
+
+method alldef : common (@items) {
+    all { $_ } @items;
 }
 
 sub dmsg (@msgs) {
@@ -130,8 +139,7 @@ sub dmsg (@msgs) {
 method bsx : common ($cmd_aref, %args) {
     %args = ( in => undef, out => [], err => '' ) unless scalar keys %args;
 
-    dmsg "${class}::bsx([ '$$cmd_aref[0]', ... ], ...) args:";
-    dmsg $cmd_aref, %args;
+    dmsg { cmd => $cmd_aref, args => \%args };
 
     run3( $cmd_aref,
         map { ref $_ ? $_ : defined $_ ? \$_ : undef } @args{qw(in out err)} );
@@ -139,7 +147,7 @@ method bsx : common ($cmd_aref, %args) {
     my $res = BsxResult->new(
         cmd    => $cmd_aref,
         status => $?,
-        %args{qw(in out err)}
+        %args{qw(in out err dest)}
     );
 
     my %ret = map { $_ => $res->$_ } $args{fields}->@*;
@@ -148,7 +156,10 @@ method bsx : common ($cmd_aref, %args) {
 
 method open_as_href : common ($in, %args) {
     my ( $as_aref, $as_path );
-    my $as_href = delete $args{dest} // {};
+
+    # Is it 'out' or 'dest'?
+    #my $as_href = delete $args{dest} // {};
+    my $as_href = first { delete $args{$_} } qw(dest out);
 
     $as_aref = $class->tie_file( $in, dest => $as_href, %args );
 

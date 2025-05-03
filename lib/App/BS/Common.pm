@@ -18,8 +18,9 @@ use Syntax::Keyword::Dynamically;
 const our $DEFAULT_ENVPREFIXRE => qr/^(?:BS_)?(.+)/;
 const our $DEFAULT_CONFIGPATH  => '/etc/bs/config.toml';
 
-field $config_path : param(config) : accessor =
-  [ "BS::Path"->path($DEFAULT_CONFIGPATH) ];
+field $config_path : param(config) : mutator =
+  [ BS::Path->path($DEFAULT_CONFIGPATH) ];
+
 field $config;
 field $getopts_setup : param(getopts) : accessor;
 field $cliopts : param(dest) : mutator = {};

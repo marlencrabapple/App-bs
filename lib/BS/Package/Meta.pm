@@ -8,6 +8,7 @@ use v5.40;
 
 use Carp;
 use Const::Fast;
+use Const::Fast::Exporter;
 use List::Util qw(any);
 use Data::Printer;
 use Struct::Dumb;
@@ -17,8 +18,8 @@ use BS::Ext::pacsift;
 use BS::Ext::pacinfo;
 use BS::Ext::pacman;
 
-const my $VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
-const my $VALID_PKG_RE_NB => (
+const our $VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
+const our $VALID_PKG_RE_NB => (
     qr/[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+(\.so)
     |[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+/
 );
