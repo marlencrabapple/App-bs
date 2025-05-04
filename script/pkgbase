@@ -6,7 +6,7 @@ use Object::Pad qw(:experimental(:all));
 use lib 'lib';
 
 class Pkgbase : isa(App::BS::CLI) : does(BS::Common) : does(BS::Ext::pacman) :
-  does(App::BS::CLI::Barearg);
+  does(BS::Ext::expac) : does(App::BS::CLI::Barearg);
 
 use utf8;
 use v5.40;
@@ -52,48 +52,89 @@ method pacman_query : common ($pkgstr, %opts) {
       ? BS::Ext::pacman->file_query($pkgstr)
       : BS::Ext::pacman->pkg_query($pkgstr);
 
-    BS::Common::dmsg( __PACKAGE__, $class, __SUB__, $res );
+    #BS::Common::dmsg( __PACKAGE__, $class, __SUB__, $res );
 
-    my $match = first { $_ } $res->dest->@*;
+    my $match = first { $_ && $$_{pkgname} } $res->dest->@*;
+
+    BS::Common::dmsg { pkgstr => $pkgstr, match => $match, res => $res };
 
     #chomp $match;
 
     #[ split /$REPOPKG_SEP_RE/, $match ];
+    $match;
 }
 
 method parse_pkgstr : common ($pkgstr, %opts) {
-    my ( $depname, $soext, $sep, $attr ) = $pkgstr =~ $DEP_ATTR_RE;
+    const my $pkgstr_name_ptn => '[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
+    const my $pkgstr_name_re =>
+      qr/($pkgstr_name_ptn(\.so(?:\.[0-9]+)?)|$pkgstr_name_ptn)/;
+    const my $pkgver_forbidden => quotemeta(':/-') . '\s';
+
+    const my @pkgstr_re_arr => (
+        $pkgstr_name_re,
+        "(?:(\=|[\<\>]\=?)([^$pkgver_forbidden]+))?"
+          . '|(?:(:)\s*(.+))?'
+
+        #'([a-zA-Z0-9\@_\+]{1}',
+        #'[a-zA-Z0-9\@_\+\.\-]+',
+        #'(\.so)?)',    # $isfile, $pkgstr
+        #'(?:((?:\=)|(?:[\<\>]\=?))',    # $sep
+        #'([^$pkgver_forbidden]+)',      # $pkgver
+        #')|(?:(\:)\s*)(.+)',            # $sep, $desc
+    );
+
+    const my $pkgstr_re_str => join '', @pkgstr_re_arr;
+    const my $pkgstr_re => qr/$pkgstr_re_str/;
+
+    my ( $_pkgstr, $isfile, $sep, $attr, @extra ) = $pkgstr =~ $pkgstr_re;
+
+    BS::Common::dmsg {
+
+        #pkgstr_re_str => $pkgstr_re_str,
+        pkgstr_re => $pkgstr_re,
+
+        #pkgstr_re_arr => \@pkgstr_re_arr,
+        _pkgstr => $_pkgstr,
+        pkgstr  => $pkgstr,
+        isfile  => $isfile,
+        sep     => $sep,
+        attr    => $attr,
+        extra   => \@extra,
+        opts    => \%opts
+    };
+
+    #my ( $_pkgstr, $soext, $sep, $attr ) = $pkgstr =~ $DEP_ATTR_RE;
     my %pkgstub = ();
 
-    $pkgstub{name} = $depname;
+    $pkgstub{name} = $_pkgstr;
 
     if ($sep) {
         if ( $sep ne ':' ) {
             $pkgstub{version} = $attr;
             $pkgstub{cmp_op}  = $sep;
-            $pkgstub{file}    = $depname if $soext;
         }
         elsif ( $sep eq ':' ) {    # Optional dependency most likely
                                    # Will have parsed that out elsewhere
             $pkgstub{description} = $attr;
-            $pkgstub{name}        = $depname;
+            $pkgstub{name}        = $_pkgstr;
         }
     }
 
-    if ( $soext || $opts{file} ) {
-        $pkgstub{file} //= $depname;
+    if ( $isfile || $opts{database} && $opts{database} eq 'file' ) {
+        $pkgstub{file} //= $_pkgstr;
 
-        my $res = $class->pacman_query( $depname, database => 'file' );
+        my $res = $class->pacman_query( $_pkgstr, database => 'file' );
 
-        $pkgstub{repo} = $$res{repo} if $$res{repo};
-        $pkgstub{name} = $$res{name} if $$res{name};
+        BS::Common::dmsg { res => $res };
 
+        $pkgstub{repo} = $$res{repo}    if $$res{repo};
+        $pkgstub{name} = $$res{pkgname} if $$res{pkgname};
     }
 
     BS::Common::dmsg(
         {
-            depname => $depname,
-            soext   => $soext,
+            _pkgstr => $_pkgstr,
+            isfile  => $isfile,
             sep     => $sep,
             attr    => $attr,
             pkgstub => \%pkgstub
@@ -113,12 +154,12 @@ method parse_pacinfo_line : common ($line, %opts) {
 
     return undef unless $key && $value;
 
-    BS::Common::dmsg {
-        key   => $key,
-        value => $value,
-        line  => $line,
-        opts  => \%opts
-    };
+    #BS::Common::dmsg {
+    #    key   => $key,
+    #    value => $value,
+    #    line  => $line,
+    #    opts  => \%opts
+    #};
 
     $key = lc($key);
     $key =~ s/[^a-z0-9]+/_/;
@@ -166,8 +207,10 @@ method parse_pacinfo : common ($aref, %opts) {
 }
 
 method pkgbase : common ($pkgstr, %opts) {
-    my $base = $class->pacinfo( $pkgstr, %opts )->{base};
-    ref $base eq 'ARRAY' ? $$base[0] : $base;
+    my $base =
+      BS::Ext::expac->search( "^$pkgstr\$", %opts, fields => ['base'] )
+      ->dest->[0]{base};
+    $base;
 }
 
 method handle_barearg ($str) {
@@ -198,11 +241,6 @@ method run {
     state $altorder_re = qr/^($altorder|r).*/i;
 
     foreach my $pkgstr ( $self->queue->@* ) {
-        state $arch_ptn_str = $self->env->{arch}->@*;
-        const my $PKGARCH_RE => qr/$arch_ptn_str/;
-
-        const my $PKGVER_RE => qr/()/;
-
         const my $PKGEXT_REGESC =>
           quotemeta( $self->env->{pkgext} // $ENV{PKGEXT} );
 
@@ -227,9 +265,8 @@ method run {
         my $pkgstub = Pkgbase->parse_pkgstr( $pkgstr, $self->cliopts->%* );
         my $pkgbase = Pkgbase->pkgbase( $$pkgstub{name}, $self->cliopts->%* );
 
-        BS::Common::dmsg { pkgstub => $pkgstub, pkgbase => $pkgbase };
-
-        if ($pkgbase) {
+        if ( all { $_ } ( $pkgstub, $pkgbase ) ) {
+            BS::Common::dmsg { pkgbase => $pkgbase };
             push @pkgbase, $pkgbase;
         }
         else {
@@ -239,7 +276,7 @@ method run {
             warn $S_RESOLVEERR;
             BS::Common::dmsg(
                 {
-                    pkgstr  => "$pkgstr",
+                    pkgstr  => $pkgstr,
                     pkgstub => $pkgstub,
                     pkgbase => $pkgbase
                 }

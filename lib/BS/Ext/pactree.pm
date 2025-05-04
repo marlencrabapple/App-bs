@@ -13,8 +13,7 @@ use List::Util 'uniq';
 use Data::Printer;
 
 method list_deps : common ($pkgstr, %args) {
-    carp "${class}::list_deps('$pkgstr', ...) args:\n\n" . np %args
-      if $args{debug} // $ENV{DEBUG};
+    BS::Common::dmsg { pkgstr => $pkgstr, args => \%args };
 
     use constant DEFORDER_RE => qr/^asc.*/i;
 

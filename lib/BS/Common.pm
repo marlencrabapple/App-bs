@@ -45,13 +45,13 @@ my class BsxResult {
 
     field $cmd : param : reader;
     field $inh : param(in) : reader = \undef;
-    field $outh : param(out) : reader(out) //= \@out;
+    field $outh : param(out) : mutator(out) //= \@out;
     field $errh : param(err) : reader //= \@err;
-    field $dest : param : reader   = $outh;
+    field $dest : param : reader   = \@out;
     field $status : param : reader = 0;
 
     ADJUST {
-        BS::Common::dmsg($self)
+        BS::Common::dmsg { self => $self }
     }
 };
 
@@ -150,8 +150,9 @@ method bsx : common ($cmd_aref, %args) {
         %args{qw(in out err dest)}
     );
 
-    my %ret = map { $_ => $res->$_ } $args{fields}->@*;
-    scalar %ret ? \%ret : $res;
+    #my %ret = map { $_ => $res->$_ } $args{fields}->@*;
+    #   scalar %ret ? \%ret : $res;
+    $res;
 }
 
 method open_as_href : common ($in, %args) {

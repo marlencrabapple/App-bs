@@ -82,11 +82,14 @@ method query : common ($str, %args) {
     $args{dest} //= [];
     $args{now}  //= time;
 
-    carp np $str, %args if $ENV{DEBUG};
+    BS::Common::dmsg { str => $str, args => \%args };
 
     const my $pacman_query_outh => sub ( $line, @opts ) {
-        BS::Common::dmsg( $line, @opts );
-        if ( my ( $repo, $pkgname ) = $class->filter_output( $line, %args ) ) {
+        BS::Common::dmsg { line => $line, opts => \@opts };
+
+        if ( my ( $repo, $pkgname ) =
+            $class->filter_output( $line, %args )->@{qw(repo pkgstr)} )
+        {
             BS::Common::dmsg {
                 line   => $line,
                 args   => \%args,
