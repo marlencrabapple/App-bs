@@ -14,24 +14,24 @@ use Data::Printer;
 use Struct::Dumb;
 use Syntax::Keyword::MultiSub;
 
-use BS::Ext::pacsift;
-use BS::Ext::pacinfo;
-use BS::Ext::pacman;
-
 const our $VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
 const our $VALID_PKG_RE_NB => (
     qr/[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+(\.so)
     |[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+/
 );
 
+use BS::Ext::pacsift;
+use BS::Ext::pacinfo;
+use BS::Ext::pacman;
+
 struct PkgDepends   => [qw(make optional check depends)];
 struct PkgChecksums => [qw(ck md5 sha1 sha256 sha512 b2)];
 
-field $pkgname : param(name);
+#field $pkgname : param(name);
 
 #field $name = [ ref $pkgname eq 'ARRAY' ? $pkgname->@* : $pkgname ];
-field $name{ ref $pkgname eq 'ARRAY' ? $pkgname : [$pkgname] };
-field $base : param { $pkgname unless defined ref $pkgname };
+#field $name{ ref $pkgname eq 'ARRAY' ? $pkgname : [$pkgname] };
+#field $base : param { $pkgname unless defined ref $pkgname };
 
 field $depends : param   = undef;
 field $pkgver : param    = undef;
@@ -53,7 +53,7 @@ field @provides;
 field $options;
 field $checksums;
 
-field $srcinfo : param;
+#field $srcinfo : param;
 field $srcinfo_path;
 
 ADJUSTPARAMS($params) {

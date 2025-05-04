@@ -4,7 +4,7 @@ shopt -s nullglob
 
 [[ ${BS_DEBUG:-0} -ne 0 ]] && set -x;
 
-export scriptdir="${0//\/$(basename "$0")}"
+#export scriptdir="${0//\/$(basename "$0")}"
 . "$scriptdir/bs-common.sh"
 
 export repodb="${BS_REPO:-$AURDIT_REPO}/universe.db.tar.zst"
@@ -54,15 +54,14 @@ signpkg() {
     if [[ "$BS_CLOBBER" -ne 1 ]]; then
       echo "Skipping..."
     else
-        rm -r "$f.sig"
-        signpkg "$f"
+      rm -r "$f.sig"
+      signpkg "$f"
     fi
   else
     gpg -u "$gpgpubid" -sb "$f"
     gpgerr=$?
     [[ $gpgerr -eq 0 ]] \
        && echo "[●] Signed '$f' with '$gpgpubid'"
-    fi
   fi
 
   return $gpgerr

@@ -1,4 +1,4 @@
-use Object::Pad;
+use Object::Pad qw':experimental(:all)';
 
 package BS::Ext::pacinfo;
 role BS::Ext::pacinfo : does(BS::Package::Meta);

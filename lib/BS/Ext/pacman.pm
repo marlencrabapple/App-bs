@@ -1,7 +1,7 @@
 use Object::Pad;
 
 package BS::Ext::pacman;
-role BS::Ext::pacman : does(BS::Common);
+role BS::Ext::pacman : does(BS::Common) : does(BS::Package::Meta);
 
 use utf8;
 use v5.40;
@@ -13,8 +13,7 @@ use Data::Printer;
 use BS::Package::Meta;
 use List::Util 'any';
 
-const our $REPOPKG_STR_RE => qr/(^[^\/]+)?\/($VALID_PKG_RE_NB[^\n])$/;
-const our %DBPATTERN_MAP  => qw(package p(?:ac)?ka?ge? file file);
+const our %DBPATTERN_MAP => qw(package p(?:ac)?ka?ge? file file);
 const our $VALIDDB_RE => map { qr /^($_)$/i }
   ( join '|', values %DBPATTERN_MAP );
 
@@ -116,6 +115,9 @@ method query : common ($str, %args) {
 }
 
 method parse_line : common ( $line, %opts ) {
+    const my $REPOPKG_STR_RE =>
+      qr/(^[^\/]+)?\/($BS::Package::Meta::VALID_PKG_RE_NB[^\n])$/;
+
     chomp $line;
     my ( $repo, $pkgstr ) = $line =~ $REPOPKG_STR_RE;
 

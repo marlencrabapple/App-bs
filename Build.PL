@@ -53,7 +53,6 @@ my %args = (
         'Net::SSLeay' => '0',
         'Object::Pad' => '0',
         'Path::Tiny' => '0',
-        'Plack' => '0',
         'Pod::Usage' => '0',
         'Struct::Dumb' => '0',
         'Syntax::Keyword::Defer' => '0',

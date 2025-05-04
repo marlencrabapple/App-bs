@@ -227,12 +227,14 @@ method run {
         my $pkgstub = Pkgbase->parse_pkgstr( $pkgstr, $self->cliopts->%* );
         my $pkgbase = Pkgbase->pkgbase( $$pkgstub{name}, $self->cliopts->%* );
 
-        if ( all { $_ } ( $pkgstub, $pkgbase ) ) {
+        BS::Common::dmsg { pkgstub => $pkgstub, pkgbase => $pkgbase };
+
+        if ($pkgbase) {
             push @pkgbase, $pkgbase;
         }
         else {
             const my $S_RESOLVEERR =>
-              "Could not resolve package for '$pkgstr!'";
+              "Could not resolve package for '$pkgstr'!";
 
             warn $S_RESOLVEERR;
             BS::Common::dmsg(

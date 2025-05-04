@@ -1,0 +1,39 @@
+#!/usr/bin/env perl
+
+use utf8;
+use v5.40;
+
+use lib 'lib';
+
+use Data::Dumper;
+use IPC::Run3;
+
+if ( $ENV{DEBUG} ) {
+    warn Dumper( { argv => \@ARGV } );
+}
+
+my @out;
+my @overwrite = $ARGV[0] eq '-S' ? qw(--overwrite '*' --noconfirm) : ();
+
+my $ret = run3(
+    [ 'pacman', @overwrite, '--verbose', @ARGV ],
+    undef,
+
+    #sub { chomp $_[0]; say $_[0]; push @out, $_[0] },
+    #sub { chomp $_[0]; warn $_[0] }
+);
+
+my $status = $?;
+
+if ( $ENV{DEBUG} ) {
+    warn Dumper(
+        {
+            overwrite => \@overwrite,
+            status    => $status,
+            ret       => $ret,
+            out       => \@out
+        }
+    );
+}
+
+exit $status

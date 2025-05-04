@@ -1,7 +1,11 @@
 use Object::Pad qw(:experimental(:all));
 
 package App::BS;
-class App::BS :does(BS::Common);
+
+class App::BS : does(BS::Common);
+
+use utf8;
+use v5.40;
 
 use TOML::Tiny 'from_toml';
 use Const::Fast;
@@ -11,17 +15,17 @@ use Syntax::Keyword::Try;
 our $VERSION = "0.01";
 
 try {
-  use BS::Common;
-  use App::BS::Common;
-  my ($toml, $error) => from_toml($App::BS::defaultconfig_inline);
-  die $error if $error;
-  const our $config_default => $toml
+    use BS::Common;
+    use App::BS::Common;
+    my ( $toml, $error ) => from_toml($App::BS::defaultconfig_inline);
+    die $error if $error;
+    const our $config_default => $toml
 }
 catch ($e) {
-  BS::Common::dmsg $e
+    BS::Common::dmsg $e
 }
 
-our $defaultconfig_inline => <<'...';
+const our $defaultconfig_inline => <<'...';
 
 #
 # Default/Test Configuration Schema
