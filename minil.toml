@@ -12,7 +12,7 @@ requires_external_bin = [
     "pacsift",
     "arch-rebuild-order",
     "expac",
-    "mkchrootpkg",
+    "makechrootpkg",
     "makepkg",
     "gpg",
 ]

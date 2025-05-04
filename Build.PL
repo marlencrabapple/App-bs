@@ -20,6 +20,10 @@ check_bin('pacinfo');
 check_bin('pactree');
 check_bin('pacsift');
 check_bin('arch-rebuild-order');
+check_bin('expac');
+check_bin('makechrootpkg');
+check_bin('makepkg');
+check_bin('gpg');
 
 my %args = (
     license              => 'perl_5',
@@ -50,9 +54,11 @@ my %args = (
         'Inline::C' => '0',
         'JSON::MaybeXS' => '0',
         'List::AllUtils' => '0',
+        'Module::Build::XSUtil' => '0',
         'Net::SSLeay' => '0',
         'Object::Pad' => '0',
         'Path::Tiny' => '0',
+        'Plack' => '0',
         'Pod::Usage' => '0',
         'Struct::Dumb' => '0',
         'Syntax::Keyword::Defer' => '0',
@@ -87,7 +93,6 @@ my %args = (
         'Test::CPAN::Meta' => '0',
         'Test::MinimumVersion::Fast' => '0',
         'Test::More' => '0.98',
-        'Test::PAUSE::Permissions' => '0',
         'Test::Spellunker' => '0',
     },
 

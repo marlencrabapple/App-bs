@@ -41,15 +41,16 @@ requires 'IO::Async';
 requires 'IO::Async::SSL';
 requires 'File::chdir';
 requires 'Devel::CheckBin';
+requires 'Module::Build::XSUtil';
 
-# requires 'Plack'
-#   , dist => "CRABAPP/Plack-1.5003-TRIAL"
-#   , url  => "file://$PWD/vendor/Plack-1.5003-TRIAL.tar.gz";
+requires 'Plack'
+   , dist => "CRABAPP/Plack-1.5003-TRIAL"
+   , url  => "file://$PWD/vendor/Plack-1.5003-TRIAL.tar.gz";
 
 on 'test' => sub {
   requires 'Test::More', '0.98';
   requires 'Test::CPAN::Meta', '0.25',
-  requires 'Test::PAUSE::Permissions';
+  # requires 'Test::PAUSE::Permissions';
   requires 'Test::Spellunker';
   requires 'Test::MinimumVersion::Fast'
 };
