@@ -20,6 +20,7 @@ use Syntax::Keyword::MultiSub;
 use Syntax::Keyword::Dynamically;
 use Syntax::Keyword::Try;
 use Const::Fast;
+use DBD::SQLite;
 
 const our $VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
 
@@ -68,7 +69,7 @@ method parse_pkgstr : common ($pkgstr, %opts) {
     const my $pkgstr_name_ptn => '[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
 
     const my $pkgstr_name_re =>
-      qr/^(?:lib\:)?($pkgstr_name_ptn(\.so(?:\.[0-9]+)?)|$pkgstr_name_ptn)/;
+      qr/^(lib\:)?($pkgstr_name_ptn(\.so(?:\.[0-9]+)?)|$pkgstr_name_ptn)/;
 
     const my $pkgver_forbidden => quotemeta(':/-') . '\s';
 
@@ -198,9 +199,22 @@ method parse_pacinfo : common ($aref, %opts) {
 }
 
 method pkgbase : common ($pkgstr, %opts) {
+    const my $S_PKGBASE_PKGSTR_EMPTY =>
+      "Error: \$pkgstr cannot be undefined or empty!!";
+
+    BS::Common::dmsg {
+        err    => $S_PKGBASE_PKGSTR_EMPTY,
+        pkgstr => $pkgstr,
+        opts   => \%opts
+    };
+
+    warn $S_PKGBASE_PKGSTR_EMPTY
+      unless $pkgstr && $pkgstr !~ /^\s*$/;
+
     my $base =
       BS::Ext::expac->search( "^$pkgstr\$", %opts, fields => ['base'] )
       ->dest->[0]{base};
+
     $base;
 }
 
@@ -272,6 +286,9 @@ method run {
                     pkgbase => $pkgbase
                 }
             );
+
+            # pacsift --ownsfile "$pkgstr"
+            # expac -
         }
     }
 

@@ -14,6 +14,12 @@ use Syntax::Keyword::Try;
 
 our $VERSION = "0.01";
 
+method $import : common (@args) {...};
+
+ADJUSTPARAMS($params) {
+    __CLASS__->$import($params)
+};
+
 try {
     use BS::Common;
     use App::BS::Common;
@@ -22,11 +28,10 @@ try {
     const our $config_default => $toml
 }
 catch ($e) {
-    BS::Common::dmsg $e
+    BS::Common::dmsg { err => $e }
 }
 
 const our $defaultconfig_inline => <<'...';
-
 #
 # Default/Test Configuration Schema
 #
