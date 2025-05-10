@@ -1,9 +1,11 @@
-use Object::Pad;
+use Object::Pad ':experimental(:all)';
 
 package App::BS::pkgdepends;
 
-class App::BS::pkgdepends : isa(App::BS::CLI)
-  : does(BS::Ext::pactree);
+class App::BS::pkgdepends
+  : isa(App::BS::CLI)
+  : does(BS::Ext::pactree)
+  : does(BS::Ext::Common);
 
 use utf8;
 use v5.40;

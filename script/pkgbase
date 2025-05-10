@@ -1,12 +1,11 @@
 #!/usr/bin/env perl
-
-package pkgbase;
 use Object::Pad qw(:experimental(:all));
 
-use lib 'lib';
+package pkgbase;
 
-class Pkgbase : isa(App::BS::CLI) : does(BS::Common) : does(BS::Ext::pacman) :
-  does(BS::Ext::expac) : does(App::BS::CLI::Barearg);
+class Pkgbase : does(BS::Common) : does(BS::Ext::expac) : does(BS::Ext::pacman);
+
+use lib 'lib';
 
 use utf8;
 use v5.40;
@@ -20,7 +19,6 @@ use Syntax::Keyword::MultiSub;
 use Syntax::Keyword::Dynamically;
 use Syntax::Keyword::Try;
 use Const::Fast;
-use DBD::SQLite;
 
 const our $VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
 
@@ -53,8 +51,6 @@ method pacman_query : common ($pkgstr, %opts) {
       ? BS::Ext::pacman->file_query($pkgstr)
       : BS::Ext::pacman->pkg_query($pkgstr);
 
-    #BS::Common::dmsg( __PACKAGE__, $class, __SUB__, $res );
-
     my $match = first { $_ && $$_{pkgname} } $res->dest->@*;
 
     BS::Common::dmsg { pkgstr => $pkgstr, match => $match, res => $res };
@@ -84,16 +80,16 @@ method parse_pkgstr : common ($pkgstr, %opts) {
     my ( $prefix, $_pkgstr, $isfile, $sep, $attr, @extra ) =
       $pkgstr =~ $pkgstr_re;
 
-    BS::Common::dmsg {
-        pkgstr_re => $pkgstr_re,
-        _pkgstr   => $_pkgstr,
-        pkgstr    => $pkgstr,
-        isfile    => $isfile,
-        sep       => $sep,
-        attr      => $attr,
-        extra     => \@extra,
-        opts      => \%opts
-    };
+    #BS::Common::dmsg {
+    #    pkgstr_re => $pkgstr_re,
+    #    _pkgstr   => $_pkgstr,
+    #    pkgstr    => $pkgstr,
+    #    isfile    => $isfile,
+    #    sep       => $sep,
+    #    attr      => $attr,
+    #    extra     => \@extra,
+    #    opts      => \%opts
+    #};
 
     #my ( $_pkgstr, $soext, $sep, $attr ) = $pkgstr =~ $DEP_ATTR_RE;
     my %pkgstub = ();
@@ -117,7 +113,7 @@ method parse_pkgstr : common ($pkgstr, %opts) {
 
         my $res = $class->pacman_query( $_pkgstr, database => 'file' );
 
-        BS::Common::dmsg { res => $res };
+        #BS::Common::dmsg { res => $res };
 
         $pkgstub{repo} = $$res{repo}    if $$res{repo};
         $pkgstub{name} = $$res{pkgname} if $$res{pkgname};
@@ -145,13 +141,6 @@ method parse_pacinfo_line : common ($line, %opts) {
     } ( split /:/, $line, 2 );
 
     return undef unless $key && $value;
-
-    #BS::Common::dmsg {
-    #    key   => $key,
-    #    value => $value,
-    #    line  => $line,
-    #    opts  => \%opts
-    #};
 
     $key = lc($key);
     $key =~ s/[^a-z0-9]+/_/;
@@ -202,11 +191,11 @@ method pkgbase : common ($pkgstr, %opts) {
     const my $S_PKGBASE_PKGSTR_EMPTY =>
       "Error: \$pkgstr cannot be undefined or empty!!";
 
-    BS::Common::dmsg {
-        err    => $S_PKGBASE_PKGSTR_EMPTY,
-        pkgstr => $pkgstr,
-        opts   => \%opts
-    };
+    #BS::Common::dmsg {
+    #    err    => $S_PKGBASE_PKGSTR_EMPTY,
+    #    pkgstr => $pkgstr,
+    #    opts   => \%opts
+    #};
 
     warn $S_PKGBASE_PKGSTR_EMPTY
       unless $pkgstr && $pkgstr !~ /^\s*$/;
@@ -271,7 +260,8 @@ method run {
         my $pkgbase = Pkgbase->pkgbase( $$pkgstub{name}, $self->cliopts->%* );
 
         if ( all { $_ } ( $pkgstub, $pkgbase ) ) {
-            BS::Common::dmsg { pkgbase => $pkgbase };
+
+            #QBS::Common::dmsg { pkgbase => $pkgbase };
             push @pkgbase, $pkgbase;
         }
         else {

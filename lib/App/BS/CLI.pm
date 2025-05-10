@@ -1,8 +1,8 @@
-use Object::Pad;
+use Object::Pad ':experimental(:all)';
 
 package App::BS::CLI;
 
-class App::BS::CLI :isa(App::BS) :does(App::BS::Common)
+class App::BS::CLI : isa(App::BS) : does(App::BS::Common)
   : does(BS::alpm);
 
 use utf8;
@@ -37,7 +37,7 @@ ADJUSTPARAMS($params) {
     foreach my ( $name, $val ) ( $self->getopts_setup->@* ) {
         if ( $name eq '<>' && ref $val eq 'CODE' ) {
             push @handle_bareargs_arr, sub { $self->handle_barearg(@_) };
-            last
+            last;
         }
 
         push @_getopts_processed, grep { $_ } $name, $val;
@@ -51,7 +51,7 @@ ADJUSTPARAMS($params) {
 
     GetOptionsFromArray(
         $self->argv, $self->cliopts, @_getopts_processed,
-        '<>',  $bareword_handler,
+        '<>', $bareword_handler,
         "debug+",
         "version" => sub { Getopt::Long::VersionMessage(@_) },
         "help"    => sub { Getopt::Long::HelpMessage(@_) }

@@ -20,10 +20,6 @@ const our $VALID_PKG_RE_NB => (
     |[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+/
 );
 
-use BS::Ext::pacsift;
-use BS::Ext::pacinfo;
-use BS::Ext::pacman;
-
 struct PkgDepends   => [qw(make optional check depends)];
 struct PkgChecksums => [qw(ck md5 sha1 sha256 sha512 b2)];
 

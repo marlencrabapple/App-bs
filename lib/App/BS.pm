@@ -2,6 +2,8 @@ use Object::Pad qw(:experimental(:all));
 
 package App::BS;
 
+use constant VERSION => "0.01";
+
 class App::BS : does(BS::Common);
 
 use utf8;
@@ -12,9 +14,12 @@ use Const::Fast;
 use Const::Fast::Exporter;
 use Syntax::Keyword::Try;
 
-our $VERSION = "0.01";
+our $VERSION = VERSION;
 
-method $import : common (@args) {...};
+method $import : common (@args) {
+    use utf8;
+    use v5.40;
+};
 
 ADJUSTPARAMS($params) {
     __CLASS__->$import($params)

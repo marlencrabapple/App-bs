@@ -2,14 +2,13 @@
 
 use Object::Pad qw(:experimental(:all));
 
-use lib 'lib';
+package BSRebuildOrder;
 
-package archrebuildorder_findargs;
-
-class archrebuildorder_findargs : does(App::BS::Common) :
-  does(App::BS::CLI::Barearg);
+role BSRebuildOrder : does(App::BS::Common)
+  : does(App::BS::CLI::Barearg) : does(BS::Ext::pacman);
 
 use utf8;
+
 use v5.40;
 
 field $queue : param;
@@ -25,8 +24,13 @@ method handle_barearg ($arg) {
 
 package main;
 
+class mmain : does (BSRebuildOrder);
+
 use utf8;
 use v5.40;
 
-our $aroFindArgs = archrebuildorder_findargs->new;
-$aroFindArgs->run;
+method asdf : common () {
+
+}
+
+our $stripuniq = BSRebuildOrder->new;
