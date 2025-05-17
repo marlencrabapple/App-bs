@@ -20,6 +20,33 @@ const our $VALIDDB_RE => map { qr /^($_)$/i }
 
 field $sync;
 
+method $parse_line : common ( $line, %opts ) {
+    const my $REPOPKG_STR_RE =>
+      qr/(^[^\/]+)?\/($BS::Package::Meta::VALID_PKG_RE_NB[^\n])$/;
+
+    chomp $line;
+    my ( $repo, $pkgstr ) = $line =~ $REPOPKG_STR_RE;
+
+    #BS::Common::dmsg { line => $line, repo => $repo, pkgstr => $pkgstr };
+
+    my %ret = ( pkgstr => $pkgstr );
+    $ret{repo} = $repo if any { $_ eq 'repo' } $opts{fields}->@*;
+
+    #BS::Common::dmsg \%ret;
+
+    %ret;
+};
+
+method $filter_output : common ($line, %opts) {
+    if ( my %fields = ( $class->$parse_line( $line, %opts ) ) ) {
+
+        #BS::Common::dmsg \%fields;
+        return \%fields;
+    }
+
+    undef;
+};
+
 method db_valid : common (@list) {
     grep { $VALIDDB_RE } @list;
 }
@@ -85,12 +112,12 @@ method list_db_packages : common (%args) {
         in  => \undef,
         out => sub {
             state @dest = $args{dest} // [];
-            $class->parse_line(@_);
+            $class->$parse_line(@_);
         }
     );
 }
 
-method filter_foreign_unresolvable : common (\@pkgs, %args) {
+method filter_foreign_unresolvable : common ($pkg_aref, %args) {
 }
 
 method query : common ($str, %args) {
@@ -104,14 +131,8 @@ method query : common ($str, %args) {
         #BS::Common::dmsg { line => $line, opts => \@opts };
 
         if ( my ( $repo, $pkgname ) =
-            $class->filter_output( $line, %args )->@{qw(repo pkgstr)} )
+            $class->$filter_output( $line, %args )->@{qw(repo pkgstr)} )
         {
-            #BS::Common::dmsg {
-            #    line   => $line,
-            #    args   => \%args,
-            #    fields => { repo => $repo, pkgname => $pkgname }
-            #};
-
             push $args{dest}->@*, { repo => $repo, pkgname => $pkgname };
         }
     };
@@ -128,36 +149,7 @@ method query : common ($str, %args) {
         out => $pacman_query_outh
     );
 
-    #BS::Common::dmsg( $res, \%args );
-
     $res;
-}
-
-method parse_line : common ( $line, %opts ) {
-    const my $REPOPKG_STR_RE =>
-      qr/(^[^\/]+)?\/($BS::Package::Meta::VALID_PKG_RE_NB[^\n])$/;
-
-    chomp $line;
-    my ( $repo, $pkgstr ) = $line =~ $REPOPKG_STR_RE;
-
-    #BS::Common::dmsg { line => $line, repo => $repo, pkgstr => $pkgstr };
-
-    my %ret = ( pkgstr => $pkgstr );
-    $ret{repo} = $repo if any { $_ eq 'repo' } $opts{fields}->@*;
-
-    #BS::Common::dmsg \%ret;
-
-    %ret;
-}
-
-method filter_output : common ($line, %opts) {
-    if ( my %fields = ( $class->parse_line( $line, %opts ) ) ) {
-
-        #BS::Common::dmsg \%fields;
-        return \%fields;
-    }
-
-    undef;
 }
 
 const our @default_repo => qw(core extra multilib);

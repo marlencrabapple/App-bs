@@ -6,13 +6,14 @@ role BS::Path;
 
 use utf8;
 use v5.40;
-use lib 'lib';
 
 class Path {
-    use Path::Tiny;
-    use Data::Dumper;
+    use utf8;
+    use v5.40;
 
-    field $debug : param : mutator = $ENV{DEBUG};
+    use BS::Common;
+    use Path::Tiny;
+
     field $pathstr : param(path);
     field $_path : mutator($path);    #{ path($pathstr) };
 
@@ -21,8 +22,15 @@ class Path {
     }
 
     ADJUSTPARAMS($params) {
-        BS::Common::dmsg( $self, [ caller 0 ] );
+
         $_path = path($pathstr);
+        BS::Common::dmsg(
+            {
+                self     => $self,
+                params   => $params,
+                caller_0 => [ caller 0 ]
+            }
+        );
     };
 
     method exists {

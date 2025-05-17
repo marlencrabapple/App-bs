@@ -68,5 +68,7 @@ method search : common ( $pkgstr, %opts ) {
         %opts
     );
 
+    BS::Common::dmsg $res;
+
     $res;
 }

@@ -41,7 +41,6 @@ requires 'IO::Async';
 requires 'IO::Async::SSL';
 requires 'File::chdir';
 requires 'Devel::CheckBin';
-requires 'Module::Build::XSUtil';
 
 requires 'Plack'
    , dist => "CRABAPP/Plack-1.5003-TRIAL"
@@ -66,7 +65,8 @@ const our $DEV_PREREQS => sub {
   requires 'Inline::C';
   requires 'Inline::MakeMaker';
   requires 'ExtUtils::MakeMaker';
-  requires 'Devel::StackTrace::WithLexicals', '2.01'
+  requires 'Devel::StackTrace::WithLexicals', '2.01';
+  requires 'Module::Build::XSUtil';
 };
 
 on 'build' => $DEV_PREREQS;

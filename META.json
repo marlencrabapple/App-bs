@@ -36,6 +36,7 @@
             "Inline::MakeMaker" : "0",
             "Minilla" : "0",
             "Minilla::Profile::ModuleBuildTiny" : "0",
+            "Module::Build::XSUtil" : "0",
             "Perl::Critic" : "0",
             "Perl::Critic::Community" : "0",
             "Perl::Tidy" : "0"
@@ -58,6 +59,7 @@
             "Inline::MakeMaker" : "0",
             "Minilla" : "0",
             "Minilla::Profile::ModuleBuildTiny" : "0",
+            "Module::Build::XSUtil" : "0",
             "Perl::Critic" : "0",
             "Perl::Critic::Community" : "0",
             "Perl::Tidy" : "0",
@@ -90,7 +92,6 @@
             "Inline::C" : "0",
             "JSON::MaybeXS" : "0",
             "List::AllUtils" : "0",
-            "Module::Build::XSUtil" : "0",
             "Net::SSLeay" : "0",
             "Object::Pad" : "0",
             "Path::Tiny" : "0",

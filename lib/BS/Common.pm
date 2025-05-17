@@ -17,8 +17,6 @@ use Syntax::Keyword::Try;
 use Const::Fast::Exporter;
 use Syntax::Keyword::Dynamically;
 
-#use BS::Path;
-
 use subs qw(dmsg bsx callstack __pkgfn__ const);
 
 our @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
@@ -55,21 +53,24 @@ my class BsxResult {
     }
 };
 
-field $debug : accessor : param = $DEBUG;
+field $debug : mutator : param : inheritable = $DEBUG;
 
-APPLY {
+APPLY($mop) {
     use utf8;
     use v5.40;
+
+    use Object::Pad ':experimental(:all)';
+    use Const::Fast::Exporter;
+    use parent 'Exporter';
+
     use subs qw(dmsg bsx callstack __pkgfn__ const);
     our @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
-
-    use parent 'Exporter'
 }
 
 ADJUST {
     use utf8;
     use v5.40;
-    $ENV{DEBUG} = $debug = $self->cliopts->{debug} // $BS::Common::DEBUG
+    $ENV{DEBUG} = $debug = $BS::Common::DEBUG
 };
 
 method __pkgfn__ : common ($pkgname = undef) {

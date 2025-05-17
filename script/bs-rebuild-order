@@ -24,7 +24,7 @@ method handle_barearg ($arg) {
 
 package main;
 
-class mmain : does (BSRebuildOrder);
+class main : does (BSRebuildOrder);
 
 use utf8;
 use v5.40;

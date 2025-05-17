@@ -3,9 +3,13 @@ use Object::Pad qw(:experimental(:all));
 
 package pkgbase;
 
-class Pkgbase : does(BS::Common) : does(BS::Ext::expac) : does(BS::Ext::pacman);
-
 use lib 'lib';
+
+class pkgbase : isa(App::BS);
+
+#: does(BS::Ext::expac)
+#: does(BS::Ext::pacman)
+#: does(BS::Ext::User);
 
 use utf8;
 use v5.40;
@@ -19,6 +23,11 @@ use Syntax::Keyword::MultiSub;
 use Syntax::Keyword::Dynamically;
 use Syntax::Keyword::Try;
 use Const::Fast;
+
+use BS::Ext::expac;
+use BS::Ext::pacman;
+
+#use BS::Ext::pacinfo;
 
 const our $VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
 
@@ -62,12 +71,17 @@ method pacman_query : common ($pkgstr, %opts) {
 }
 
 method parse_pkgstr : common ($pkgstr, %opts) {
-    const my $pkgstr_name_ptn => '[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
+
+    # These are newer/more general versions of constants above/in other
+    # modules (currently, at least)
+    const my $pkgstr_name_ptn => qr'[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
 
     const my $pkgstr_name_re =>
       qr/^(lib\:)?($pkgstr_name_ptn(\.so(?:\.[0-9]+)?)|$pkgstr_name_ptn)/;
 
     const my $pkgver_forbidden => quotemeta(':/-') . '\s';
+
+    #const my $pkgver_delim     => qr'(?:(\=|[\<\>]\=?)';
 
     const my @pkgstr_re_arr => (
         $pkgstr_name_re,             '(?:(\=|[\<\>]\=?)',
@@ -75,23 +89,15 @@ method parse_pkgstr : common ($pkgstr, %opts) {
     );
 
     const my $pkgstr_re_str => join '', @pkgstr_re_arr;
-    const my $pkgstr_re => qr/$pkgstr_re_str/;
+
+    const my $pkgstr_re  => qr/@pkgstr_re_arr/;    # Not working...
+    const my $_pkgstr_re => qr/$pkgstr_re_str/;
+
+    BS::Common::dmsg { nojoin => $pkgstr_re, join => $_pkgstr_re };
 
     my ( $prefix, $_pkgstr, $isfile, $sep, $attr, @extra ) =
-      $pkgstr =~ $pkgstr_re;
+      $pkgstr =~ $_pkgstr_re;
 
-    #BS::Common::dmsg {
-    #    pkgstr_re => $pkgstr_re,
-    #    _pkgstr   => $_pkgstr,
-    #    pkgstr    => $pkgstr,
-    #    isfile    => $isfile,
-    #    sep       => $sep,
-    #    attr      => $attr,
-    #    extra     => \@extra,
-    #    opts      => \%opts
-    #};
-
-    #my ( $_pkgstr, $soext, $sep, $attr ) = $pkgstr =~ $DEP_ATTR_RE;
     my %pkgstub = ();
 
     $pkgstub{name} = $_pkgstr;
@@ -132,7 +138,7 @@ method parse_pkgstr : common ($pkgstr, %opts) {
     \%pkgstub;
 }
 
-method parse_pacinfo_line : common ($line, %opts) {
+method $parse_line : common ($line, %opts) {
     const my $DEPKEY_RE => qr/^(Requires|Optional Deps)$/i;
 
     my ( $key, $value ) = map {
@@ -149,13 +155,13 @@ method parse_pacinfo_line : common ($line, %opts) {
       if ( $opts{resolve_deps} // 0 ) && $key =~ $DEPKEY_RE;
 
     $key, $value;
-}
+};
 
-method parse_pacinfo : common ($aref, %opts) {
+method $parse_pacinfo : common ($aref, %opts) {
     const my @VALID_KEYS => qw(Name Base Repository);
 
     const my $VALID_KEY_RE => map { qr/^($_)$/i } join '|',
-      (@VALID_KEYS);
+    (@VALID_KEYS);
 
     my $pacinfo_href = {};
 
@@ -164,7 +170,7 @@ method parse_pacinfo : common ($aref, %opts) {
 
         $line =~ s/$BS::Common::TRIM_RE/$1/;
 
-        my ( $key, $val ) = $class->parse_pacinfo_line( $line, %opts );
+        my ( $key, $val ) = $class->$parse_line( $line, %opts );
 
         next unless $key && $val;
 
@@ -185,11 +191,11 @@ method parse_pacinfo : common ($aref, %opts) {
     }
 
     $pacinfo_href;
-}
+  }
 
-method pkgbase : common ($pkgstr, %opts) {
+  method pkgbase : common ($pkgstr, %opts) {
     const my $S_PKGBASE_PKGSTR_EMPTY =>
-      "Error: \$pkgstr cannot be undefined or empty!!";
+      "Error: \$pkgstr cannot be undefined or empty!";
 
     #BS::Common::dmsg {
     #    err    => $S_PKGBASE_PKGSTR_EMPTY,
@@ -219,7 +225,7 @@ method handle_barearg ($str) {
 method pacinfo : common ($pkgstr, %opts) {
     my ( @out, $err );
     run3 [ 'pacinfo', $pkgstr ], \undef, \@out, \$err;
-    $class->parse_pacinfo( \@out, %opts );
+    $class->$parse_pacinfo( \@out, %opts );
 }
 
 method run {
@@ -256,12 +262,10 @@ method run {
             }
         }
 
-        my $pkgstub = Pkgbase->parse_pkgstr( $pkgstr, $self->cliopts->%* );
-        my $pkgbase = Pkgbase->pkgbase( $$pkgstub{name}, $self->cliopts->%* );
+        my $pkgstub = __CLASS__->parse_pkgstr( $pkgstr, $self->cliopts->%* );
+        my $pkgbase = __CLASS__->pkgbase( $$pkgstub{name}, $self->cliopts->%* );
 
         if ( all { $_ } ( $pkgstub, $pkgbase ) ) {
-
-            #QBS::Common::dmsg { pkgbase => $pkgbase };
             push @pkgbase, $pkgbase;
         }
         else {
@@ -269,13 +273,11 @@ method run {
               "Could not resolve package for '$pkgstr'!";
 
             warn $S_RESOLVEERR;
-            BS::Common::dmsg(
-                {
-                    pkgstr  => $pkgstr,
-                    pkgstub => $pkgstub,
-                    pkgbase => $pkgbase
-                }
-            );
+            BS::Common::dmsg {
+                pkgstr  => $pkgstr,
+                pkgstub => $pkgstub,
+                pkgbase => $pkgbase
+            };
 
             # pacsift --ownsfile "$pkgstr"
             # expac -
@@ -303,7 +305,7 @@ package main;
 
 our @queue;
 
-my $app = Pkgbase->new(
+my $app = pkgbase->new(
     getopts => [
         "pkgbuild-repo|pkgmeta:s",            "seperator:s",
         "order|sort-direction|print-order:s", "optional|o:i",
@@ -315,4 +317,6 @@ my $app = Pkgbase->new(
     argv  => \@ARGV,
     dest  => \%opts,
     queue => \@queue
-)->run;
+);
+
+$app->run;

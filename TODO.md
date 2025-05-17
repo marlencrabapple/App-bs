@@ -2,6 +2,11 @@
 - [x] finish pkgbase.sh rewrite in perl
     - [ ] decide whether or fall back to or start with `expac` and `pacsift`
           rather than `pacinfo` abd `pacman` directly
+      - [ ] pass multiple packages to expac at once?
+          - [ ] figure out how to parse what we recieve back, hopefully it is
+                ordered the same as input so we can just break it up by space
+                or IFS in the case of multiple packages returned per input
+          - [ ] ...
     - [ ] (default?) package resolution rules:
         *** i have no idea what this table thingy is supposed to be based
             on, just coudln't stop aligning things once i started ***
@@ -17,8 +22,8 @@
                                  if $pkgstr =~ /.+\.so$/
                                   || $opt{owns_file} // 1
 
-            (4) satisfies .....     ->( $pkgstr )
-                                if $pkgstr =~ /.+\.so$/
+            (4) satisfies .....      ->( $pkgstr )
+                                 if $pkgstr =~ /.+\.so$/
                                   || $opt{satisfies} // 0
 
     - ~~don't use existing framework if its seriously a blocker~~ start
