@@ -30,6 +30,7 @@ requires 'File::chdir';
 requires 'IPC::Run3';
 requires 'IO::Socket::SSL';
 requires 'Net::SSLeay';
+requires 'List::Util';
 requires 'List::AllUtils';
 requires 'Path::Tiny';
 requires 'HTTP::Tinyish';
@@ -51,7 +52,8 @@ on 'test' => sub {
   requires 'Test::CPAN::Meta', '0.25',
   # requires 'Test::PAUSE::Permissions';
   requires 'Test::Spellunker';
-  requires 'Test::MinimumVersion::Fast'
+  requires 'Test::MinimumVersion::Fast';
+  requires 'Test::Pod'
 };
 
 const our $DEV_PREREQS => sub {

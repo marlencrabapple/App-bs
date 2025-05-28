@@ -54,6 +54,7 @@ my %args = (
         'Inline::C' => '0',
         'JSON::MaybeXS' => '0',
         'List::AllUtils' => '0',
+        'List::Util' => '0',
         'Net::SSLeay' => '0',
         'Object::Pad' => '0',
         'Path::Tiny' => '0',
@@ -93,6 +94,7 @@ my %args = (
         'Test::CPAN::Meta' => '0',
         'Test::MinimumVersion::Fast' => '0',
         'Test::More' => '0.98',
+        'Test::Pod' => '0',
         'Test::Spellunker' => '0',
     },
 
