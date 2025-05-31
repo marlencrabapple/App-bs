@@ -2,6 +2,7 @@
 
 [[ "${DEBUG:=0}" -eq 1 ]] && set -x
 
+<<<<<<< HEAD
 pkgbuild_dir="${BS_ROOT:=/bs}/pkgbuild"
 repo_container="${BS_ROOT:=/bs}/repo"
 pkgdest="${BS_ROOT:=/bs}/pkgdest"
@@ -11,9 +12,16 @@ fetch_aur_pkg() {
   pkgbase="$1"
   out="$(plenv shell system &&
     aur fetch -r "$pkgbase")"
+=======
+fetch_aur_pkg() {
+  pkgbase="$1"
+  out="$(
+    plenv shell system
+    aur fetch -r "$pkgbase"
+  )"
+>>>>>>> 0088bfc (script/pkgbuild-get: Retrieves/updates PKGBUILD repos in pacman.conf, AUR, and others)
   echo "$out"
-
-  return "${out[-1]}"
+  return "${out[*]:0:-1}"
 }
 
 get_update_pkgbuild() {
@@ -62,10 +70,15 @@ handle_pkgspec() {
 
   for pkgstr in "${pkgtree[@]}"; do
     local pkgbase_found=($(expac -Ss '%e' "$pkgstr"))
+<<<<<<< HEAD
     local pkgbase="${pkgbase_found[*]:0:1}"
+=======
+    local pkgbase="${pkgbase_found[*]:0:1})"
+>>>>>>> 0088bfc (script/pkgbuild-get: Retrieves/updates PKGBUILD repos in pacman.conf, AUR, and others)
 
-    #cd "$pkg" || continue # Superflous directory check
     get_update_pkgbuild "$pkgbase"
+
+    cd "$pkg" || continue # Superflous directory check
 
     branches=($(git branch --all))
     curr_branch="${branches[*]:0:1}"
@@ -92,7 +105,7 @@ handle_pkgspec() {
 
       git push "$curr_branch"
     done
-    cd "$pkgbuild_dir" || <&2 echo "Failed to change directory"
+    cd ".." #|| <&2 echo "Failed to change directory"
   done
 }
 
