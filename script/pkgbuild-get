@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -x
+for pkgstr in "$@"; do
+  for pkgbase in $(expac -Ss '%e' "$pkgstr"); do
+    if [[ ! -d "$pkg" ]]; then
+      pkgctl repo clone --protocol=https "$pkg"
+      continue
+    fi
+
+    cd "$pkg"
+
+    branches=($(git branch --all))
+    curr_branch="${branches[*]:0:1}"
+    new_branch="$curr_branch-$(date +%s)"
+    git switch -c "$new_branch"
+    git add -A
+    git commit -S -m "Unsynced changes pre-rebase and rebuild"
+    git push "$new_branch"
+
+    for branch in "${branches[@]}"; do
+      [[ -z "${branch//main|master/}" ]] || continue
+
+      git switch "$curr_branch"
+      git pull "$branch" --rebase
+      err="$?"
+
+      while [[ "${err:0}" -ne 0 ]]; do
+        git mergetool
+        err=$?
+        git rebase --continue
+        err=$?
+      done
+
+      git push "$curr_branch"
+    done
+    cd ".." || <&2 echo "Failed to change directory"
+  done
+done
