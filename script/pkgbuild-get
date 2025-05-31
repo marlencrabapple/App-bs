@@ -2,6 +2,11 @@
 
 [[ "${DEBUG:=0}" -eq 1 ]] && set -x
 
+pkgbuild_dir="${BS_ROOT:=/bs}/pkgbuild"
+repo_container="${BS_ROOT:=/bs}/repo"
+pkgdest="${BS_ROOT:=/bs}/pkgdest"
+logdir="${BS_ROOT:=/bs}/log"
+
 fetch_aur_pkg() {
   pkgbase="$1"
   out="$(plenv shell system &&
