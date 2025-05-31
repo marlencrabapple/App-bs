@@ -1,0 +1,40 @@
+<SOFTPKG NAME="App-BS" VERSION="0.01">
+    <ABSTRACT>Build system for PKGBUILD based Linux distributions</ABSTRACT>
+    <AUTHOR>Ian P Bradley E&lt;lt&gt;ian.bradley@studiocrabapple.comE&lt;gt&gt;</AUTHOR>
+    <IMPLEMENTATION>
+        <REQUIRE NAME="Const::Fast" VERSION="0" />
+        <REQUIRE NAME="Const::Fast::Exporter" VERSION="0" />
+        <REQUIRE NAME="Cwd::" VERSION="0" />
+        <REQUIRE NAME="DBD::SQLite" VERSION="0" />
+        <REQUIRE NAME="DBI::" VERSION="0" />
+        <REQUIRE NAME="DBIx::Connector" VERSION="0" />
+        <REQUIRE NAME="Data::Printer" VERSION="0" />
+        <REQUIRE NAME="Devel::CheckBin" VERSION="0" />
+        <REQUIRE NAME="File::ShareDir" VERSION="1.00" />
+        <REQUIRE NAME="File::chdir" VERSION="0" />
+        <REQUIRE NAME="Future::AsyncAwait" VERSION="0" />
+        <REQUIRE NAME="Getopt::Long" VERSION="0" />
+        <REQUIRE NAME="HTTP::Tinyish" VERSION="0" />
+        <REQUIRE NAME="IO::Async" VERSION="0" />
+        <REQUIRE NAME="IO::Async::SSL" VERSION="0" />
+        <REQUIRE NAME="IO::Socket::SSL" VERSION="0" />
+        <REQUIRE NAME="IPC::Run3" VERSION="0" />
+        <REQUIRE NAME="Inline::" VERSION="0" />
+        <REQUIRE NAME="Inline::C" VERSION="0" />
+        <REQUIRE NAME="JSON::MaybeXS" VERSION="0" />
+        <REQUIRE NAME="List::AllUtils" VERSION="0" />
+        <REQUIRE NAME="Module::Build::XSUtil" VERSION="0" />
+        <REQUIRE NAME="Net::SSLeay" VERSION="0" />
+        <REQUIRE NAME="Object::Pad" VERSION="0" />
+        <REQUIRE NAME="Path::Tiny" VERSION="0" />
+        <REQUIRE NAME="Plack::" VERSION="0" />
+        <REQUIRE NAME="Pod::Usage" VERSION="0" />
+        <REQUIRE NAME="Struct::Dumb" VERSION="0" />
+        <REQUIRE NAME="Syntax::Keyword::Defer" VERSION="0" />
+        <REQUIRE NAME="Syntax::Keyword::Dynamically" VERSION="0" />
+        <REQUIRE NAME="Syntax::Keyword::MultiSub" VERSION="0" />
+        <REQUIRE NAME="Syntax::Keyword::Try" VERSION="0" />
+        <REQUIRE NAME="TOML::Tiny" VERSION="0" />
+        <CODEBASE HREF="PPM-App-BS-0.01.tar.gz" />
+    </IMPLEMENTATION>
+</SOFTPKG>
