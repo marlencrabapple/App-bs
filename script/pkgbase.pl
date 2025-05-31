@@ -22,7 +22,8 @@ const our $type_re => qr/(?:(lib)\:)?/;
 const our %sep_re => ( ver => qr/(\=|[\<\>]\=?)/, dssc => qr/(:\s*(.+))?/ );
 const our $not_pkgver_rew => quotemeta(':/-') . '\s';
 
-const our $fpath_re => qr/^(?:\/)?([a-zA-Z0-9\@_\+\.\+]+\/)?([a-zA-Z0-9\@_\+\.\+]+)$/;
+const our $fpath_re =>
+  qr/^(?:\/)?([a-zA-Z0-9\@_\+\.\+]+\/)?([a-zA-Z0-9\@_\+\.\+]+)$/;
 
 # Apppends pkgname (cmpop, ver, description)
 
@@ -40,7 +41,7 @@ sub handle_run3_out ( $in, %opts ) {
     push $opts{out}->@*, expac_parse_line( $in, %opts );
 }
 
-sub parse_pkgline ($pkgstr, %opts) {
+sub parse_pkgline ( $pkgstr, %opts ) {
 
 }
 
@@ -72,4 +73,9 @@ foreach my $arg (@ARGV) {
 
 printf "%s\n", join ' ', @pkg;
 
-warn Dumper(argv => \@ARGV, pkg => \@pkg, diff => (List::Util::uniqstr @ARGV, @pkg)) if $DEBUG
+warn Dumper(
+    argv => \@ARGV,
+    pkg  => \@pkg,
+    diff => ( List::Util::uniqstr @ARGV, @pkg )
+  )
+  if $DEBUG
