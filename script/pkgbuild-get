@@ -4,10 +4,8 @@
 
 fetch_aur_pkg() {
   pkgbase="$1"
-  out="$(
-    plenv shell system
-    aur fetch -r "$pkgbase"
-  )"
+  out="$(plenv shell system &&
+    aur fetch -r "$pkgbase")"
   echo "$out"
   return "${out[*]:0:-1}"
 }
@@ -49,7 +47,7 @@ handle_pkgspec() {
   # FIX ME: First result is probably what we want unless the user declares
   # otherwise in the current local git config or a bs-repo-conf.toml file in
   # the repo root
-  pkgbase_found=($(expac -Ss '%e' "$pkgspec"))
+  pkgbase_found=("$(expac -Ss '%e' "$pkgspec")")
   pkgbase=("${pkgbase_found[*]:0:1}")
 
   # Fairly sure pactree includes the provided pkgspec compliant string in the
