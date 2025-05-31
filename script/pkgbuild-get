@@ -4,10 +4,8 @@
 
 fetch_aur_pkg() {
   pkgbase="$1"
-  out="$(
-    plenv shell system
-    aur fetch -r "$pkgbase"
-  )"
+  out="$(plenv shell system &&
+    aur fetch -r "$pkgbase")"
   echo "$out"
   return "${out[*]:0:-1}"
 }
@@ -58,7 +56,7 @@ handle_pkgspec() {
 
   for pkgstr in "${pkgtree[@]}"; do
     local pkgbase_found=($(expac -Ss '%e' "$pkgstr"))
-    local pkgbase="${pkgbase_found[*]:0:1})"
+    local pkgbase="${pkgbase_found[*]:0:1}"
 
     get_update_pkgbuild "$pkgbase"
 
