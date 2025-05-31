@@ -10,8 +10,12 @@ use Const::Fast;
 use Data::Dumper;
 use List::Util 'uniq';
 
-our $DEBUG        = $ENV{DEBUG}        // 0;
-our $SHORTCIRCUIT = $ENV{SHORTCIRCUIT} // 0;
+use BS::Common;
+use BS::Ext::pacman;
+use BS::Ext::expac;
+
+our $DEBUG        => $ENV{DEBUG}        // 0;
+our $SHORTCIRCUIT => $ENV{SHORTCIRCUIT} // 0;
 
 const our $pkgnamebase_re => qr/[:a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\+]+/;
 
@@ -41,8 +45,72 @@ sub handle_run3_out ( $in, %opts ) {
     push $opts{out}->@*, expac_parse_line( $in, %opts );
 }
 
-sub parse_pkgline ( $pkgstr, %opts ) {
+sub parse_pkgstr ( $pkgstr, %opts ) {
 
+    # These are newer/more general versions of constants above/in other
+    # modules (currently, at least)
+    const my $pkgstr_name_ptn => qr'[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
+
+    const my $pkgstr_name_re =>
+      qr/^(lib\:)?($pkgstr_name_ptn(\.so(?:\.[0-9]+)?)|$pkgstr_name_ptn)/;
+
+    const my $pkgver_forbidden => quotemeta(':/-') . '\s';
+
+    #const my $pkgver_delim     => qr'(?:(\=|[\<\>]\=?)';
+
+    const my @pkgstr_re_arr => (
+        $pkgstr_name_re,             '(?:(\=|[\<\>]\=?)',
+        "([^$pkgver_forbidden]+))?", '|(?:(:)\s*(.+))?'
+    );
+
+    const my $pkgstr_re_str => join '', @pkgstr_re_arr;
+
+    const my $pkgstr_re  => qr/@pkgstr_re_arr/;    # Not working...
+    const my $_pkgstr_re => qr/$pkgstr_re_str/;
+
+    #:wqwarn np nojoin => $pkgstr_re join => $_pkgstr_re if $DEBUG;
+
+    my ( $prefix, $_pkgstr, $isfile, $sep, $attr, @extra ) =
+      $pkgstr =~ $_pkgstr_re;
+
+    my %pkgstub = ();
+
+    $pkgstub{name} = $_pkgstr;
+
+    if ($sep) {
+        if ( $sep ne ':' ) {
+            $pkgstub{version} = $attr;
+            $pkgstub{cmp_op}  = $sep;
+        }
+        elsif ( $sep eq ':' ) {    # Optional dependency most likely
+                                   # Will have parsed that out elsewhere
+            $pkgstub{description} = $attr;
+            $pkgstub{name}        = $_pkgstr;
+        }
+    }
+
+    if ( $isfile || $opts{database} && $opts{database} eq 'file' ) {
+        $pkgstub{file} //= $_pkgstr;
+
+        my $res = BS::Ext::pacman->pacman_query( $_pkgstr, database => 'file' );
+
+        #BS::Common::dmsg { res => $res };
+
+        $pkgstub{repo} = $$res{repo}    if $$res{repo};
+        $pkgstub{name} = $$res{pkgname} if $$res{pkgname};
+    }
+
+    BS::Common::dmsg(
+        {
+            _pkgstr => $_pkgstr,
+            isfile  => $isfile,
+            sep     => $sep,
+            attr    => $attr,
+            pkgstub => \%pkgstub
+        }
+    ) if $BS::Common::DEBUG;
+
+    \%pkgstub;
 }
 
 foreach my $arg (@ARGV) {

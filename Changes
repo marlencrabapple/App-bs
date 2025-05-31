@@ -2,5 +2,10 @@ Revision history for Perl extension App-BS
 
 {{$NEXT}}
 
-    - original version
+0 2025-06-01T04:23:00Z
+    - ... 
 
+0 2025-06-01T04:17:38Z
+
+    - not so first version
+    - port aurdit code to Perl and rewrite most existing shell
