@@ -50,7 +50,6 @@ requires 'Plack'
 on 'test' => sub {
   requires 'Test::More', '0.98';
   requires 'Test::CPAN::Meta', '0.25',
-  # requires 'Test::PAUSE::Permissions';
   requires 'Test::Spellunker';
   requires 'Test::MinimumVersion::Fast';
   requires 'Test::Pod'
