@@ -72,4 +72,4 @@ foreach my $arg (@ARGV) {
 
 printf "%s\n", join ' ', @pkg;
 
-warn Dumper(argv => \@ARGV, pkg => \@pkg, diff => (List::Util::uniq @ARGV, @pkg))
+warn Dumper(argv => \@ARGV, pkg => \@pkg, diff => (List::Util::uniqstr @ARGV, @pkg)) if $DEBUG

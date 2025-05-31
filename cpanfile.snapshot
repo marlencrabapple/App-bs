@@ -72,7 +72,7 @@ DISTRIBUTIONS
       Try::Tiny 0
       Types::Standard 0
       feature 0
-      perl v5.18.0
+      perl 5.018000
       strict 0
       utf8 0
       warnings 0
@@ -3044,6 +3044,17 @@ DISTRIBUTIONS
       parent 0
       perl 5.008005
       version 0.70
+  Test-Pod-1.52
+    pathname: E/ET/ETHER/Test-Pod-1.52.tar.gz
+    provides:
+      Test::Pod 1.52
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Find 0
+      Pod::Simple 3.05
+      Test::Builder::Tester 1.02
+      Test::More 0.62
+      perl 5.008
   Test-SharedFork-0.35
     pathname: E/EX/EXODIST/Test-SharedFork-0.35.tar.gz
     provides:
