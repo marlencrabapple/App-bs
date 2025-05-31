@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+[[ "${DEBUG:=0}" -eq 1 ]] && set -x
+
+fetch_aur_pkg() {
+  pkgbase="$1"
+  out="$(
+    plenv shell system
+    aur fetch -r "$pkgbase"
+  )"
+  echo "$out"
+  return "${out[*]:0:-1}"
+}
+
+get_update_pkgbuild() {
+  pkgbase="$1"
+
+  if [[ ! -d "$pkgbase" ]]; then
+    pkgctl repo clone --protocol=https "$pkgbase"
+    err="$?"
+
+    [[ "${err:=0}" -eq 0 ]] && return 0
+
+    echo &
+    2 "Failed to fetch '$pkgbase' from Arch Official Repository mirror"
+
+    err=$(fetch_aur_pkg "$pkgbase")
+
+    if [[ "$err" -ne 0 ]]; then
+      echo &
+      2 "Failed to fetch '$pkgbase' from AUR"
+
+      for repo in "${BS_REPOS[@]}"; do
+        git clone "$BS_USERREPO_BASE_URI/$repo/$pkgbase.git"
+        err="$?"
+
+        if [[ "${err:=0}" -ne 0 ]]; then
+          echo &
+          2 "Failed to clone '$pkgbase' from user added repo '$repo"
+        fi
+      done
+    fi
+  fi
+}
+
+handle_pkgspec() {
+  local pkgspec="$1"
+
+  # FIX ME: First result is probably what we want unless the user declares
+  # otherwise in the current local git config or a bs-repo-conf.toml file in
+  # the repo root
+  pkgbase_found=($(expac -Ss '%e' "$pkgspec"))
+  pkgbase=("${pkgbase_found[*]:0:1}")
+
+  # Fairly sure pactree includes the provided pkgspec compliant string in the
+  # results...
+  pkgtree=($(pactree -lus "$pkgbase"))
+
+  for pkgstr in "${pkgtree[@]}"; do
+    local pkgbase_found=($(expac -Ss '%e' "$pkgstr"))
+    local pkgbase="${pkgbase_found[*]:0:1})"
+
+    get_update_pkgbuild "$pkgbase"
+
+    cd "$pkg" || continue # Superflous directory check
+
+    branches=($(git branch --all))
+    curr_branch="${branches[*]:0:1}"
+    new_branch="$curr_branch-$(date +%s)"
+    git switch -c "$new_branch"
+    git add -A
+    git commit -S -m "Unsynced changes pre-rebase and rebuild"
+    git push "$new_branch"
+
+    for branch in "${branches[@]}"; do
+      [[ -z "${branch//main|master/}" ]] || continue
+
+      git switch "$curr_branch"
+      git pull "$branch" --rebase
+      err="$?"
+
+      while [[ "${err:0}" -ne 0 ]]; do
+        git mergetool
+        err="$?"
+        git rebase --continue
+        err=$?
+      done
+
+      git push "$curr_branch"
+    done
+    cd ".." #|| <&2 echo "Failed to change directory"
+  done
+}
+
+for pkgspec in "$@"; do
+  handle_pkgspec "$pkgspec"
+done
