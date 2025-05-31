@@ -47,7 +47,7 @@ handle_pkgspec() {
   # FIX ME: First result is probably what we want unless the user declares
   # otherwise in the current local git config or a bs-repo-conf.toml file in
   # the repo root
-  pkgbase_found=("$(expac -Ss '%e' "$pkgspec")")
+  pkgbase_found=($(expac -Ss '%e' "$pkgspec"))
   pkgbase=("${pkgbase_found[*]:0:1}")
 
   # Fairly sure pactree includes the provided pkgspec compliant string in the
@@ -56,7 +56,7 @@ handle_pkgspec() {
 
   for pkgstr in "${pkgtree[@]}"; do
     local pkgbase_found=($(expac -Ss '%e' "$pkgstr"))
-    local pkgbase="${pkgbase_found[*]:0:1})"
+    local pkgbase="${pkgbase_found[*]:0:1}"
 
     get_update_pkgbuild "$pkgbase"
 
