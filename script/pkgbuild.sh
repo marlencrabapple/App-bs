@@ -1,374 +1,185 @@
 #!/usr/bin/env bash
 
-shopt -s nullglob
-
-dbgmode="${BS_DEBUG:-PB_DEBUG}"
-
-[[ -n "$dbgmode" ]] && set -x;
-[[ -n "$PB_PKGSYNC" ]] && sudo pacman -Syy;
-
-arch_pkgbuildrepo_uri="https://gitlab.archlinux.org/archlinux/packaging/packages"
-
-aur_repo_uri="https://aur.archlinux.org/"
-
-default_repo="${PB_PKGDEST_REPO:-universe}"
-default_carch="${PB_CARCH:-${CARCH:-x86_64}}"
-default_targetdir="$HOME/.local/share/bs/etc/default/target"
-default_target="${PB_TARGET:-default}"
-default_triple="${PB_TRIPLE:-"$default_repo-$default_carch-$default_target"}"
-
-targetdir="${PB_TARGETDIR:-${BS_TARGETDIR:-$default_targetdir}}"
-targets=("$targetdir"/*)
-
-if [[ ! -z "$dbgmode" ]]; then
-  echo "\$targets: ${targets[*]}";
-  echo "\$BS_TARGETDIR\[*\]: ${BS_TARGETDIR[*]}"
+scriptdir="${0//\/$(basename "$0")/}"
+if [[ -f "$scriptdir/bs-common.sh" ]]; then
+  . "$scriptdir/bs-common.sh"
+else
+  echo "Error: Required file bs-common.sh not found in $scriptdir" >&2
+  exit 1
 fi
 
-[[ ${#targets[*]} -eq 0 ]] \
-  && targets=("$HOME/.local/share/bs/target/$default_triple")
+[[ "${DEBUG:=0}" -eq 1 ]] && set -x
 
-printy() {
-  echo "y"
+startdir="$(pwd)"
+arch_packaging_repo_base="https://gitlab.archlinux.org/archlinux/packaging/packages"
+
+pkgbuild_dir="${BS_ROOT:=/bs}/pkgbuild"
+repo_container="${BS_ROOT:=/bs}/repo"
+pkgdest="${BS_ROOT:=/bs}/pkgdest"
+logdir="${BS_ROOT:=/bs}/log"
+
+fetch_aur_pkg() {
+  pkgbase="$1"
+  PLENV_VERSION=system
+
+  out="$(
+    env PLENV_VERSION=system \
+      aur fetch -r "$pkgbase"
+  )"
+  echo "$out"
+
+  return "${out[*]:-1:1}"
 }
 
-printY() {
-  echo "Y"
+get_update_pkgbuild() {
+  repo="$1"
+  pkgbase="$2"
+
+  if [[ ! -d "$pkgbase" ]]; then
+    git clone "$arch_packaging_repo_base/$pkgbase.git"
+    err="${?:-0}"
+
+    [[ "${err:-0}" -eq 0 ]] && return 0
+
+    warn "Failed to fetch '$pkgbase' from Arch Official Repository mirror"
+
+    err=$(fetch_aur_pkg "$pkgbase")
+
+    if [[ "$err" -ne 0 ]]; then
+      warn "Failed to fetch '$pkgbase' from AUR"
+
+      for repo in "${BS_REPOS[@]}"; do
+        git clone "$BS_USERREPO_BASE_URI/$repo/$pkgbase.git"
+        err="${?:-0}"
+
+        if [[ "${err:-0}" -ne 0 ]]; then
+          warn "Failed to clone '$pkgbase' from user added repo '$repo"
+        fi
+      done
+    fi
+  fi
 }
 
-printN() {
-  echo "N"
-}
-
-printn() {
-  echo "n"
-}
-
-pacman_conf_reporemote() {
-  local searchrepo="$1"
-  [[ -z "$searchrepo" ]] \
-     && echo "Called without/with an empty string" \
-     && return 1;
-
-  for target in "${targets[@]}"; do
-    local pacman_conf="${target:-"/etc"}/pacman.conf"
-    
-    for section in $(pacini --section-list "$pacman_conf"); do
-      [[ -z "${section//options/}" ]] && continue
-
-      remote="$(printenv "BS_${section^^}_REMOTE")"
-      
-      [[ -z "${section//$searchrepo/}" ]] && echo "$remote" && return 0
-    done
-  done
-  
-  return $?
-}
-
-pacinfo_import() {
+expac_query_dbs() {
   pkgstr="$1"
+  shift
+  userdb=("$@")
+  pkgchoices=()
 
-  pacinfo="$(pacinfo "$pkgstr" <&-)"
-  err=$?
-     
-  if [[ "$err" -eq 0 ]]; then
-    local pkgbase=""
-    local pkgrepo=""
-
-    $(perl -e 'use v5.40; my (%matches) = $ARGV[0] =~ /(Base|Repository):\s+([a-z0-9\-]+)/g; say join "\n", map { "export pkg" . lc substr($_, 0, 4) . "=$matches{$_}" } keys %matches' "$pacinfo")
-    
-    local err=$?
-
-    [[ -z "$pkgbase" ]] && [[ -z "$pkgrepo" ]] && return $err
-    [[ "$err" -eq 0 ]] || return $err
-    
-    export pkgbase="$pkgbase"
-    export pkgrepo="$pkgrepo"
-
-    echo "$pkgrepo/$pkgbase" && return 0
-  fi
-
-  echo "Package not found in local database!"
-  echo "Attempting to build using CLI and cached/remote PKGMETA repos..."
-  echo "";
-
-  export pkgbase="$pkgstr"
-
-  echo "$pkgstr" && return 0
-}
-
-update_pkgbuild_repo() {
-  branches=("$(git branch -a)")
-  # git config --global --add safe.directory "$(pwd)"
-
-  git stash;
-
-  git reset --hard;
-  git clean -f; 
-
-  echo "Attempting to update PKGBUILD repo..."
-  err=0
-
-  for branch in main master; do
-    git pull "$branch" --rebase -f
-    err=$? 
-    [[ "$err" -eq 0 ]] && break
+  for db in Q S "${userdb[@]}"; do
+    pkgchoices+=("$(expac "-${db}s" '%r\/%e' $pkgstr)")
   done
 
-  return $?
-}
-
-clone_aur_pkg() {
-  local pkgbase="$1"
-  local pkgstr="$2"
-
-  remoteuri="${3:-$aur_repo_uri}"
-  err=0
-
-  echo "Attempting to clone '$pkg' from AUR.."
-
-  git clone --bare \
-    "$remoteuri/${pkgbase}.git" \
-    "$pkgbase"
-
-  err=$?
-
-  if [[ "$err" -eq 0 ]]; then 
-    echo "$pkgbase:3" && return 0
-  fi
-  
-  return $err
-}
-
-clone_custom_repo_remote() {
-  local pkgbase="$1"
-  local pkgstr="$2"
-  local remoteuri="$(pacman_conf_reporemote "$pkgrepo")"
-  local pacinierr=$?
-
-  if [[ -n "$remoteuri" ]] && [[ $pacinierr -eq 0 ]]; then
-    echo "Cloning '$pkg' from '$pkgrepo' PKGBUILD meta repo..."
-    
-    # Currently imagining $remoteuri as a git tree with $pkgstr as a subtree
-    # rather than deal with submodules or the seemingly undocumented branch per
-    # package format the Github AUR mirror currently uses
-    git clone --bare "$remoteuri/$pkgstr.git" "$pkgstr"
-  fi
-  
-  [[ $? -eq 0 ]] && pkg="$pkgstr" && return 0
-
-  return $?
-}
-
-clone_arch_remote() {
-  local pkgbase="$1"
-  local pkgstr="$2"
-
-  echo "Attempting to clone '$pkgbase' from Arch Gitlab..."
-
-  git clone --bare \
-    "$arch_pkgbuildrepo_uri/${pkgbase}.git" \
-    "${pkgbase:-$pkgstr}"
-  
-  local err=$?
-  
-  [[ $err -ne 0 ]] && pkgctl repo clone --protocol=https \
-    "${pkgbase:-$pkgstr}"
-
-  err=$?
-  
-  return $err
-}
-
-buildpkg() {
-  local target="$5"
-  local pkg="$1"
-  local pkgstr="$2"
-  local makepkg_conf="${3:-${targets[*]:0:1}/etc/makepkg.conf}"
-  local pacman_conf="${4:-${targets[*]:0:1}/etc/pacman.conf}"
-  local err=0
-
-  set -x
-  
-  env SRCDEST="$SRCDEST/pkgbuild-$(epoch)" aur build -v -f -S \
-    --cargs="C,u,n${PB_CHROOTCLEAN:+,c}" \
-    --margs="L,A,s,i${PB_MAKEPKG_CLEANALL:+,C,c}" --syncdeps --pkgver \
-    --makepkg-conf="$makepkg_conf" --pacman-conf="$pacman_conf" \
-    ${PB_TMPCHROOT:+--temp} ${PB_REBUILDALL:+-f} \
-    -d universe --root "$AURDIT_ROOT/repo/${target:-"$CARCH"}" -c -D $CHROOT
-
-  makechrootpkg -Cunc -r$CHROOT -- -LACcif
-
-  err=$?
-
-  [[ $err -ne 0 ]] \
-    && echo "$target $pkg $pkgstr $makepkg_conf $pacman_conf $err" \
-    >> "pkgbuild.sh-error-$started.txt"
-
-  sudo rm -r "/var/cache/pacman/pkg/"*
-  #yes | sudo pacman -Scc
-
-  [[ $err -ne 0 ]] \
-    && echo "$target $pkg $pkgstr $makepkg_conf $pacman_conf $err" \
-    >> "pkgbuild.sh-error-$started.txt"
-
-  [[ $dbgmode -ne 0 ]] || set +x
-  return $err
-}
-
-enter_pkgbuilddir() {
-  local pkg="$1"
-  eval cd "$pkg" || return $?
-  workdir=$(mktemp -d -p .)
-  cd "$workdir"
-  git clone "../../$(basename "$pkg")" .
-  #cd "$(basename "$pkg")"
-  return 0
-}
-
-exit_pkgbuilddir() {
-  cd ../../ || return $?
-  return 0
-}
-
-buildpkg_all_targets() {
-  local pkg="$1"
-  local pkgstr="$2";
-  shift; shift;
-  local targets+=("$@")
-
-  for target in "${targets[@]}"; do
-    makepkg_conf="$target/makepkg.conf"
-    pacman_conf="$target/pacman.conf"
-    
-    if [[ ! -e $makepkg_conf ]] || [[ ! -e $pacman_conf ]]; then
-      return 1
-    fi
-
-    target_name="$(basename "$target")"
-
-    buildpkg "$pkg" "$pkgstr" "$makepkg_conf" "$pacman_conf" "$target_name"
-    local err=$?
-  done
-}
-
-addpkgmeta() {
-  local pkgrepo="$1"
-  local pkg="$2"
-  local pkgstr="$3"
-  local err=0
-
-  local pkg="${pkg:-$pkgstr}"
-  [[ -z "$pkg" ]] && return 1
-
-  if [[ -n "$pkgrepo" ]]; then
-    if [[ -n "${pkgrepo//*aur*/}" ]]; then
-      clone_custom_repo_remote "$pkgrepo" "$pkg" "$pkgstr"
-      [[ $? -eq 0 ]] && return 0;
-    elif [[ -z "${pkgrepo//aur/}" ]]; then
-      clone_aur_pkg "$pkgstr"
-      [[ $? -eq 0 ]] && return 0;
-      err=$?
-    fi
-  fi
-
-  if [[ ! -d "$pkg" ]]; then
-    clone_arch_remote "$pkg" "$pkgstr"
-    [[ $? -eq 0 ]] && return 0
-
-    clone_aur_pkg "$pkgstr"
-    [[ $? -eq 0 ]] && return 0
-  fi
-
-  return $err
-}
-
-findpkg() {
-  local pkgstr="$1"
-  local pkgrepo="$2"
-  
-  pkg="$pkgstr"
-  pkgsearch=($(pacsift --name "$pkg" --base "$pkg"))
-
-  pkgfields=($(parse_repopkgstr "${pkgsearch[*]:0:1}"))
-  pkgrepo=${pkgfields[*]:0:1}
-  pkgstr=${pkgfields[*]:1:1}
-
-  [[ -z "$pkgstr" ]] && echo "$(sudo pacman -Syyqs "^$pkg\$")"
-
-  #[[ -z "$pkgstr" ]] && pkgstr="$pkgrepo"
-
-  pacinfo="$(pacinfo_import "$pkgstr")"
-
-  pkgfields=($(parse_repopkgstr "$pacinfo"))
-  pkgrepo=${pkgfields[*]:0:1}
-  pkgstr=${pkgfields[*]:1:1}
-
-  [[ -z "$pkgstr" ]] && pkgstr="$pkgrepo"
-
-  if [[ ! -d "$pkg" ]]; then
-    addpkgmeta "$pkgrepo" "$pkgstr" "$pkgstr"
-  fi
-
-  echo "$pkg"
+  echo "${pkgchoices[@]}"
   return ${?:-0}
 }
 
-parse_repopkgstr() {
-  local pkg=$1
-  #local repo=$2  
+package_choice() {
+  pkgchoices=($@)
+  first="${pkgchoices[*]:-1:0}"
 
-  local pkgrepo="${pkg%%/*}";
-  local pkgstr="${pkg##"$pkgrepo/"}"
+  choice=(
+    "${first//\/*/}"
+    "${first//*\//}"
+  )
 
-  if [[ -z "${pkg//$pkgrepo/}" ]]; then
-    pkgrepo=""
-  fi
+  [[ ${DEBUG:-0} -ne 0 ]] && warn "pkgchoices: ${pkgchoices[*]}"
+  [[ ${DEBUG:-0} -ne 0 ]] && warn "choice: ${choice[*]}"
 
-  echo "$pkgrepo"
-  echo "${pkgstr:-$pkg}"
+  echo "${choice[@]}"
+  return ${?:-0}
+
+  #local i=0
+  #for pkgrepo in "${pkgchoices[@]}"; do
+  #  printf "\(%d.\) %s\n" "$((++i))" "$pkgrepo"
+  #done
+
+  #echo ${pkgchoices[*]:0:1}
 }
 
-buildpkgs() {
-  if [[ -n "$BS_SYNC" ]]; then
-    echo "Updating package and file databases..."  
-    sudo pacman -Syyu;
-    sudo pacman -Fyy;
-  fi
+enter_pkgbuild_repo() {
+  pkgbase="$1"
+  cd "${pkgchoice[*]:-1:0}" || return $?
+  get_update_pkgbuild "${pkgchoice[@]}"
 
-  for pkg in "$@"; do
-    err=0
-    echo "Working on '$pkg'..."
+  branches=($(git branch --all))
+  curr_branch="${branches[*]:0:1}"
+  new_branch="$curr_branch-$(date +%s)"
 
-    pkgfields=($(parse_repopkgstr "$pkg"))
-    pkgrepo=${pkgfields[*]:0:1}
-    pkgstr=${pkgfields[*]:1:1}
+  git switch -c "$new_branch"
+  git add -A
+  git commit -S -m "Unsynced changes pre-rebase and rebuild"
+  git push "$new_branch"
 
-    [[ -z "$pkgstr" ]] && pkgstr="$pkgrepo"
+  for branch in "${branches[@]}"; do
+    [[ -z "${branch//main|master/}" ]] || continue
 
-    pkgbase=$(findpkg "$pkgstr" "$pkgrepo")
+    git switch "$curr_branch"
+    git pull "$branch" --rebase
+    err="${?:-0}"
 
-    enter_pkgbuilddir "$pkgbase"
+    while [[ "${err:-0}" -ne 0 ]]; do
+      git mergetool
+      err="${?:-0}"
+      git rebase --continue
+      err="${?:-0}"
+    done
 
-    [[ $? -ne 0 ]] && echo "Could not change directories to '$pkgbase'" \
-       && continue
-
-    update_pkgbuild_repo
-
-    echo "Updating package source checksums..."
-    [[ -n "$PB_UPDPKGSUMS" ]] && updpkgsums
-  
-    echo "Attempting to build '$pkgbase'..."
-
-    [[ ${#targets[*]} -ne 0 ]] \
-       && buildpkg_all_targets "$pkgbase" "$pkgstr" "${targets[@]}"
-
-    err=$?
-  
-    [[ "$err" -eq 0 ]] && echo "Successfully built '$pkgbase'!!"
-    
-    exit_pkgbuilddir
+    git push "$curr_branch"
   done
 }
 
-buildpkgs "$@"
+do_makechrootpkg() {
+  pkgbase="$1"
+  [[ -z "$pkgbase" ]] && warn "No pkgbase provided." && return 1
+  cleanchroot="${2:=0}"
+  cleanbuilddir="${3:=0}"
+
+  local makechrootpkg_opts=(makechrootpkg
+    -Cun${cleanchroot:+c}
+    -r"$CHROOT" - -sifAL${cleanbuilddir:+Cc})
+
+  say "$("${makechrootpkg_opts[@]}")"
+  return "${?:-0}"
+}
+
+do_bsrepoadd() {
+  pkgbase="$1"
+
+  local bsrepoadd_opts=(
+    env BS_CLOBBER=1
+    bs-repoadd "$PKGDEST/$pkgbase"
+  )
+
+  say "$("${bsrepoadd_opts[@]}")"
+}
+
+handle_pkgspec() {
+  local pkgspec="$1"
+
+  # FIX ME: First result is probably what we want unless the user declares
+  # otherwise in the current local git config or a bs-repo-conf.toml file in
+  # the repo root
+  pkgchoices=($(expac_query_dbs "$pkgspec"))
+  pkgchoice=($(package_choice "${pkgchoices[@]}"))
+
+  # Fairly sure pactree includes the provided pkgspec compliant string in the
+  # results...
+  pkgtree=($(pactree -lus "${pkgchoice[*]:-1:0}"))
+
+  for dep_pkgspec in "${pkgtree[@]}"; do
+    handle_pkgspec "$dep_pkgspec"
+  done
+
+  enter_pkgbuild_repo "${makechrootpkg_opts[@]}"
+  local err="${?:-0}"
+
+  [[ ${err:-0} -ne 0 ]] && $("${bsrepoadd_opts[@]}")
+}
+
+for pkgspec in "$@"; do
+  cd "$pkgbuild_dir" || die "Failed to change back to PKGBUILD directory" $?
+  handle_pkgspec "$pkgspec"
+done
+
+cd "$startdir" || die "Failed to change back to starting directory" $?
