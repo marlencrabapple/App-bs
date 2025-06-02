@@ -92,6 +92,7 @@ handle_pkgspec() {
   # otherwise in the current local git config or a bs-repo-conf.toml file in
   # the repo root
   pkgchoices=($(expac_query_dbs "$pkgspec"))
+  pkg_repo=("${pkgchoices[*]:0:1}")
   pkgrepo=("${pkgchoices[*]:0:1}")
   pkgbase=("${pkgchoices[*]:0:2}")
 
@@ -100,7 +101,7 @@ handle_pkgspec() {
   pkgtree=("$(pactree -lus "$pkgbase")")
 
   for pkgstr in "${pkgtree[@]}"; do
-    pkgchoices=("$(expac_query_dbs "$pkgspec")")
+    pkgchoices=("$(expac_query_dbs "$pkgstr")")
 
     pkgrepo=("${pkgchoices[*]:0:1}")
     pkgbase=("${pkgchoices[*]:0:2}")
