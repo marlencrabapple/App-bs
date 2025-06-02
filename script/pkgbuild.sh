@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
-#
+
 scriptdir="${0//\/$(basename "$0")/}"
-. "$scriptdir/bs-common.sh"c
+if [[ -f "$scriptdir/bs-common.sh" ]]; then
+  . "$scriptdir/bs-common.sh"
+else
+  echo "Error: Required file bs-common.sh not found in $scriptdir" >&2
+  exit 1
+fi
 
 [[ "${DEBUG:=0}" -eq 1 ]] && set -x
 
