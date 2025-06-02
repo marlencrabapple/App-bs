@@ -10,6 +10,7 @@ fi
 
 [[ "${DEBUG:=0}" -eq 1 ]] && set -x
 
+startdir="$(pwd)"
 arch_packaging_repo_base="https://gitlab.archlinux.org/archlinux/packaging/packages"
 
 pkgbuild_dir="${BS_ROOT:=/bs}/pkgbuild"
@@ -74,7 +75,7 @@ expac_query_dbs() {
 }
 
 package_choice() {
-  pkgchoices=("$@")
+  pkgchoices=($@)
   first="${pkgchoices[*]:-1:0}"
 
   choice=(
@@ -96,6 +97,57 @@ package_choice() {
   #echo ${pkgchoices[*]:0:1}
 }
 
+enter_pkgbuild_repo() {
+  pkgbase="$1"
+  cd "${pkgchoice[*]:-1:0}" || return $?
+  get_update_pkgbuild "${pkgchoice[@]}"
+
+  branches=($(git branch --all))
+  curr_branch="${branches[*]:0:1}"
+  new_branch="$curr_branch-$(date +%s)"
+
+  git switch -c "$new_branch"
+  git add -A
+  git commit -S -m "Unsynced changes pre-rebase and rebuild"
+  git push "$new_branch"
+
+  for branch in "${branches[@]}"; do
+    [[ -z "${branch//main|master/}" ]] || continue
+
+    git switch "$curr_branch"
+    git pull "$branch" --rebase
+    err="${?:-0}"
+
+    while [[ "${err:-0}" -ne 0 ]]; do
+      git mergetool
+      err="${?:-0}"
+      git rebase --continue
+      err="${?:-0}"
+    done
+
+    git push "$curr_branch"
+  done
+}
+
+do_makechrootpkg() {
+  pkgbase="$1"
+  cleanchroot=$2
+  cleanother=$3
+  local makechrootpkg_opts=(makechrootpkg -Cun -r $CHROOT - -sifAL)
+  $(${makechrootpkg_opts[@]})
+}
+
+do_bsrepoadd() {
+  pkgbase="$1"
+
+  local bsrepoadd_opts=(
+    env BS_CLOBBER=1
+    bs-repoadd "$PKGDEST/$pkgbase"
+  )
+
+  echo "$("${bsrepoadd_opts[@]}")"
+}
+
 handle_pkgspec() {
   local pkgspec="$1"
 
@@ -107,44 +159,21 @@ handle_pkgspec() {
 
   # Fairly sure pactree includes the provided pkgspec compliant string in the
   # results...
-  pkgtree=("$(pactree -lus "${pkgchoice[*]:-1:0}")")
+  pkgtree=($(pactree -lus "${pkgchoice[*]:-1:0}"))
 
-  for pkgspec in "${pkgtree[@]}"; do
-    pkgchoices=($(expac_query_dbs "$pkgspec"))
-    pkgchoice=($(package_choice "${pkgchoices[@]}"))
-
-    #cd "$pkg" || continue # Superflous directory check
-    get_update_pkgbuild "${pkgchoice[@]}"
-
-    branches=($(git branch --all))
-    curr_branch="${branches[*]:0:1}"
-    new_branch="$curr_branch-$(date +%s)"
-
-    git switch -c "$new_branch"
-    git add -A
-    git commit -S -m "Unsynced changes pre-rebase and rebuild"
-    git push "$new_branch"
-
-    for branch in "${branches[@]}"; do
-      [[ -z "${branch//main|master/}" ]] || continue
-
-      git switch "$curr_branch"
-      git pull "$branch" --rebase
-      err="${?:-0}"
-
-      while [[ "${err:-0}" -ne 0 ]]; do
-        git mergetool
-        err="${?:-0}"
-        git rebase --continue
-        err="${?:-0}"
-      done
-
-      git push "$curr_branch"
-    done
-    cd "$pkgbuild_dir" || warn "Failed to change directory"
+  for dep_pkgspec in "${pkgtree[@]}"; do
+    handle_pkgspec "$dep_pkgspec"
   done
+
+  enter_pkgbuild_repo "${makechrootpkg_opts[@]}"
+  local err="${?:-0}"
+
+  [[ ${err:-0} -ne 0 ]] && $("${bsrepoadd_opts[@]}")
 }
 
 for pkgspec in "$@"; do
+  cd "$pkgbuild_dir" || die "Failed to change back to PKGBUILD directory" $?
   handle_pkgspec "$pkgspec"
 done
+
+cd "$startdir" || die "Failed to change back to starting directory" $?
