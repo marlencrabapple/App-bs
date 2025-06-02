@@ -17,15 +17,18 @@ repo_container="${BS_ROOT:=/bs}/repo"
 pkgdest="${BS_ROOT:=/bs}/pkgdest"
 logdir="${BS_ROOT:=/bs}/log"
 
-fetch_aur_pkg() { (
+fetch_aur_pkg() {
   pkgbase="$1"
-  export PLENV_VERSION=system
+  PLENV_VERSION=system
 
-  out="$(aur fetch -r "$pkgbase")"
+  out="$(
+    env PLENV_VERSION=system \
+      aur fetch -r "$pkgbase"
+  )"
   echo "$out"
 
   return "${out[*]:-1:1}"
-); }
+}
 
 get_update_pkgbuild() {
   repo="$1"
