@@ -99,15 +99,15 @@ handle_pkgspec() {
   pkgtree=("$(pactree -lus "$pkgbase")")
 
   for pkgstr in "${pkgtree[@]}"; do
-    local pkgchoices=$(expac_query_dbs "$pkgspec")
+    pkgchoices=("$(expac_query_dbs "$pkgspec")")
 
-    local pkgrepo=("${pkgchoices[*]:0:1}")
-    local pkgbase=("${pkgchoices[*]:0:2}")
+    pkgrepo=("${pkgchoices[*]:0:1}")
+    pkgbase=("${pkgchoices[*]:0:2}")
 
     #cd "$pkg" || continue # Superflous directory check
     get_update_pkgbuild "$pkgrepo" "$pkgbase"
 
-    branches=($(git branch --all))
+    branches=("$(git branch --all)"s)
     curr_branch="${branches[*]:0:1}"
     new_branch="$curr_branch-$(date +%s)"
 
