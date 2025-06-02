@@ -46,3 +46,4 @@ MYMETA.*
 /.prove
 /vendor
 .perl-version
+log

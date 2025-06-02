@@ -1,0 +1,2254 @@
++ pkgbuild_dir=/bs/pkgbuild
++ repo_container=/bs/repo
++ pkgdest=/bs/pkgdest
++ logdir=/bs/log
++ for pkgspec in "$@"
++ handle_pkgspec ffmpeg-git
++ local pkgspec=ffmpeg-git
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' ffmpeg-git
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec alsa-lib
++ local pkgspec=alsa-lib
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' alsa-lib
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec alsa-topology-conf
++ local pkgspec=alsa-topology-conf
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' alsa-topology-conf
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec alsa-ucm-conf
++ local pkgspec=alsa-ucm-conf
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' alsa-ucm-conf
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec glibc
++ local pkgspec=glibc
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' glibc
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec 'linux-api-headers>=4.10'
++ local 'pkgspec=linux-api-headers>=4.10'
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' 'linux-api-headers>=4.10'
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus ''
+error: package '' not found
++ for pkgspec in "$@"
++ handle_pkgspec tzdata
++ local pkgspec=tzdata
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' tzdata
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec filesystem
++ local pkgspec=filesystem
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' filesystem
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec iana-etc
++ local pkgspec=iana-etc
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' iana-etc
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec aom
++ local pkgspec=aom
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' aom
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec gcc-libs
++ local pkgspec=gcc-libs
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gcc-libs
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec bzip2
++ local pkgspec=bzip2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' bzip2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec sh
++ local pkgspec=sh
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' sh
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec readline
++ local pkgspec=readline
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' readline
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec ncurses
++ local pkgspec=ncurses
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' ncurses
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec cairo
++ local pkgspec=cairo
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' cairo
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec fontconfig
++ local pkgspec=fontconfig
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' fontconfig
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec expat
++ local pkgspec=expat
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' expat
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec freetype2
++ local pkgspec=freetype2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' freetype2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec brotli
++ local pkgspec=brotli
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' brotli
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec libpng
++ local pkgspec=libpng
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libpng
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec zlib
++ local pkgspec=zlib
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' zlib
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec harfbuzz
++ local pkgspec=harfbuzz
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' harfbuzz
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec glib2
++ local pkgspec=glib2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' glib2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec libffi
++ local pkgspec=libffi
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libffi
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec libsysprof-capture
++ local pkgspec=libsysprof-capture
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libsysprof-capture
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec pcre2
++ local pkgspec=pcre2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' pcre2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec util-linux-libs
++ local pkgspec=util-linux-libs
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' util-linux-libs
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec sqlite
++ local pkgspec=sqlite
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' sqlite
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec lib:libpython3.13.so.1.0
++ local pkgspec=lib:libpython3.13.so.1.0
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' lib:libpython3.13.so.1.0
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec gdbm
++ local pkgspec=gdbm
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gdbm
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec libnsl
++ local pkgspec=libnsl
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libnsl
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libtirpc
++ local pkgspec=libtirpc
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libtirpc
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec krb5
++ local pkgspec=krb5
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' krb5
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec e2fsprogs
++ local pkgspec=e2fsprogs
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' e2fsprogs
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec keyutils
++ local pkgspec=keyutils
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' keyutils
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libldap
++ local pkgspec=libldap
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libldap
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec libsasl
++ local pkgspec=libsasl
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libsasl
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec openssl
++ local pkgspec=openssl
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' openssl
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libverto-module-base
++ local pkgspec=libverto-module-base
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libverto-module-base
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libevent
++ local pkgspec=libevent
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libevent
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec lmdb
++ local pkgspec=lmdb
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' lmdb
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxcrypt
++ local pkgspec=libxcrypt
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxcrypt
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec mpdecimal
++ local pkgspec=mpdecimal
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' mpdecimal
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec graphite
++ local pkgspec=graphite
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' graphite
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libx11
++ local pkgspec=libx11
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libx11
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxcb
++ local pkgspec=libxcb
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxcb
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec xcb-proto
++ local pkgspec=xcb-proto
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' xcb-proto
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxdmcp
++ local pkgspec=libxdmcp
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxdmcp
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec xorgproto
++ local pkgspec=xorgproto
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' xorgproto
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxau
++ local pkgspec=libxau
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxau
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxext
++ local pkgspec=libxext
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxext
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxrender
++ local pkgspec=libxrender
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxrender
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec lzo
++ local pkgspec=lzo
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' lzo
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec pixman
++ local pkgspec=pixman
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' pixman
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec dav1d
++ local pkgspec=dav1d
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' dav1d
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec fribidi
++ local pkgspec=fribidi
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' fribidi
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec glslang
++ local pkgspec=glslang
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' glslang
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec spirv-tools
++ local pkgspec=spirv-tools
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' spirv-tools
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec mold
++ local pkgspec=mold
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' mold
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libblake3
++ local pkgspec=libblake3
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libblake3
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec onetbb
++ local pkgspec=onetbb
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' onetbb
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec hwloc
++ local pkgspec=hwloc
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' hwloc
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libpciaccess
++ local pkgspec=libpciaccess
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libpciaccess
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libtool
++ local pkgspec=libtool
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libtool
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec tar
++ local pkgspec=tar
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' tar
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec acl
++ local pkgspec=acl
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' acl
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec systemd-libs
++ local pkgspec=systemd-libs
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' systemd-libs
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libcap
++ local pkgspec=libcap
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libcap
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec pam
++ local pkgspec=pam
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' pam
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec audit
++ local pkgspec=audit
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' audit
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libcap-ng
++ local pkgspec=libcap-ng
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libcap-ng
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec pambase
++ local pkgspec=pambase
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' pambase
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libgcrypt
++ local pkgspec=libgcrypt
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libgcrypt
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libgpg-error
++ local pkgspec=libgpg-error
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libgpg-error
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec lz4
++ local pkgspec=lz4
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' lz4
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec xz
++ local pkgspec=xz
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' xz
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec zstd
++ local pkgspec=zstd
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' zstd
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec mimalloc
++ local pkgspec=mimalloc
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' mimalloc
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec gmp
++ local pkgspec=gmp
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gmp
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec gnutls
++ local pkgspec=gnutls
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gnutls
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libtasn1
++ local pkgspec=libtasn1
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libtasn1
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec nettle
++ local pkgspec=nettle
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' nettle
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec leancrypto
++ local pkgspec=leancrypto
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' leancrypto
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec libp11-kit
++ local pkgspec=libp11-kit
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libp11-kit
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libidn2
++ local pkgspec=libidn2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libidn2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libunistring
++ local pkgspec=libunistring
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libunistring
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec gsm
++ local pkgspec=gsm
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gsm
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec pipewire
++ local pkgspec=pipewire
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' pipewire
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libpipewire=1:1.4.2-4
++ local pkgspec=libpipewire=1:1.4.2-4
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libpipewire=1:1.4.2-4
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus ''
+error: package '' not found
++ for pkgspec in "$@"
++ handle_pkgspec dbus
++ local pkgspec=dbus
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' dbus
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec apparmor
++ local pkgspec=apparmor
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' apparmor
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec python-legacy-cgi
++ local pkgspec=python-legacy-cgi
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' python-legacy-cgi
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec lame
++ local pkgspec=lame
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' lame
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libass
++ local pkgspec=libass
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libass
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec libunibreak
++ local pkgspec=libunibreak
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libunibreak
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libfdk-aac
++ local pkgspec=libfdk-aac
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libfdk-aac
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec fdkaac
++ local pkgspec=fdkaac
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' fdkaac
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libavc1394
++ local pkgspec=libavc1394
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libavc1394
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libraw1394
++ local pkgspec=libraw1394
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libraw1394
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libbluray
++ local pkgspec=libbluray
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libbluray
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxml2
++ local pkgspec=libxml2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxml2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec icu
++ local pkgspec=icu
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' icu
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libbs2b
++ local pkgspec=libbs2b
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libbs2b
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libsndfile
++ local pkgspec=libsndfile
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libsndfile
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec flac
++ local pkgspec=flac
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' flac
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libogg
++ local pkgspec=libogg
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libogg
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libvorbis
++ local pkgspec=libvorbis
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libvorbis
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec mpg123
++ local pkgspec=mpg123
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' mpg123
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec opus
++ local pkgspec=opus
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' opus
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libdrm
++ local pkgspec=libdrm
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libdrm
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libdvdnav
++ local pkgspec=libdvdnav
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libdvdnav
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libdvdread
++ local pkgspec=libdvdread
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libdvdread
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libgl
++ local pkgspec=libgl
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libgl
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec mesa
++ local pkgspec=mesa
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' mesa
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxxf86vm
++ local pkgspec=libxxf86vm
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxxf86vm
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxdamage
++ local pkgspec=libxdamage
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxdamage
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxfixes
++ local pkgspec=libxfixes
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxfixes
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxshmfence
++ local pkgspec=libxshmfence
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxshmfence
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libelf
++ local pkgspec=libelf
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libelf
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec curl
++ local pkgspec=curl
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' curl
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec ca-certificates
++ local pkgspec=ca-certificates
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' ca-certificates
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec ca-certificates-mozilla
++ local pkgspec=ca-certificates-mozilla
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' ca-certificates-mozilla
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec 'ca-certificates-utils>=20181109-3'
++ local 'pkgspec=ca-certificates-utils>=20181109-3'
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' 'ca-certificates-utils>=20181109-3'
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus ''
+error: package '' not found
++ for pkgspec in "$@"
++ handle_pkgspec coreutils
++ local pkgspec=coreutils
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' coreutils
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec attr
++ local pkgspec=attr
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' attr
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec findutils
++ local pkgspec=findutils
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' findutils
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec p11-kit
++ local pkgspec=p11-kit
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' p11-kit
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libnghttp2
++ local pkgspec=libnghttp2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libnghttp2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libnghttp3
++ local pkgspec=libnghttp3
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libnghttp3
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libpsl
++ local pkgspec=libpsl
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libpsl
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libssh2
++ local pkgspec=libssh2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libssh2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec json-c
++ local pkgspec=json-c
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' json-c
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec libunwind
++ local pkgspec=libunwind
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libunwind
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec wayland
++ local pkgspec=wayland
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' wayland
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec default-cursors
++ local pkgspec=default-cursors
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' default-cursors
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec lm_sensors
++ local pkgspec=lm_sensors
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' lm_sensors
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec vulkan-icd-loader
++ local pkgspec=vulkan-icd-loader
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' vulkan-icd-loader
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec xcb-util-keysyms
++ local pkgspec=xcb-util-keysyms
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' xcb-util-keysyms
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec llvm-libs-minimal-git
++ local pkgspec=llvm-libs-minimal-git
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' llvm-libs-minimal-git
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libedit
++ local pkgspec=libedit
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libedit
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec spirv-llvm-translator-minimal-git
++ local pkgspec=spirv-llvm-translator-minimal-git
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' spirv-llvm-translator-minimal-git
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libclc-minimal-git
++ local pkgspec=libclc-minimal-git
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libclc-minimal-git
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec clang-libs-minimal-git
++ local pkgspec=clang-libs-minimal-git
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' clang-libs-minimal-git
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec clang-opencl-headers-minimal-git
++ local pkgspec=clang-opencl-headers-minimal-git
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' clang-opencl-headers-minimal-git
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libiec61883
++ local pkgspec=libiec61883
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libiec61883
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libjxl
++ local pkgspec=libjxl
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libjxl
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec giflib
++ local pkgspec=giflib
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' giflib
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec gperftools
++ local pkgspec=gperftools
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gperftools
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec highway
++ local pkgspec=highway
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' highway
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libjpeg-turbo
++ local pkgspec=libjpeg-turbo
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libjpeg-turbo
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libmodplug
++ local pkgspec=libmodplug
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libmodplug
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libopenmpt
++ local pkgspec=libopenmpt
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libopenmpt
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libpulse
++ local pkgspec=libpulse
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libpulse
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libasyncns
++ local pkgspec=libasyncns
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libasyncns
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec portaudio
++ local pkgspec=portaudio
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' portaudio
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec jack
++ local pkgspec=jack
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' jack
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec pipewire-audio=1:1.4.2-4
++ local pkgspec=pipewire-audio=1:1.4.2-4
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' pipewire-audio=1:1.4.2-4
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus ''
+error: package '' not found
++ for pkgspec in "$@"
++ handle_pkgspec alsa-card-profiles
++ local pkgspec=alsa-card-profiles
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' alsa-card-profiles
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec bluez-libs
++ local pkgspec=bluez-libs
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' bluez-libs
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libebur128
++ local pkgspec=libebur128
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libebur128
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libfreeaptx
++ local pkgspec=libfreeaptx
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libfreeaptx
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec liblc3
++ local pkgspec=liblc3
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' liblc3
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libldac
++ local pkgspec=libldac
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libldac
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libmysofa
++ local pkgspec=libmysofa
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libmysofa
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libusb
++ local pkgspec=libusb
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libusb
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec lilv
++ local pkgspec=lilv
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' lilv
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec serd
++ local pkgspec=serd
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' serd
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec sord
++ local pkgspec=sord
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' sord
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec zix
++ local pkgspec=zix
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' zix
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec sratom
++ local pkgspec=sratom
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' sratom
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec lv2
++ local pkgspec=lv2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' lv2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec sbc
++ local pkgspec=sbc
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' sbc
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec webrtc-audio-processing-1
++ local pkgspec=webrtc-audio-processing-1
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' webrtc-audio-processing-1
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec abseil-cpp
++ local pkgspec=abseil-cpp
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' abseil-cpp
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec gtest
++ local pkgspec=gtest
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gtest
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec pipewire-session-manager
++ local pkgspec=pipewire-session-manager
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' pipewire-session-manager
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libwireplumber=0.5.8-2
++ local pkgspec=libwireplumber=0.5.8-2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libwireplumber=0.5.8-2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus ''
+error: package '' not found
++ for pkgspec in "$@"
++ handle_pkgspec lua
++ local pkgspec=lua
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' lua
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libplacebo-git
++ local pkgspec=libplacebo-git
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libplacebo-git
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libdovi
++ local pkgspec=libdovi
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libdovi
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec lcms2
++ local pkgspec=lcms2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' lcms2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libtiff
++ local pkgspec=libtiff
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libtiff
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec jbigkit
++ local pkgspec=jbigkit
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' jbigkit
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec shaderc
++ local pkgspec=shaderc
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' shaderc
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec xxhash
++ local pkgspec=xxhash
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' xxhash
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec librsvg
++ local pkgspec=librsvg
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' librsvg
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec gdk-pixbuf2
++ local pkgspec=gdk-pixbuf2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gdk-pixbuf2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec shared-mime-info
++ local pkgspec=shared-mime-info
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' shared-mime-info
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec pango
++ local pkgspec=pango
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' pango
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libthai
++ local pkgspec=libthai
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libthai
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libdatrie
++ local pkgspec=libdatrie
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libdatrie
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxft
++ local pkgspec=libxft
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxft
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libsoxr
++ local pkgspec=libsoxr
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libsoxr
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libssh
++ local pkgspec=libssh
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libssh
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libtheora
++ local pkgspec=libtheora
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libtheora
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libva
++ local pkgspec=libva
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libva
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libvdpau
++ local pkgspec=libvdpau
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libvdpau
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libvpl
++ local pkgspec=libvpl
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libvpl
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libvpx
++ local pkgspec=libvpx
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libvpx
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libwebp
++ local pkgspec=libwebp
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libwebp
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxv
++ local pkgspec=libxv
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxv
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec ocl-icd
++ local pkgspec=ocl-icd
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' ocl-icd
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec opencore-amr
++ local pkgspec=opencore-amr
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' opencore-amr
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec rav1e
++ local pkgspec=rav1e
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' rav1e
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec rubberband
++ local pkgspec=rubberband
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' rubberband
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec fftw
++ local pkgspec=fftw
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' fftw
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libsamplerate
++ local pkgspec=libsamplerate
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libsamplerate
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec sdl2
++ local pkgspec=sdl2
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' sdl2
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec sdl3
++ local pkgspec=sdl3
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' sdl3
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libxcursor
++ local pkgspec=libxcursor
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libxcursor
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec hidapi
++ local pkgspec=hidapi
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' hidapi
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec snappy
++ local pkgspec=snappy
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' snappy
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec speex
++ local pkgspec=speex
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' speex
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec speexdsp
++ local pkgspec=speexdsp
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' speexdsp
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec srt
++ local pkgspec=srt
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' srt
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec svt-av1
++ local pkgspec=svt-av1
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' svt-av1
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec v4l-utils
++ local pkgspec=v4l-utils
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' v4l-utils
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec hicolor-icon-theme
++ local pkgspec=hicolor-icon-theme
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' hicolor-icon-theme
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libbpf
++ local pkgspec=libbpf
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libbpf
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec v4l2loopback-dkms
++ local pkgspec=v4l2loopback-dkms
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' v4l2loopback-dkms
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec dkms
++ local pkgspec=dkms
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' dkms
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec gawk
++ local pkgspec=gawk
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gawk
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec mpfr
++ local pkgspec=mpfr
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' mpfr
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec gcc
++ local pkgspec=gcc
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gcc
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec 'binutils>=2.28'
++ local 'pkgspec=binutils>=2.28'
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' 'binutils>=2.28'
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus ''
+error: package '' not found
++ for pkgspec in "$@"
++ handle_pkgspec jansson
++ local pkgspec=jansson
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' jansson
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libmpc
++ local pkgspec=libmpc
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libmpc
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec libisl.so=23-64
++ local pkgspec=libisl.so=23-64
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libisl.so=23-64
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus ''
+error: package '' not found
++ for pkgspec in "$@"
++ handle_pkgspec kmod
++ local pkgspec=kmod
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' kmod
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec make
++ local pkgspec=make
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' make
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec guile
++ local pkgspec=guile
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' guile
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec gc
++ local pkgspec=gc
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' gc
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec patch
++ local pkgspec=patch
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' patch
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec sed
++ local pkgspec=sed
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' sed
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec v4l2loopback-utils
++ local pkgspec=v4l2loopback-utils
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' v4l2loopback-utils
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec vid.stab
++ local pkgspec=vid.stab
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' vid.stab
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec vmaf
++ local pkgspec=vmaf
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' vmaf
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec x264
++ local pkgspec=x264
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' x264
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec liblsmash.so=2-64
++ local pkgspec=liblsmash.so=2-64
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' liblsmash.so=2-64
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus ''
+error: package '' not found
++ for pkgspec in "$@"
++ handle_pkgspec x265
++ local pkgspec=x265
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' x265
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec xvidcore
++ local pkgspec=xvidcore
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' xvidcore
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec zeromq
++ local pkgspec=zeromq
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' zeromq
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec util-linux
++ local pkgspec=util-linux
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' util-linux
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec file
++ local pkgspec=file
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' file
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libseccomp
++ local pkgspec=libseccomp
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libseccomp
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus core
+error: package 'core' not found
++ for pkgspec in "$@"
++ handle_pkgspec shadow
++ local pkgspec=shadow
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' shadow
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus universe
+error: package 'universe' not found
++ for pkgspec in "$@"
++ handle_pkgspec libsodium
++ local pkgspec=libsodium
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libsodium
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec libpgm
++ local pkgspec=libpgm
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' libpgm
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found
++ for pkgspec in "$@"
++ handle_pkgspec zimg
++ local pkgspec=zimg
++ pkgbase_found=($(expac -Ss '%r\n%e' "$pkgspec"))
+++ expac -Ss '%r\n%e' zimg
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus extra
+error: package 'extra' not found

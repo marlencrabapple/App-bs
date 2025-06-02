@@ -3,12 +3,11 @@ use Object::Pad ':experimental(:all)';
 package App::BS::pkgdepends;
 
 class App::BS::pkgdepends
-  : isa(App::BS::CLI)
-  : does(BS::Ext::pactree)
-  : does(BS::Ext::Common);
+  : isa(App::BS::CLI);
 
 use utf8;
 use v5.40;
+use BS::Ext::pactree;
 
 field $queue : mutator : param = [];
 
@@ -27,4 +26,5 @@ method run (%runopts) {
 
         $sync = 0 unless $self->cliopts->{sync} == -1;
     }
+    return 1;
 }

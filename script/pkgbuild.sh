@@ -57,7 +57,7 @@ expac_query_dbs() {
   pkgchoices=()
 
   for db in Q S "${userdb[@]}"; do
-    pkgchoices+=($(expac "-${db}s" '%r/%e' "$pkgstr"))
+    pkgchoices+=("$(expac "-${db}s" '%r/%e' $pkgstr)")
   done
 }
 
@@ -96,7 +96,7 @@ handle_pkgspec() {
 
   # Fairly sure pactree includes the provided pkgspec compliant string in the
   # results...
-  pkgtree=($(pactree -lus "$pkgbase"))
+  pkgtree=("$(pactree -lus "$pkgbase")")
 
   for pkgstr in "${pkgtree[@]}"; do
     local pkgchoices=$(expac_query_dbs "$pkgspec")

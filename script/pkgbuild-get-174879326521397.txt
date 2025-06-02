@@ -1,0 +1,24 @@
++ pkgbuild_dir=/bs/pkgbuild
++ repo_container=/bs/repo
++ pkgdest=/bs/pkgdest
++ logdir=/bs/log
++ for pkgspec in "$@"
++ handle_pkgspec ffmpeg-git
++ local pkgspec=ffmpeg-git
++ pkgbase_found=($(expac -Ss '%e' "$pkgspec"))
+++ expac -Ss %e ffmpeg-git
++ pkgbase=("${pkgbase_found[*]:0:1}")
++ pkgtree=($(pactree -lus "$pkgbase"))
+++ pactree -lus ffmpeg-git
++ for pkgstr in "${pkgtree[@]}"
+++ expac -Ss %e ffmpeg-git
++ pkgbase_found=('ffmpeg-git')
++ local pkgbase_found
++ local pkgbase=ffmpeg-git
++ get_update_pkgbuild ffmpeg-git
++ pkgbase=ffmpeg-git
++ [[ ! -d ffmpeg-git ]]
++ pkgctl repo clone --protocol=https ffmpeg-git
+==> Cloning ffmpeg-git ...
+Cloning into 'ffmpeg-git'...
+Unable to retrieve entry: No mapping section in ['github.com', 'bitbucket.com', 'gitlab.com'] matches request gitlab.archlinux.org
