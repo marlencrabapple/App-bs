@@ -60,6 +60,9 @@ expac_query_dbs() {
   for db in Q S "${userdb[@]}"; do
     pkgchoices+=("$(expac "-${db}s" '%r\/%e' $pkgstr)")
   done
+
+  echo "${pkgchoices[@]}"
+  return ${?:-0}
 }
 
 package_choice() {
@@ -91,10 +94,9 @@ handle_pkgspec() {
   # FIX ME: First result is probably what we want unless the user declares
   # otherwise in the current local git config or a bs-repo-conf.toml file in
   # the repo root
-  pkgchoices=($(expac_query_dbs "$pkgspec"))
-  pkg_repo=("${pkgchoices[*]:0:1}")
-  pkgrepo=("${pkgchoices[*]:0:1}")
-  pkgbase=("${pkgchoices[*]:0:2}")
+  pkgchoices=("$(expac_query_dbs "$pkgspec")?")
+  pkgchoice=$(package_choice "${pkgchoices[@]}")
+
 
   # Fairly sure pactree includes the provided pkgspec compliant string in the
   # results...
@@ -102,12 +104,10 @@ handle_pkgspec() {
 
   for pkgstr in "${pkgtree[@]}"; do
     pkgchoices=("$(expac_query_dbs "$pkgstr")")
-
-    pkgrepo=("${pkgchoices[*]:0:1}")
-    pkgbase=("${pkgchoices[*]:0:2}")
+    pkgchoice=$(package_choice "${pkgchoices[@]}")
 
     #cd "$pkg" || continue # Superflous directory check
-    get_update_pkgbuild "$pkgrepo" "$pkgbase"
+    get_update_pkgbuild "${pkgchoice[@]}"
 
     branches=($(git branch --all))
     curr_branch="${branches[*]:0:1}"
