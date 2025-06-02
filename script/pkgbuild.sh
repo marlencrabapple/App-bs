@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
+  #
 scriptdir="${0//\/$(basename "$0")}"
-. "$scriptdir/bs-common.sh"
-
+. "$scriptdir/bs-common.sh"c
 
 [[ "${DEBUG:=0}" -eq 1 ]] && set -x
 
@@ -12,14 +12,15 @@ repo_container="${BS_ROOT:=/bs}/repo"
 pkgdest="${BS_ROOT:=/bs}/pkgdest"
 logdir="${BS_ROOT:=/bs}/log"
 
-fetch_aur_pkg() {
+fetch_aur_pkg() {(
   pkgbase="$1"
-  out="$(plenv shell system &&
-    aur fetch -r "$pkgbase")"
+  export PLENV_VERSION=system
+
+  out="$(aur fetch -r "$pkgbase")"
   echo "$out"
 
   return "${out[*]:-1:1}"
-}
+)}
 
 get_update_pkgbuild() {
   repo="$1"
@@ -27,7 +28,7 @@ get_update_pkgbuild() {
 
   if [[ ! -d "$pkgbase" ]]; then
     git clone "$arch_packaging_repo_base/$pkgbase.git"
-    err="$?"
+    err="${?:-0}"
 
     [[ "${err:-0}" -eq 0 ]] && return 0
 
@@ -40,7 +41,7 @@ get_update_pkgbuild() {
 
       for repo in "${BS_REPOS[@]}"; do
         git clone "$BS_USERREPO_BASE_URI/$repo/$pkgbase.git"
-        err="$?"
+        err="${?:-0}"
 
         if [[ "${err:-0}" -ne 0 ]]; then
           warn "Failed to clone '$pkgbase' from user added repo '$repo"
@@ -57,7 +58,7 @@ expac_query_dbs() {
   pkgchoices=()
 
   for db in Q S "${userdb[@]}"; do
-    pkgchoices+=("$(expac "-${db}s" '%r/%e' $pkgstr)")
+    pkgchoices+=("$(expac "-${db}s" '%r\/%e' $pkgstr)")
   done
 }
 
@@ -73,7 +74,7 @@ package_choice() {
   [[ ${DEBUG:-0} -ne 0 ]] && warn "choice: ${choice[*]}"
 
   echo "${choice[@]}"
-  return $?
+  return ${?:-0}
 
 
   #local i=0
@@ -90,7 +91,7 @@ handle_pkgspec() {
   # FIX ME: First result is probably what we want unless the user declares
   # otherwise in the current local git config or a bs-repo-conf.toml file in
   # the repo root
-  pkgchoices=$(expac_query_dbs "$pkgspec")
+  pkgchoices=($(expac_query_dbs "$pkgspec"))
   pkgrepo=("${pkgchoices[*]:0:1}")
   pkgbase=("${pkgchoices[*]:0:2}")
 
@@ -121,13 +122,13 @@ handle_pkgspec() {
 
       git switch "$curr_branch"
       git pull "$branch" --rebase
-      err="$?"
+      err="${?:-0}"
 
       while [[ "${err:-0}" -ne 0 ]]; do
         git mergetool
-        err="$?"
+        err="${?:-0}"
         git rebase --continue
-        err="$?"
+        err="${?:-0}"
       done
 
       git push "$curr_branch"
