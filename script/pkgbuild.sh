@@ -107,7 +107,7 @@ handle_pkgspec() {
     #cd "$pkg" || continue # Superflous directory check
     get_update_pkgbuild "$pkgrepo" "$pkgbase"
 
-    branches=("$(git branch --all)"s)
+    branches=("$(git branch --all)")
     curr_branch="${branches[*]:0:1}"
     new_branch="$curr_branch-$(date +%s)"
 
