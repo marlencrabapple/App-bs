@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-  #
-scriptdir="${0//\/$(basename "$0")}"
+#
+scriptdir="${0//\/$(basename "$0")/}"
 . "$scriptdir/bs-common.sh"c
 
 [[ "${DEBUG:=0}" -eq 1 ]] && set -x
@@ -12,7 +12,7 @@ repo_container="${BS_ROOT:=/bs}/repo"
 pkgdest="${BS_ROOT:=/bs}/pkgdest"
 logdir="${BS_ROOT:=/bs}/log"
 
-fetch_aur_pkg() {(
+fetch_aur_pkg() { (
   pkgbase="$1"
   export PLENV_VERSION=system
 
@@ -20,7 +20,7 @@ fetch_aur_pkg() {(
   echo "$out"
 
   return "${out[*]:-1:1}"
-)}
+); }
 
 get_update_pkgbuild() {
   repo="$1"
@@ -67,10 +67,11 @@ expac_query_dbs() {
 
 package_choice() {
   pkgchoices=("$@")
+  first="${pkgchoices[*]:-1:0}"
 
   choice=(
-    "${pkgchoices[*]:0:1///*/}"
-    "${pkgchoices[*]:0:1//*//}"
+    "${first//\/*/}"
+    "${first//*\//}"
   )
 
   [[ ${DEBUG:-0} -ne 0 ]] && warn "pkgchoices: ${pkgchoices[*]}"
@@ -78,7 +79,6 @@ package_choice() {
 
   echo "${choice[@]}"
   return ${?:-0}
-
 
   #local i=0
   #for pkgrepo in "${pkgchoices[@]}"; do
@@ -97,13 +97,12 @@ handle_pkgspec() {
   pkgchoices=("$(expac_query_dbs "$pkgspec")?")
   pkgchoice=$(package_choice "${pkgchoices[@]}")
 
-
   # Fairly sure pactree includes the provided pkgspec compliant string in the
   # results...
-  pkgtree=("$(pactree -lus "$pkgbase")")
+  pkgtree=("$(pactree -lus "${pkgchoice[*]:-1:0}")")
 
-  for pkgstr in "${pkgtree[@]}"; do
-    pkgchoices=("$(expac_query_dbs "$pkgstr")")
+  for pkgspec in "${pkgtree[@]}"; do
+    pkgchoices=("$(expac_query_dbs "$pkgspec")")
     pkgchoice=$(package_choice "${pkgchoices[@]}")
 
     #cd "$pkg" || continue # Superflous directory check
