@@ -102,16 +102,16 @@ handle_pkgspec() {
   # FIX ME: First result is probably what we want unless the user declares
   # otherwise in the current local git config or a bs-repo-conf.toml file in
   # the repo root
-  pkgchoices=("$(expac_query_dbs "$pkgspec")?")
-  pkgchoice=("$(package_choice "${pkgchoices[@]}")")
+  pkgchoices=($(expac_query_dbs "$pkgspec"))
+  pkgchoice=($(package_choice "${pkgchoices[@]}"))
 
   # Fairly sure pactree includes the provided pkgspec compliant string in the
   # results...
   pkgtree=("$(pactree -lus "${pkgchoice[*]:-1:0}")")
 
   for pkgspec in "${pkgtree[@]}"; do
-    pkgchoices=("$(expac_query_dbs "$pkgspec")")
-    pkgchoice=("$(package_choice "${pkgchoices[@]}")")
+    pkgchoices=($(expac_query_dbs "$pkgspec"))
+    pkgchoice=($(package_choice "${pkgchoices[@]}"))
 
     #cd "$pkg" || continue # Superflous directory check
     get_update_pkgbuild "${pkgchoice[@]}"
