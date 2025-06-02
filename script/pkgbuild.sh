@@ -69,8 +69,8 @@ package_choice() {
   pkgchoices=("$@")
 
   choice=(
-    "${pkgchoices[*]:0:1//\/*/}"
-    "${pkgchoices[*]:0:1//*\//}"
+    "${pkgchoices[*]:0:1///*/}"
+    "${pkgchoices[*]:0:1//*//}"
   )
 
   [[ ${DEBUG:-0} -ne 0 ]] && warn "pkgchoices: ${pkgchoices[*]}"
