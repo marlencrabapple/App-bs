@@ -18,7 +18,7 @@ fetch_aur_pkg() {
     aur fetch -r "$pkgbase")"
   echo "$out"
 
-  return "${out[-1]}"
+  return "${out[*]:-1:1}"
 }
 
 get_update_pkgbuild() {
