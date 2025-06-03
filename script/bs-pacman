@@ -5,6 +5,7 @@ use v5.40;
 
 use lib 'lib';
 
+use BS::Common;
 use Data::Dumper;
 use IPC::Run3;
 
@@ -14,25 +15,24 @@ if ( $ENV{DEBUG} ) {
 
 my @out;
 my @overwrite = $ARGV[0] eq '-S' ? qw(--overwrite '*' --noconfirm) : ();
+push @overwrite, '--needed' if $ENV{ASNEEDED};
 
 my $ret = run3(
     [ 'pacman', @overwrite, '--verbose', @ARGV ],
     undef,
-
-    #sub { chomp $_[0]; say $_[0]; push @out, $_[0] },
-    #sub { chomp $_[0]; warn $_[0] }
+    sub { say @_; push @out, $_[0] },
+    sub { warn @_; }
 );
 
 my $status = $?;
 
 if ( $ENV{DEBUG} ) {
-    warn Dumper(
-        {
-            overwrite => \@overwrite,
-            status    => $status,
-            ret       => $ret,
-            out       => \@out
-        }
+    BS::Common->dmsg(
+        overwrite => \@overwrite,
+        status    => $status,
+        ret       => $ret,
+        out       => \@out
+       )
     );
 }
 
