@@ -28,7 +28,7 @@ fetch_aur_pkg() {
   )"
   echo "$out"
 
-  return "${out[*]:-1:1}"
+  return "${out[*]: -1:0}"
 }
 
 get_update_pkgbuild() {
@@ -41,7 +41,7 @@ get_update_pkgbuild() {
 
     [[ "${err:-0}" -eq 0 ]] && return 0
 
-    warn "Failed to fetch '$pkgbase' from Arch Official Repository mirror"
+    warn "Failed to fetch '$pkgbase' from '$repo'"
 
     err=$(fetch_aur_pkg "$pkgbase")
 
@@ -67,7 +67,7 @@ expac_query_dbs() {
   pkgchoices=()
 
   for db in Q S "${userdb[@]}"; do
-    pkgchoices+=("$(expac "-${db}s" '%r\/%e' $pkgstr)")
+    pkgchoices+=("$(expac "-${db}s" '%r\/%e' "^$pkgstr")")
   done
 
   echo "${pkgchoices[@]}"
@@ -75,8 +75,8 @@ expac_query_dbs() {
 }
 
 package_choice() {
-  pkgchoices=($@)
-  first="${pkgchoices[*]:-1:0}"
+  pkgchoices=("$@")
+  first="${pkgchoices[*]: -1:0}"
 
   choice=(
     "${first//\/*/}"
@@ -85,7 +85,7 @@ package_choice() {
 
   [[ ${DEBUG:-0} -ne 0 ]] && warn "pkgchoices: ${pkgchoices[*]}"
   [[ ${DEBUG:-0} -ne 0 ]] && warn "choice: ${choice[*]}"
-
+  first=(${first//\//"\n"})
   echo "${choice[@]}"
   return ${?:-0}
 
@@ -99,8 +99,7 @@ package_choice() {
 
 enter_pkgbuild_repo() {
   pkgbase="$1"
-  cd "${pkgchoice[*]:-1:0}" || return $?
-  get_update_pkgbuild "${pkgchoice[@]}"
+  get_update_pkgbuild "$pkgbase"
 
   branches=($(git branch --all))
   curr_branch="${branches[*]:0:1}"
@@ -139,7 +138,7 @@ do_makechrootpkg() {
     -Cun${cleanchroot:+c}
     -r"$CHROOT" - -sifAL${cleanbuilddir:+Cc})
 
-  say "$("${makechrootpkg_opts[@]}")"
+  echo "$("${makechrootpkg_opts[@]}")"
   return "${?:-0}"
 }
 
@@ -151,7 +150,7 @@ do_bsrepoadd() {
     bs-repoadd "$PKGDEST/$pkgbase"
   )
 
-  say "$("${bsrepoadd_opts[@]}")"
+  echo "$("${bsrepoadd_opts[@]}")"
 }
 
 handle_pkgspec() {
@@ -165,16 +164,17 @@ handle_pkgspec() {
 
   # Fairly sure pactree includes the provided pkgspec compliant string in the
   # results...
-  pkgtree=($(pactree -lus "${pkgchoice[*]:-1:0}"))
+  pkgtree=($(pactree -lus "${pkgchoice[*]: -1:0}"))
 
   for dep_pkgspec in "${pkgtree[@]}"; do
     handle_pkgspec "$dep_pkgspec"
   done
 
-  enter_pkgbuild_repo "${makechrootpkg_opts[@]}"
+  enter_pkgbuild_repo "${pkgchoice[*]: -1:0}" "${makechrootpkg_opts[@]}"
   local err="${?:-0}"
 
-  [[ ${err:-0} -ne 0 ]] && $("${bsrepoadd_opts[@]}")
+  [[ ${err:-0} -ne 0 ]] && echo "$("${bsrepoadd_opts[@]}")"
+  return $?
 }
 
 for pkgspec in "$@"; do

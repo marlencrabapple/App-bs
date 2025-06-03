@@ -88,6 +88,7 @@ my %args = (
         'Perl::Critic' => '0',
         'Perl::Critic::Community' => '0',
         'Perl::Tidy' => '0',
+        'Version::Next' => '0',
     },
 
     test_requires => {

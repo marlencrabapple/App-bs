@@ -57,6 +57,8 @@ on 'test' => sub {
 };
 
 const our $DEV_PREREQS => sub {
+  requires 'CPAN::Uploader';
+  requires 'Version::Next';
   requires 'Minilla';
   requires 'Minilla::Profile::ModuleBuildTiny';
   requires 'Perl::Critic';
