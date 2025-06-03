@@ -13,7 +13,7 @@ Using BS in your own script:
         use BS;
         ...
 
-Update and rebuild your entire toolchain recursively. This is expected to 
+Update and rebuild your entire toolchain recursively. This is expected to
 perform each operation such that the conditions outlined i
 https://wiki.archlinux.org/title/DeveloperWiki:Toolchain\_maintenance are properly met:
 

@@ -3,9 +3,9 @@ use Object::Pad ':experimental(:all)';
 package App::BS::pkgdepends;
 
 class App::BS::pkgdepends
-  : isa(App::BS::CLI)
-  : does(BS::Ext::pactree)
-  : does(BS::Ext::Common);
+  : isa(App::BS::CLI);
+
+use BS::Ext::pactree;
 
 use utf8;
 use v5.40;

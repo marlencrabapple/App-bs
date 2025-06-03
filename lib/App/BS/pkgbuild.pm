@@ -26,23 +26,22 @@ class PKGBUILD::Stub : does(BS::Common) {
     field $pkgdesc : param : reader = '';
     field $source : param           = [];
 
-    field %pkgres = (); # R
+    field $pkgres : param;    # R
 };
 
 class PKGBUILD::Results : does(BS::Common) {
-  field @results  = ();
-  field %pkgbase_res = ();
+    field @results     = ();
+    field %pkgbase_res = ();
 
-  method first ($field, $name) {
+    method first ( $by, $name ) {
 
-  }
+    }
 };
 
-class PKGBUILD::Builder : does(BS::Common) :does(BS::Package::Meta) {
-  field $pkgbuild : param : reader = '';
-  field $pkgres : param : reader = ();
+class PKGBUILD::Builder : does(BS::Common) : does(BS::Package::Meta) {
+    field $pkgbuild : param : reader = '';
+    field $pkgres : param : reader   = ();
 };
-
 
 field @queue;
 
@@ -50,17 +49,16 @@ field @queue;
 #                       # Need to think about how many could be cached
 #                       # per build tree
 
-
 #field $current_pkgres : reader;
 
-method add_pkgres($pkgres, %opts) {
-    #push @pkgres, $pkgres;
-}
+#method add_pkgres($pkgres, %opts) {
+#    #push @pkgres, $pkgres;
+#}
 
-method pkgres_rm ($pkgres, %opts) {
-die unless $pkgres isa PKGBUILD::STUB &&  all {... }
-  $pkgres->fields->@{qw(pkgname source checksums)}}
-}
+#method pkgres_rm ($pkgres, %opts) {
+#  die unless $pkgres isa PKGBUILD::STUB &&  all {... }
+#    $pkgres->fields->@{qw(pkgname source checksums)}}
+#}
 
 method fetch_aur_pkg : common ($pkgbase, %opts) {
 
@@ -78,18 +76,19 @@ method query_expac : common ($pkgstar, $userrepo_aref,%opts ) {
 # better get across in very few words the differences and implications of using
 # either
 
-method select_pkgres : common (%opts) {
+#method select_pkgres : common (%opts) {
 
-}
+#}
 
-method $select_pkgres (%opts){ return $pkgres[0] };
+#method $select_pkgres (%opts) { return $$pkgres{} };
 
 method change_pkgres(%opts) {
+    ...
 
     # Will probably remain instance method since non-interactive/declarative
     # builds are planned for the first release
 }
 
-method run : common ($pkgstr, $constructor_opts = {}, %run_opts) {
-
-}
+#method run : common ($pkgstr, $constructor_opts //= {}, %run_opts //= ()) {
+#    ...;
+#}
