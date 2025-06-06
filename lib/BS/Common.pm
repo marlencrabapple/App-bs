@@ -16,6 +16,7 @@ use List::AllUtils qw(any all first);
 use Syntax::Keyword::Try;
 use Const::Fast::Exporter;
 use Syntax::Keyword::Dynamically;
+use Time::HiRes qw(gettimeofday);
 
 use subs qw(dmsg bsx callstack __pkgfn__ const);
 
@@ -135,6 +136,10 @@ sub dmsg (@msgs) {
         say STDERR "$out\n";
         $out;
     }
+}
+
+method ts : common ($sep = '') {
+    join $sep, gettimeofday;
 }
 
 method bsx : common ($cmd_aref, %args) {

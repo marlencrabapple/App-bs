@@ -1,0 +1,65 @@
+#!/usr/bin/env perl
+
+use Object::Pad ':experimental(:all)';
+
+class BS::App::pkgbase {
+
+    use utf8;
+    use v5.40;
+
+    use TOML::Tiny;
+    use Const::Fast;
+    use Getopt::Long qw(:config no_ignore_case);
+
+    use BS::Common;
+    use BS::Ext::expac;
+    use BS::Ext::pacsift;
+
+    const our $DEBUG        => $ENV{DEBUG}        // 0;
+    const our $SHORTCIRCUIT => $ENV{SHORTCIRCUIT} // 0;
+
+    const our $CONFIG => class {
+        field $path   = '/etc/bs/config.toml';
+        field $fields = {
+            makepkg_conf => {
+                default => '/etc/makepkg.conf',
+                type    => 'file',
+
+            },
+            pacman_conf => {
+                default => '/etc/pacman.conf',
+                type    => 'file',
+            },
+        };
+
+        ADJUSTPARAMS($params) {
+            ...
+        };
+
+        method load_config : common {
+        }
+    };
+
+    field $argv : param;
+    field $queue  = [];
+    field $opts   = {};
+    field $config = $CONFIG->new( path => $$opts{config_file} );
+
+    ADJUSTPARAMS($params) {
+        $argv, $opts, 'unique!', 'resolve-tree', 'verbose+', 'debug+',
+          '<>' => sub ($arg) { push @$queue, $arg }
+    };
+
+    method env_to_config {
+        foreach my ( $key, $val ) ( $config->fields->%* ) {
+            ...;
+        }
+    }
+
+    method run {
+    }
+}
+
+package pkgbase;
+
+class pkgbase : isa(BS::App::pkgbase);

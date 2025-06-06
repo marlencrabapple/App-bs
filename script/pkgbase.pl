@@ -5,10 +5,12 @@ use v5.40;
 
 use lib 'lib';
 
+use File::Basename;
+use TOML::Tiny;
 use IPC::Run3;
 use Const::Fast;
 use Data::Dumper;
-use List::Util 'uniq';
+use List::Util 'uniqstr';
 
 use BS::Common;
 use BS::Ext::pacman;
@@ -52,14 +54,14 @@ sub parse_pkgstr ( $pkgstr, %opts ) {
     const my $pkgstr_name_ptn => qr'[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
 
     const my $pkgstr_name_re =>
-      qr/^(lib\:)?($pkgstr_name_ptn(\.so(?:\.[0-9]+)?)|$pkgstr_name_ptn)/;
+      qr/^(lib\:)?($pkgstr_name_ptn(\.so(?:\.[0-9\]+)?)|$pkgstr_name_ptn)/;
 
     const my $pkgver_forbidden => quotemeta(':/-') . '\s';
 
     #const my $pkgver_delim     => qr'(?:(\=|[\<\>]\=?)';
 
     const my @pkgstr_re_arr => (
-        $pkgstr_name_re,             '(?:(\=|[\<\>]\=?)',
+        $pkgstr_name_re,             '(?:(\=|[\<\>](?:\=)?)',
         "([^$pkgver_forbidden]+))?", '|(?:(:)\s*(.+))?'
     );
 
@@ -108,27 +110,29 @@ sub parse_pkgstr ( $pkgstr, %opts ) {
             attr    => $attr,
             pkgstub => \%pkgstub
         }
-    ) if $BS::Common::DEBUG;
+    );
 
     \%pkgstub;
 }
 
 foreach my $arg (@ARGV) {
     my ( @out, $err );
-    run3(
-        [ qw"expac -Qs %e", "^$arg\$" ],
-        \undef,
-        sub ( $in, %opts ) {
-            handle_run3_out(
-                $in,
-                out              => \@out,
-                on_parse_success => sub ( $line, %opts ) {
-                    push @pkg, $line;
-                }
-            );
-        },
-        $err
-    );
+    foreach my $db (qw(-Qs -Ss)) {
+        run3(
+            [ "expac", $db, "%e", "^$arg\$" ],
+            \undef,
+            sub ( $in, %opts ) {
+                handle_run3_out(
+                    $in,
+                    out              => \@out,
+                    on_parse_success => sub ( $line, %opts ) {
+                        push @pkg, $line;
+                    }
+                );
+            },
+            $err
+        );
+    }
 
     my $status = $?;
 
@@ -139,11 +143,11 @@ foreach my $arg (@ARGV) {
     }
 }
 
-printf "%s\n", join ' ', @pkg;
+printf "%s\n", join ' ', uniqstr @pkg;
 
 warn Dumper(
     argv => \@ARGV,
     pkg  => \@pkg,
-    diff => ( List::Util::uniqstr @ARGV, @pkg )
+    diff => [ List::Util::uniqstr @ARGV, @pkg ],
   )
   if $DEBUG

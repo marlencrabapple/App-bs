@@ -76,7 +76,6 @@ my %args = (
     },
 
     build_requires => {
-        'App::perlimports' => '0',
         'CPAN::Uploader' => '0',
         'Devel::StackTrace::WithLexicals' => '2.01',
         'ExtUtils::MakeMaker' => '0',
@@ -85,7 +84,6 @@ my %args = (
         'Inline::MakeMaker' => '0',
         'Minilla' => '0',
         'Minilla::Profile::ModuleBuildTiny' => '0',
-        'Module::Build::XSUtil' => '0',
         'Perl::Critic' => '0',
         'Perl::Critic::Community' => '0',
         'Perl::Tidy' => '0',

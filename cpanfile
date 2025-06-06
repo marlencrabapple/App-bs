@@ -63,14 +63,14 @@ const our $DEV_PREREQS => sub {
   requires 'Minilla::Profile::ModuleBuildTiny';
   requires 'Perl::Critic';
   requires 'Perl::Tidy';
-  requires 'App::perlimports';
+  #requires 'App::perlimports';
   requires 'Perl::Critic::Community';
   requires 'Inline';
   requires 'Inline::C';
   requires 'Inline::MakeMaker';
   requires 'ExtUtils::MakeMaker';
   requires 'Devel::StackTrace::WithLexicals', '2.01';
-  requires 'Module::Build::XSUtil';
+  #requires 'Module::Build::XSUtil';
 };
 
 on 'build' => $DEV_PREREQS;

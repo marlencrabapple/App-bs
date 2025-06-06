@@ -1,0 +1,106 @@
+#!/usr/bin/env perl
+
+use Object::Pad ':experimental(:all)';
+
+class BS::App::pkgarch {
+
+    use utf8;
+    use v5.40;
+
+    use TOML::Tiny;
+    use Const::Fast;
+    use Getopt::Long qw(:config no_ignore_case);
+
+    use BS::Common;
+    use BS::Ext::expac;
+    use BS::Ext::pacsift;
+
+    const our $DEBUG        => $ENV{DEBUG}        // 0;
+    const our $SHORTCIRCUIT => $ENV{SHORTCIRCUIT} // 0;
+
+    const our $CONFIG => class {
+        field $path   = '/etc/bs/config.toml';
+        field $fields = {
+            makepkg_conf => {
+                default => '/etc/makepkg.conf',
+                type    => 'file',
+
+            },
+            pacman_conf => {
+                default => '/etc/pacman.conf',
+                type    => 'file',
+            },
+        };
+
+        ADJUSTPARAMS($params) {
+            ...
+        };
+
+        method load_config : common {
+        }
+    };
+
+    field $argv : param;
+    field $queue    = [];
+    field $opts     = {};
+    field $config   = {};
+    field $arch     = [];
+    field $pkgbuild = undef;
+
+    ADJUSTPARAMS($params) {
+
+        GetOptions(
+            $argv, $opts,
+            'unique!',
+            'resolve-tree',
+            'verbose+',
+            'debug+',
+            '<>' => sub ($arg) {
+                $self->handle_barearg($arg);
+
+            }
+        );
+
+        if ( my $in_cwd = -e './PKGBUILD' ) {
+            $pkgbuild = path($in_cwd);
+            BS::Common->tie_file($pkgbuild);
+        }
+    };
+
+    method handle_barearg($arg) {
+        state $i = 0;
+        $i++;
+        if (   ( $i == 1 )
+            && ( $arg =~ /PKGBUILD$/ )
+            && ( my $as_file = path($arg) )
+            && !$pkgbuild
+          ) #TODO?: Possibly merge PKGBUILDs using pre-defined or user-supplied rules
+        {
+            BS::Common->tie_file($as_file);
+        }
+
+        elsif ( $arg =~ /^\-/ ) {
+
+            push @$queue, $arg;
+        }
+        elsif ( $arg =~ /^\+/ ) {
+
+        }
+        else {
+
+        }
+    }
+
+    method env_to_config {
+        foreach my ( $key, $val ) ( $config->fields->%* ) {
+            ...;
+        }
+    }
+
+    method run {
+    }
+}
+
+package pkgbase;
+
+class pkgbase : isa(BS::App::pkgarch);
