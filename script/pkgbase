@@ -51,9 +51,21 @@ class BS::App::pkgbase {
     };
 
     method env_to_config {
+
+        # Is $val alisaed?
         foreach my ( $key, $val ) ( $config->fields->%* ) {
-            ...;
+            if ( $ENV{ uc($key) } ) {
+                $$config{$key} = $ENV{$key};
+            }
+            else {
+                my $envkey = 'BS_' . ( $key =~ s/_//r )[0];
+                if ( my $val = $ENV{$envkey} ) {
+                    $$config{$key} //= $val;
+                }
+
+            }
         }
+
     }
 
     method run {

@@ -1,3 +1,9 @@
 [submodule "src/pacman"]
 	path = src/pacman
 	url = https://gitlab.archlinux.org/pacman/pacman.git
+[submodule "inc/expac"]
+	path = inc/expac
+	url = https://github.com/falconindy/expac.git
+[submodule "inc/pacutils"]
+	path = inc/pacutils
+	url = https://github.com/andrewgregory/pacutils.git

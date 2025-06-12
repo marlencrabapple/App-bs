@@ -3,6 +3,9 @@
 use utf8;
 use v5.40;
 
+no warnings 'experimental::re_strict';
+use re 'strict';
+
 use lib 'lib';
 
 use File::Basename;
