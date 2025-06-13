@@ -31,23 +31,21 @@ git submodule update --init --recursive
 
 # -- sources --
 echo "sources=("
-# parent repo
-git config get remote.origin.url
+# Parent repo
+echo "  \"git+$(git config get remote.origin.url)#commit=$(git rev-parse HEAD)\""
 # submodules
-# git submodule foreach --recursive -q 'commit=$(git -C"$path" | head -n 1); git -C $toplevel config get submodule.$name.url' | head -n 1) | sort -u | sed 's|.*/\([^/.]*\)\(.git\)*$|  "\1::git+\0#commit="|g'
-submodule_status=("$(git submodule status --recursive)")
-[[ $DEBUG -eq 1 ]] && echo "submodule_status: ${submodule_status[*]}"
-for status in ${submodule_status}; do
-  status=($status)
-  [[ $DEBUG -eq 1 ]] && echo "status: ${status[*]}"
+#
+while read -r status; do
+  status=(${status[@]})
+
+  [[ $DEBUG -eq 1 ]] && >&2 echo "👋status: ${status[*]}"
   commit=${status[*]:0:1}
   path=${status[*]:1:1}
+
   url="$(git -C "$path" remote get-url origin)"
   echo "  \"$(basename "$path")::git+$url#commit=$commit\""
-done
-# printenv name
-# printenv sm_path
-# printf "%s" "$(git -C"$repo" | head -n 1)"
+done <<<"$(git submodule status --recursive)"
+
 echo ")"
 echo ""
 
@@ -65,5 +63,3 @@ echo "prepare() {"
 echo ""
 configure_repo .
 echo "}"
-
-#updpkgsums
