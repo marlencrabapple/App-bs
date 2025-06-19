@@ -52,31 +52,36 @@ sub handle_run3_out ( $in, %opts ) {
 
 sub parse_pkgstr ( $pkgstr, %opts ) {
 
-    # These are newer/more general versions of constants above/in other
-    # modules (currently, at least)
+# Should be possible to detect if file, regardless of file ext both before and after parsing as pkgspec
     const my $pkgstr_name_ptn => qr'[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
 
-    const my $pkgstr_name_re =>
-      qr/^(lib\:)?($pkgstr_name_ptn(\.so(?:\.[0-9\]+)?)|$pkgstr_name_ptn)/;
+    const my $pkgstr_name_re => qr/
+        ^(lib\:)?
+        ($pkgstr_name_ptn(\.so(?:\.[0-9\]+)?)
+        |$pkgstr_name_ptn)
+      /x;
 
     const my $pkgver_forbidden => quotemeta(':/-') . '\s';
 
-    #const my $pkgver_delim     => qr'(?:(\=|[\<\>]\=?)';
+    const my $pkgver_re => qr'
+      (\=|[\<\>](?:\=)?)
+      ([^$pkgver_forbidden]+)
+    'x;
+    const my $optdep_re => qr/(:(:)\s+(.+))/;
 
-    const my @pkgstr_re_arr => (
-        $pkgstr_name_re,             '(?:(\=|[\<\>](?:\=)?)',
-        "([^$pkgver_forbidden]+))?", '|(?:(:)\s*(.+))?'
-    );
+    const my $pkgstr_re => qr/
+        $pkgstr_name_re #
+        (?:$pkgver_re)?
+        $optdep_re
+      /x;
 
-    const my $pkgstr_re_str => join '', @pkgstr_re_arr;
-
-    const my $pkgstr_re  => qr/@pkgstr_re_arr/;    # Not working...
-    const my $_pkgstr_re => qr/$pkgstr_re_str/;
+    # Not working...
+    #const my $_pkgstr_re => qr/$pkgstr_re_str/;
 
     #:wqwarn np nojoin => $pkgstr_re join => $_pkgstr_re if $DEBUG;
 
     my ( $prefix, $_pkgstr, $isfile, $sep, $attr, @extra ) =
-      $pkgstr =~ $_pkgstr_re;
+      $pkgstr =~ $pkgstr_re;
 
     my %pkgstub = ();
 

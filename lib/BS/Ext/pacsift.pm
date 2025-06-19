@@ -19,3 +19,13 @@ method provides : common ($pkgstr, %opts) {
         out  => sub { $class->$out(@_) }
     );
 }
+
+method owns_file : common ($pkgstr, %opts) {
+    my $out = $opts{out} //= [];
+    my $res = BS::Common->bsx(
+        [ qw(pacsift), $opts{args}->@*, 'owns_file', '<&-' ],
+        in   => undef,
+        dest => $out,
+        out  => sub { $class->$out(@_) }
+    );
+}
