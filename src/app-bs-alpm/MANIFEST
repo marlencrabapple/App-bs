@@ -1,0 +1,10 @@
+app-bs-alpm.xs
+Changes
+Makefile.PL
+MANIFEST
+ppport.h
+README
+t/app-bs-alpm.t
+fallback/const-c.inc
+fallback/const-xs.inc
+lib/app-bs-alpm.pm

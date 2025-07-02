@@ -1,0 +1,6 @@
+Revision history for Perl extension bs-expac.
+
+0.01  Fri Jul  4 03:37:27 2025
+	- original version; created by h2xs 1.23 with options
+		-Afn bs-expac
+

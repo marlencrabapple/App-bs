@@ -1,0 +1,8 @@
+bs-expac3.xs
+Changes
+Makefile.PL
+MANIFEST
+ppport.h
+README
+t/bs-expac3.t
+lib/bs-expac3.pm

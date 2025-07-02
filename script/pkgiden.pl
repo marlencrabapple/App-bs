@@ -15,7 +15,7 @@ use v5.40;
 use Const::Fast;
 use IPC::Run3;
 use List::Util 'uniq';
-use Getopt::Long;
+use Getopt::Long 'GetOptionsFromArray';
 
 field $err = [];
 field $deps = [];
@@ -105,10 +105,43 @@ method parse_pkgstr ( $pkgstr, %opts ) {
 	\%pkgstub;
 }
 
+#use utf8; use v5.40; say join "\n", grep { $_ =~ /ENV{SELECT}/ } uniq @ARG
+
+#env FILTER=lib32 SELECT='bin\b' perl -e 'use utf8; use v5.40; use List::Util qw(uniq none); say join "\n", grep { (($ENV{SELECT} && $_ =~ /$ENV{SELECT}/) || ($ENV{FILTER} && $_ !~ /$ENV{FILTER}/) || none { $_ } @ENV{ qw(SELECT FILTER) } ) } uniq @ARGV ' $(expac -Q '%F' aarch64-linux-gnu-binutils aarch64-linux-gnu-gdb aarch64-linux-gnu-linux-api-headers aarch64-linux-gnu-gcc aarch64-linux-gnu-glibc )
+
+method pkgfiles (@pkgs) {
+  ...
+}
+
 method err ($line) {
     chomp $line;
     push @$err, $line;
     warn $line
+}
+
+method rebuild_order (@pkgstub) {
+	# my @pkgname = (); 
+	
+	# foreach my $stub (@pkgstub) {
+	# 	if (!$$stub{name}) {
+	# 		BS::Ext::expac->search($$stub{base})
+	# 	}
+	# }
+
+	my $res = BS::Ext::expac->search(
+		[ grep { $_ } map { @$_{qw(name base)} } @pkgstub ]
+		, fields => [ 'base name' ]);
+
+	my @pkgnames = $res->out->@*
+}
+
+method base (@pkgstub) {
+
+}
+
+method name (@pkgstub) {
+	#foreach
+	
 }
 
 method run ($argv = \@ARGV) {
@@ -119,12 +152,14 @@ method run ($argv = \@ARGV) {
 		, 'base'
 		, 'filter=s'
 		, '<>', sub ($barearg) {
-				push @$queue, $barearg
+			  my $pkgstub = $self->parse_pkgstr($barearg);
+				push @$queue, values %$pkgstub
 			}
 		);
 
   if ($$cliopts{base}) {
 		if ($$cliopts{pkgfield}) {
+			
 
 		}
   }
@@ -132,12 +167,14 @@ method run ($argv = \@ARGV) {
   #my $expac_op = $$cliopts{sync} ? '-Ss' : '-Qs';
 	my $expac_op = $$cliopts{sync} ? '-S' : '-Q';
 
+	my $expac_fmt = "$PKGFIELD{$$cliopts{pkgfield}} %D %o";
+
   foreach my $arg (@$queue) {
 		my (@out);#, @err);
 
 		my $run3err = run3([qw(expac)
 				  , $expac_op
-					, "$PKGFIELD{$$cliopts{pkgfield}} %D", $arg]
+					, $expac_fmt, $arg]
 					, \undef
 					, sub ($line) {
 							chomp $line;
@@ -154,22 +191,27 @@ method run ($argv = \@ARGV) {
 													chomp $line;
 													push @$deps, $line
 												}
-										, \&err)
+								, sub ($line) { $self->err($line) } )
 							}
-						}, \&err);
+						}, sub ($line) { $self->err($line) } );
   }
 
 	my $run3err = run3([
-		  qw(arch-rebuild-order --no-reverse-deps --repos)
+		  qw(arch-rebuild-order --no-reverse-depends --repos)
 	      ,'universe,extra,core'
-		    , (grep { $ENV{FILTER} ? $_ !~ /^$ENV{FILTER}/ : 1 } uniq @$deps) 
+		    , ( uniq @$deps) 
 		]
 		, \undef
 		, sub ($line) {
-			chomp $line;
-			say $line
-		}, \&err);
+			  chomp $line;
+			  say $line
+		  }
+		, sub ($line) { $self->err($line) });
 
-  warn join "\n\n", @$err if scalar @$err;
+  #warn join "\n", @$err if scalar @$err;
 	BS::Common::dmsg( { err => $err } );
 }
+
+package main;
+our $pkgiden = pkdiden->new;
+$pkgiden->run(\@ARGV)

@@ -1,0 +1,61 @@
+--- script/asdf.pl	2025-07-05 05:37:29.174383651 -0700
++++ script/asdf.pl.1	2025-07-05 04:57:01.321244985 -0700
+@@ -3,8 +3,7 @@
+ 
+ package asdf;
+ 
+-class asdf : does(BS::Common)
+-           : does(BS::Ext::expac);
++class asdf;
+ 
+ use utf8;
+ use v5.42;
+@@ -28,7 +27,7 @@
+ 
+ field $err;
+ field $deps;
+-field $queue: accessor;
++field $queue :accessor;
+ field $dep_pkgstub;
+ field $expac_op = '-Q';
+ field $find;
+@@ -101,7 +100,9 @@
+                 )
+               };
+         },
+-        sub ($line) { $self->err }
++        sub ($line) {
++            $self->err($line)
++        }
+     );
+ 
+     return @base_name;
+@@ -109,7 +110,7 @@
+ 
+ method run : common ($argv, %runopts) {
+     $runopts{queue}       //= [];
+-    $runopts{cliopt_dest} //= {};
++    $runopts{cliopts} //= {};
+     $runopts{res}         //= [];
+ 
+     my $self = $class->new(
+@@ -122,14 +123,15 @@
+             'rebuild-order',
+             'reverse-depends',
+             'pkgfield|pkgid|field=s',
+-            '<>' => sub ($barearg) { 
+-                push $runopts{queue}->@*, $barearg
+-             }
++            '<>',
++            sub ($barearg) {
++                push $runopts{queue}->@*, $barearg;
++            }
+         ],
+         %runopts
+     );
+ 
+-    $self->pkg_base_names( $self->queue );
++    $self->pkg_base_names( $self->queue->@* );
+ 
+     dmsg( \%runopts{qw(queue cliopt_dest res)} );
+ 
