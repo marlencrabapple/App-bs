@@ -105,7 +105,7 @@ sub dmsg (@msgs) {
     my $self =    # Maybe there's a reason to make an anon class here?
       blessed $msgs[0] && $msgs[0]->DOES('BS::Common') ? shift @msgs : undef;
 
-    if ( state $debug = $DEBUG // $ENV{DEBUG} // undef ) {
+    if ( state $debug = $DEBUG || $ENV{DEBUG} // undef ) {
 
         my @caller = caller 0;
 

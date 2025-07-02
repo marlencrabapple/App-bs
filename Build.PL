@@ -34,9 +34,7 @@ my %args = (
     },
 
     requires => {
-        'Const::Fast' => '0',
         'Const::Fast::Exporter' => '0',
-        'Cwd' => '0',
         'DBD::SQLite' => '0',
         'DBI' => '0',
         'DBIx::Connector' => '0',
@@ -58,7 +56,6 @@ my %args = (
         'Net::SSLeay' => '0',
         'Object::Pad' => '0',
         'Path::Tiny' => '0',
-        'Plack' => '0',
         'Pod::Usage' => '0',
         'Struct::Dumb' => '0',
         'Syntax::Keyword::Defer' => '0',
@@ -66,7 +63,7 @@ my %args = (
         'Syntax::Keyword::MultiSub' => '0',
         'Syntax::Keyword::Try' => '0',
         'TOML::Tiny' => '0',
-        'perl' => 'v5.40.0',
+        'perl' => 'v5.42.0',
     },
 
     recommends => {

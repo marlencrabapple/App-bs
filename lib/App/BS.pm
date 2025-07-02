@@ -4,7 +4,7 @@ package App::BS;
 
 use constant VERSION => "0.01";
 
-class App::BS : does(App::BS::Common);
+class App::BS; #: does(App::BS::Common);
 
 use utf8;
 use v5.40;

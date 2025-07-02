@@ -9,9 +9,12 @@ use v5.40;
 use Const::Fast;
 use Const::Fast::Exporter;
 
+const our $split_comma_re => qr/,/;
+const our %DB => ('local' => 'Q', sync => 'S');
+
 method $parse_line : common ( $line, %opts ) {
     my @fields = $opts{fields}->@*;
-    map { shift @fields => $_ } split /,/, $line
+    map { shift @fields => $_ } split $split_comma_re, $line
 };
 
 method $out : common ($line, %opts) {
@@ -21,9 +24,16 @@ method $out : common ($line, %opts) {
     push $opts{dest}->@*, \%res
 };
 
-method search : common ( $pkgstr, %opts ) {
-    $opts{fields} //= ['base'];
+method search : common ( $search, %opts ) {
+    $opts{fields} //= [qw(base name)];
     $opts{dest}   //= [];
+
+    $opts{find} and $opts{find} = 's';
+    #$opts{find} = 's' if $opts{find};
+
+    dmsg({ and        => eval { $opts{find} and $opts{find} = 's' }
+         , postfix_if => eval { $opts{find} = 's' if $opts{find} } 
+    });
 
     const my %fields => (
         base                 => '%e',
@@ -58,17 +68,20 @@ method search : common ( $pkgstr, %opts ) {
         'literal_%'          => '%%',
     );
 
-    my $fmtstr = join ',', @fields{ $opts{fields}->@* };
+    my $fmtstr = $opts{fmt} // join ',', @fields{ $opts{fields}->@* };
 
     my $res = BS::Common->bsx(
-        [ qw(expac -Ss), $fmtstr, $pkgstr ],
-        out => sub ( $line, %_opts ) {
-            $class->$out( $line, %opts, %_opts, fmtstr => $fmtstr );
-        },
-        %opts
+        [ 'expac'
+          , "$opts{db}$opts{find}"
+          , $fmtstr
+          , ($search isa 'ARRAY' ? @$search : $search) ]
+        , out => sub ( $line, %_opts ) {
+                    $class->$out( $line, %opts, %_opts, fmtstr => $fmtstr );
+                }
+        , %opts
     );
 
-    BS::Common::dmsg $res;
+    BS::Common::dmsg { res => $res };
 
     $res;
 }

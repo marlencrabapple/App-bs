@@ -156,10 +156,16 @@ META.json
 minil.toml
 ppport.h
 README.md
+'script/aarch64-linux-gnu-binutils aarch64-linux'
+script/asdf.pl
 script/bs
+script/bs-chroot.pl
 script/bs-common.sh
+script/bs-initrepo.pl
+script/bs-initrepo.sh
 script/bs-pacman
 script/bs-pkgbuild-upd
+script/bs-pkgdeps.pl
 script/bs-rebuild-order
 script/bs-repoadd
 script/bs-reposrv
@@ -175,8 +181,10 @@ script/pkgbase
 script/pkgbase.pl
 script/pkgbuild
 script/pkgbuild-get
+script/pkgbuild-git-submodules.pl
 script/pkgbuild-git-submodules.sh
 script/pkgbuild.sh
+script/pkgiden.pl
 script/srcinfo
 script/vcsutil.pl
 share/bs-chroot.sh
@@ -1256,6 +1264,7 @@ vendor/cache/authors/id/O/OA/OALDERS/HTTP-Cookies-6.11.tar.gz
 vendor/cache/authors/id/O/OA/OALDERS/HTTP-Date-6.06.tar.gz
 vendor/cache/authors/id/O/OA/OALDERS/HTTP-Message-7.00.tar.gz
 vendor/cache/authors/id/O/OA/OALDERS/libwww-perl-6.78.tar.gz
+vendor/cache/authors/id/O/OA/OALDERS/libwww-perl-6.79.tar.gz
 vendor/cache/authors/id/O/OA/OALDERS/LWP-MediaTypes-6.04.tar.gz
 vendor/cache/authors/id/O/OA/OALDERS/LWP-Protocol-https-6.14.tar.gz
 vendor/cache/authors/id/O/OA/OALDERS/Net-HTTP-6.23.tar.gz
@@ -1311,11 +1320,13 @@ vendor/cache/authors/id/R/RO/ROBIN/PadWalker-2.5.tar.gz
 vendor/cache/authors/id/R/RS/RSAVAGE/Config-Tiny-2.30.tgz
 vendor/cache/authors/id/R/RS/RSHERER/Class-Data-Inheritable-0.10.tar.gz
 vendor/cache/authors/id/R/RU/RURBAN/B-Keywords-1.27.tar.gz
+vendor/cache/authors/id/R/RU/RURBAN/B-Keywords-1.28.tar.gz
 vendor/cache/authors/id/R/RU/RURBAN/Cpanel-JSON-XS-4.39.tar.gz
 vendor/cache/authors/id/R/RW/RWSTAUNER/Pod-Markdown-3.400.tar.gz
 vendor/cache/authors/id/S/SA/SANKO/Readonly-2.05.tar.gz
 vendor/cache/authors/id/S/SA/SARTAK/Devel-StackTrace-WithLexicals-2.01.tar.gz
 vendor/cache/authors/id/S/SH/SHANCOCK/Perl-Tidy-20250311.tar.gz
+vendor/cache/authors/id/S/SH/SHANCOCK/Perl-Tidy-20250616.tar.gz
 vendor/cache/authors/id/S/SI/SIMONW/Module-Pluggable-6.3.tar.gz
 vendor/cache/authors/id/S/SK/SKAJI/Minilla-v3.1.25.tar.gz
 vendor/cache/authors/id/S/SK/SKAJI/Minilla-v3.1.26.tar.gz
@@ -1323,6 +1334,7 @@ vendor/cache/authors/id/S/SK/SKAJI/Test-PAUSE-Permissions-0.07.tar.gz
 vendor/cache/authors/id/S/SR/SREZIC/String-Format-1.18.tar.gz
 vendor/cache/authors/id/S/SU/SULLR/IO-Socket-SSL-2.089.tar.gz
 vendor/cache/authors/id/S/SU/SULLR/IO-Socket-SSL-2.090.tar.gz
+vendor/cache/authors/id/S/SU/SULLR/IO-Socket-SSL-2.094.tar.gz
 vendor/cache/authors/id/S/SY/SYOHEX/Devel-CheckCompiler-0.07.tar.gz
 vendor/cache/authors/id/T/TI/TINITA/YAML-PP-v0.39.0.tar.gz
 vendor/cache/authors/id/T/TO/TOBYINK/Exporter-Tiny-1.006002.tar.gz
@@ -1348,5 +1360,6 @@ vendor/cache/authors/id/Y/YV/YVES/Sereal-Decoder-5.004.tar.gz
 vendor/cache/authors/id/Y/YV/YVES/Sereal-Encoder-5.004.tar.gz
 vendor/cache/authors/id/Z/ZE/ZEFRAM/Module-Runtime-0.016.tar.gz
 vendor/cache/modules/02packages.details.txt.gz
+vendor/Frame-0.01.5-TRIAL.tar.gz
 vendor/Plack-1.0053-TRIAL.tar.gz
 xshelper.h

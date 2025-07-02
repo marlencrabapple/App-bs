@@ -14,6 +14,7 @@ use List::Util qw(uniq any);
 use Struct::Dumb;
 use Data::Printer;
 use Syntax::Keyword::Dynamically;
+use Exporter ;
 
 const our $DEFAULT_ENVPREFIXRE => qr/^(?:BS_)?(.+)/;
 const our $DEFAULT_CONFIGPATH  => '/etc/bs/config.toml';
