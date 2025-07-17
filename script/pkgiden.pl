@@ -23,7 +23,7 @@ field $queue= [];
 
 field $cliopts = {
   pkgfield => 'base',
-	filter => $ENV{FILTER}
+  filter => $ENV{FILTER}
 };
 
 field $rawdeps = [];
