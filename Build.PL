@@ -63,7 +63,7 @@ my %args = (
         'Syntax::Keyword::MultiSub' => '0',
         'Syntax::Keyword::Try' => '0',
         'TOML::Tiny' => '0',
-        'perl' => 'v5.42.0',
+        'perl' => 'v5.40.0',
     },
 
     recommends => {
