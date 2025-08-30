@@ -6,6 +6,7 @@ class App::BS::pkgdepends
   : isa(App::BS::CLI);
 
 use BS::Ext::pactree;
+use BS::Ext::expac;
 
 use utf8;
 use v5.40;

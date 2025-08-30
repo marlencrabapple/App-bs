@@ -2,7 +2,7 @@ use Object::Pad qw(:experimental(:all));
 
 package BS::Package;
 
-class BS::Package : does(BS::Package::Meta);
+class BS::Package #: does(BS::Package::Meta);
 
 use utf8;
 use v5.40;
@@ -12,6 +12,47 @@ use List::Util 'any';
 use File::chdir;
 use Path::Tiny;
 use File::Temp;
+use Const::Fast;
+
+field $base = "";
+field $name = [];
+field $ver = "";
+field $rel = "";
+field $epoch = "";
+field $sources = [];
+field $checksums = "";
+
+methodo parse_pkgstr : common {
+        const my $pkgstr_name_ptn => qr'[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
+
+    const my $pkgstr_name_re => qr/
+        ^(lib\:)?
+        ($pkgstr_name_ptn(\.so(?:\.[0-9\]+)?)
+        |$pkgstr_name_ptn)
+      /x;
+
+    const my $pkgver_forbidden => quotemeta(':/-') . '\s';
+
+    const my $pkgver_re => qr'
+      (\=|[\<\>](?:\=)?)
+      ([^$pkgver_forbidden]+)
+    'x;
+    const my $optdep_re => qr/(:(:)\s+(.+))/;
+
+    const my $pkgstr_re => qr/
+        $pkgstr_name_re #
+        (?:$pkgver_re)?
+        $optdep_re
+      /x;
+
+    # Not working...
+    #const my $_pkgstr_re => qr/$pkgstr_re_str/;
+
+    #:wqwarn np nojoin => $pkgstr_re join => $_pkgstr_re if $DEBUG;
+
+    my ( $prefix, $_pkgstr, $isfile, $sep, $attr, @extra ) =
+      $pkgstr =~ $pkgstr_re;
+}
 
 method updchecksums : common {
     $class->bsx( ['updchecksums'] );

@@ -4,7 +4,7 @@
       "Ian P Bradley <ian.bradley@studiocrabapple.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.26, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "Minilla/v3.1.27, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
@@ -101,7 +101,7 @@
             "Syntax::Keyword::MultiSub" : "0",
             "Syntax::Keyword::Try" : "0",
             "TOML::Tiny" : "0",
-            "perl" : "v5.42.0"
+            "perl" : "v5.40.0"
          }
       },
       "test" : {

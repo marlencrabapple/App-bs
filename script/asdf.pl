@@ -18,6 +18,7 @@ use Inline::Module;
 use Syntax::Keyword::Dynamically;
 
 use BS::Common;
+use BS::Package;
 use BS::Ext::pacsift;
 use BS::Ext::expac;
 
@@ -144,4 +145,7 @@ package main;
 use utf8;
 use v5.42;
 
-asdf->run( \@ARGV );
+use Data::Dumper;
+
+my $app = asdf->run( \@ARGV );
+warn Dumper({self => $self})
