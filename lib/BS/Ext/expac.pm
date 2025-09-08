@@ -10,30 +10,34 @@ use Const::Fast;
 use Const::Fast::Exporter;
 
 const our $split_comma_re => qr/,/;
-const our %DB => ('local' => 'Q', sync => 'S');
+const our %DB             => ( 'local' => 'Q', sync => 'S' );
 
 method $parse_line : common ( $line, %opts ) {
     my @fields = $opts{fields}->@*;
-    map { shift @fields => $_ } split $split_comma_re, $line
-};
+    map { shift @fields => $_ } split $split_comma_re, $line;
+}
 
 method $out : common ($line, %opts) {
     chomp $line;
     my %res = $class->$parse_line( $line, %opts );
     BS::Common::dmsg { line => $line, res => \%res, opts => \%opts };
-    push $opts{dest}->@*, \%res
-};
+    push $opts{dest}->@*, \%res;
+}
 
 method search : common ( $search, %opts ) {
     $opts{fields} //= [qw(base name)];
     $opts{dest}   //= [];
 
     $opts{find} and $opts{find} = 's';
+
     #$opts{find} = 's' if $opts{find};
 
-    dmsg({ and        => eval { $opts{find} and $opts{find} = 's' }
-         , postfix_if => eval { $opts{find} = 's' if $opts{find} } 
-    });
+    dmsg(
+        {
+            and        => eval { $opts{find} and $opts{find} = 's' },
+            postfix_if => eval { $opts{find} = 's' if $opts{find} }
+        }
+    );
 
     const my %fields => (
         base                 => '%e',
@@ -71,17 +75,17 @@ method search : common ( $search, %opts ) {
     my $fmtstr = $opts{fmt} // join ',', @fields{ $opts{fields}->@* };
 
     my $res = BS::Common->bsx(
-        [ 'expac'
-          , "$opts{db}$opts{find}"
-          , $fmtstr
-          , ($search isa 'ARRAY' ? @$search : $search) ]
-        , out => sub ( $line, %_opts ) {
-                    $class->$out( $line, %opts, %_opts, fmtstr => $fmtstr );
-                }
-        , %opts
+        [
+            'expac', "$opts{db}$opts{find}",
+            $fmtstr, ( $search isa 'ARRAY' ? @$search : $search )
+        ],
+        out => sub ( $line, %_opts ) {
+            $class->$out( $line, %opts, %_opts, fmtstr => $fmtstr );
+        },
+        %opts
     );
 
-    BS::Common::dmsg { res => $res };
+    dmsg( { res => $res } );
 
     $res;
 }

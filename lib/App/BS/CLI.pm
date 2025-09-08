@@ -20,7 +20,7 @@ const our $S_MULTI_BAREARG => "Two bare argument handlers are defined. Please"
 field $bareargs : param(argv) : mutator(argv);
 field $handle_bareargs : param = undef;
 
-ADJUSTPARAMS ($params) {
+ADJUSTPARAMS($params) {
     my @handle_bareargs_arr;
     my $has_bareargs_handler = 0;
 

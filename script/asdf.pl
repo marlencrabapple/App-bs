@@ -4,7 +4,7 @@ use Object::Pad ':experimental(:all)';
 package asdf;
 
 class asdf : does(BS::Common)
-           : does(BS::Ext::expac);
+  : does(BS::Ext::expac);
 
 use utf8;
 use v5.42;
@@ -29,7 +29,7 @@ const our %FIELD_FMT => (
 
 field $err;
 field $deps;
-field $queue: accessor;
+field $queue : accessor;
 field $dep_pkgstub;
 field $expac_op = '-Q';
 field $find;
@@ -114,8 +114,8 @@ method run : common ($argv, %runopts) {
     $runopts{res}         //= [];
 
     my $self = $class->new(
-        argv  => $argv,
-        dest  => $runopts{dest},
+        argv    => $argv,
+        dest    => $runopts{dest},
         getopts => [
             'sync',
             'optional',
@@ -123,9 +123,9 @@ method run : common ($argv, %runopts) {
             'rebuild-order',
             'reverse-depends',
             'pkgfield|pkgid|field=s',
-            '<>' => sub ($barearg) { 
-                push $runopts{queue}->@*, $barearg
-             }
+            '<>' => sub ($barearg) {
+                push $runopts{queue}->@*, $barearg;
+            }
         ],
         %runopts
     );
@@ -148,4 +148,4 @@ use v5.42;
 use Data::Dumper;
 
 my $app = asdf->run( \@ARGV );
-warn Dumper({self => $self})
+warn Dumper( { app => $app } )

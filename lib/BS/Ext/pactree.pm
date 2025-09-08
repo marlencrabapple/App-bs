@@ -11,10 +11,9 @@ use v5.40;
 
 use Carp;
 use List::Util 'uniq';
-use Data::Printer;
 
 method list_deps : common ($pkgstr, %args) {
-    BS::Common::dmsg { pkgstr => $pkgstr, args => \%args };
+    BS::Common::dmsg( { pkgstr => $pkgstr, args => \%args } );
 
     use constant DEFORDER_RE => qr/^asc.*/i;
 
@@ -43,7 +42,7 @@ method list_deps : common ($pkgstr, %args) {
           unless $depid eq $pkgstr;
     }
 
-    carp np @deps if $ENV{DEBUG};
+    dmsg( { deps => \@deps } );
 
     @deps = $args{unique} ? reverse uniq reverse @deps : @deps;
 
@@ -56,9 +55,7 @@ method list_deps : common ($pkgstr, %args) {
 }
 
 method tree : common ($pkgstr, %args) {
-    carp "${class}::tree('$pkgstr', ...) args:"
-      if $args{debug} // $ENV{DEBUG};
-
+    dmsg( { args => \%args } );
     my ( @flagsargs, @intsargs, @out, $in, $err );
     $args{optional} //= 1;
 
@@ -80,7 +77,7 @@ method tree : common ($pkgstr, %args) {
     die "$err"   if $err;
     die "$?: $!" if $res->cmdexit->[0] != 0;
 
-    carp np @out if $ENV{DEBUG};
+    dmsg( { out => \@out } );
 
     \@out;
 }

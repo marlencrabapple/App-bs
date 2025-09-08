@@ -12,9 +12,8 @@ use TOML::Tiny;
 use Const::Fast;
 use List::Util qw(uniq any);
 use Struct::Dumb;
-use Data::Printer;
 use Syntax::Keyword::Dynamically;
-use Exporter ;
+use Exporter;
 
 const our $DEFAULT_ENVPREFIXRE => qr/^(?:BS_)?(.+)/;
 const our $DEFAULT_CONFIGPATH  => '/etc/bs/config.toml';
@@ -25,8 +24,8 @@ field $config_path : param(config) : mutator =
 field $config;
 field $getopts_setup : param(getopts) : accessor;
 field $cliopts : param(dest) : mutator = {};
-field $aliases                         = {};
-field $queue : mutator                 = ();
+field $aliases = {};
+field $queue : mutator = ();
 
 field $env : mutator = {
     pkgext              => '.pkg.tar.zst',

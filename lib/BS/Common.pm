@@ -42,11 +42,11 @@ my class BsxResult {
     field @out;
     field @err;
 
-    field $cmd : param : reader;
+    field $cmd : param     : reader;
     field $inh : param(in) : reader = \undef;
     field $outh : param(out) : mutator(out) //= \@out;
     field $errh : param(err) : reader //= \@err;
-    field $dest : param : reader   = \@out;
+    field $dest   : param : reader = \@out;
     field $status : param : reader = 0;
 
     ADJUST {
@@ -105,7 +105,7 @@ sub dmsg (@msgs) {
     my $self =    # Maybe there's a reason to make an anon class here?
       blessed $msgs[0] && $msgs[0]->DOES('BS::Common') ? shift @msgs : undef;
 
-    if ( state $debug = $DEBUG || $ENV{DEBUG} // undef ) {
+    if ( state $debug = ( $DEBUG || $ENV{DEBUG} // undef ) ) {
 
         my @caller = caller 0;
 

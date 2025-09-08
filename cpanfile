@@ -6,12 +6,12 @@ requires 'DBD::SQLite';
 requires 'DBIx::Connector';
 requires 'Inline';
 requires 'Inline::C';
+requires 'Inline::Module';
 requires 'Object::Pad';
 requires 'Syntax::Keyword::Try';
 requires 'Syntax::Keyword::Defer';
 requires 'Syntax::Keyword::MultiSub';
 requires 'Syntax::Keyword::Dynamically';
-requires 'Data::Printer';
 requires 'Getopt::Long';
 requires 'Pod::Usage';
 requires 'Path::Tiny';
@@ -33,28 +33,29 @@ requires 'File::chdir';
 requires 'Devel::CheckBin';
 
 on 'test' => sub {
-  requires 'Test::More', '0.98';
-  requires 'Test::CPAN::Meta', '0.25',
-  requires 'Test::Spellunker';
-  requires 'Test::MinimumVersion::Fast';
-  requires 'Test::Pod'
+    requires 'Test::More', '0.98';
+    requires 'Test::CPAN::Meta', '0.25', requires 'Test::Spellunker';
+    requires 'Test::MinimumVersion::Fast';
+    requires 'Test::Pod';
 };
 
 use constant DEV_PREREQS => sub {
-  requires 'CPAN::Uploader';
-  requires 'Version::Next';
-  requires 'Minilla';
-  requires 'Minilla::Profile::ModuleBuildTiny';
-  requires 'Perl::Critic';
-  requires 'Perl::Tidy';
-  #requires 'App::perlimports';
-  requires 'Perl::Critic::Community';
-  requires 'Inline';
-  requires 'Inline::C';
-  requires 'Inline::MakeMaker';
-  requires 'ExtUtils::MakeMaker';
-  requires 'Devel::StackTrace::WithLexicals', '2.01';
-  #requires 'Module::Build::XSUtil';
+    requires 'CPAN::Uploader';
+    requires 'Version::Next';
+    requires 'Minilla';
+    requires 'Minilla::Profile::ModuleBuildTiny';
+    requires 'Perl::Critic';
+    requires 'Perl::Tidy';
+
+    #requires 'App::perlimports';
+    requires 'Perl::Critic::Community';
+    requires 'Inline';
+    requires 'Inline::C';
+    requires 'Inline::MakeMaker';
+    requires 'ExtUtils::MakeMaker';
+    requires 'Devel::StackTrace::WithLexicals', '2.01';
+
+    requires 'Module::Build::XSUtil';
 };
 
 on 'build' => DEV_PREREQS;

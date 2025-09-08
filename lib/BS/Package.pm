@@ -2,7 +2,7 @@ use Object::Pad qw(:experimental(:all));
 
 package BS::Package;
 
-class BS::Package #: does(BS::Package::Meta);
+class BS::Package : does(BS::Package::Meta);
 
 use utf8;
 use v5.40;
@@ -10,20 +10,37 @@ use v5.40;
 use Carp;
 use List::Util 'any';
 use File::chdir;
-use Path::Tiny;
 use File::Temp;
 use Const::Fast;
 
-field $base = "";
-field $name = [];
-field $ver = "";
-field $rel = "";
-field $epoch = "";
-field $sources = [];
-field $checksums = "";
+role BS::Package::Stub : does(BS::Package::Meta) {
+    field $search : inheritable : param : accessor = "";
 
-methodo parse_pkgstr : common {
-        const my $pkgstr_name_ptn => qr'[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
+    method upgrade ( $field_href, %opts ) {
+        ...;
+    }
+};
+
+ADJUSTPARAMS($params) {
+
+    # if ( $search && none( @$name, $base ) ) {
+    #     ( $base, $name ) = $self->$search()->@[qw(name base)];
+    # }
+}
+
+# method $search ( $pkgstr = $search, %opts ) {
+
+# }
+
+method search : common ($search) {
+    my $self = BS::Package->new( search => $search );
+    $self->$search();
+
+    #$self->p
+}
+
+method parse_pkgstr : common ($pkgstr) {
+    const my $pkgstr_name_ptn => qr'[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
 
     const my $pkgstr_name_re => qr/
         ^(lib\:)?
@@ -52,6 +69,23 @@ methodo parse_pkgstr : common {
 
     my ( $prefix, $_pkgstr, $isfile, $sep, $attr, @extra ) =
       $pkgstr =~ $pkgstr_re;
+
+    dmsg( { $prefix, $_pkgstr, $isfile, $sep, $attr, @extra } );
+}
+
+method lookup : common ($field_href, %opts) {
+    my $stub = BS::Package::Stub->new(%$field_href);
+
+    if ( $stub->is_file ) {
+
+    }
+    else {
+        # TODO: More constraints
+        if ( $stub->version ) {
+
+        }
+    }
+
 }
 
 method updchecksums : common {
@@ -101,3 +135,4 @@ method fetch : common ($pkgstr, %args) {
 
     carp $res->out;
 }
+

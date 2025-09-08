@@ -34,6 +34,21 @@ DISTRIBUTIONS
       perl 5.012000
       strict 0
       warnings 0
+  Capture-Tiny-0.50
+    pathname: D/DA/DAGOLDEN/Capture-Tiny-0.50.tar.gz
+    provides:
+      Capture::Tiny 0.50
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.17
+      File::Spec 0
+      File::Temp 0
+      IO::Handle 0
+      Scalar::Util 0
+      perl 5.006
+      strict 0
+      warnings 0
   Class-Data-Inheritable-0.10
     pathname: R/RS/RSHERER/Class-Data-Inheritable-0.10.tar.gz
     provides:
@@ -133,10 +148,10 @@ DISTRIBUTIONS
       perl 5.010
       strict 0
       warnings 0
-  Cpanel-JSON-XS-4.39
-    pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.39.tar.gz
+  Cpanel-JSON-XS-4.40
+    pathname: R/RU/RURBAN/Cpanel-JSON-XS-4.40.tar.gz
     provides:
-      Cpanel::JSON::XS 4.39
+      Cpanel::JSON::XS 4.40
       Cpanel::JSON::XS::Type undef
     requirements:
       Carp 0
@@ -300,47 +315,6 @@ DISTRIBUTIONS
       perl 5.012
       strict 0
       warnings 0
-  Data-Printer-1.002001
-    pathname: G/GA/GARU/Data-Printer-1.002001.tar.gz
-    provides:
-      DDP 1.002001
-      Data::Printer 1.002001
-      Data::Printer::Common undef
-      Data::Printer::Config undef
-      Data::Printer::Filter undef
-      Data::Printer::Filter::ARRAY undef
-      Data::Printer::Filter::CODE undef
-      Data::Printer::Filter::ContentType undef
-      Data::Printer::Filter::DB undef
-      Data::Printer::Filter::DateTime undef
-      Data::Printer::Filter::Digest undef
-      Data::Printer::Filter::FORMAT undef
-      Data::Printer::Filter::GLOB undef
-      Data::Printer::Filter::GenericClass undef
-      Data::Printer::Filter::HASH undef
-      Data::Printer::Filter::OBJECT undef
-      Data::Printer::Filter::REF undef
-      Data::Printer::Filter::Regexp undef
-      Data::Printer::Filter::SCALAR undef
-      Data::Printer::Filter::VSTRING undef
-      Data::Printer::Filter::Web undef
-      Data::Printer::Object undef
-      Data::Printer::Profile undef
-      Data::Printer::Profile::Dumper undef
-      Data::Printer::Profile::JSON undef
-      Data::Printer::Theme undef
-      Data::Printer::Theme::Classic undef
-      Data::Printer::Theme::Material undef
-      Data::Printer::Theme::Monokai undef
-      Data::Printer::Theme::Solarized undef
-    requirements:
-      ExtUtils::MakeMaker 0
-      Fcntl 0
-      File::Spec 0
-      File::Temp 0
-      Scalar::Util 0
-      Test::More 0
-      version 0.77
   Data-Section-Simple-0.07
     pathname: M/MI/MIYAGAWA/Data-Section-Simple-0.07.tar.gz
     provides:
@@ -437,6 +411,17 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  ExtUtils-CppGuess-0.27
+    pathname: E/ET/ETJ/ExtUtils-CppGuess-0.27.tar.gz
+    provides:
+      ExtUtils::CppGuess 0.27
+    requirements:
+      Capture::Tiny 0
+      ExtUtils::MakeMaker 0
+      ExtUtils::ParseXS 3.35
+      File::Basename 0
+      File::Spec 0
+      File::Temp 0
   ExtUtils-Helpers-0.028
     pathname: L/LE/LEONT/ExtUtils-Helpers-0.028.tar.gz
     provides:
@@ -503,6 +488,15 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       HTTP::Date 0
       perl 5.006
+  File-Share-0.27
+    pathname: I/IN/INGY/File-Share-0.27.tar.gz
+    provides:
+      File::Share 0.27
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::ShareDir 1.03
+      Readonly 2.05
+      perl 5.008001
   File-ShareDir-1.118
     pathname: R/RE/REHSACK/File-ShareDir-1.118.tar.gz
     provides:
@@ -584,13 +578,13 @@ DISTRIBUTIONS
       Test::Builder::Module 0
       Time::HiRes 0
       perl 5.014
-  Future-AsyncAwait-0.70
-    pathname: P/PE/PEVANS/Future-AsyncAwait-0.70.tar.gz
+  Future-AsyncAwait-0.71
+    pathname: P/PE/PEVANS/Future-AsyncAwait-0.71.tar.gz
     provides:
-      Future::AsyncAwait 0.70
-      Future::AsyncAwait::Awaitable 0.70
-      Future::AsyncAwait::ExtensionBuilder 0.70
-      Test::Future::AsyncAwait::Awaitable 0.70
+      Future::AsyncAwait 0.71
+      Future::AsyncAwait::Awaitable 0.71
+      Future::AsyncAwait::ExtensionBuilder 0.71
+      Test::Future::AsyncAwait::Awaitable 0.71
     requirements:
       ExtUtils::CBuilder 0
       File::ShareDir 1.00
@@ -865,6 +859,19 @@ DISTRIBUTIONS
       Parse::RecDescent 1.967009
       Pegex 0.66
       perl 5.008001
+  Inline-Module-0.34
+    pathname: I/IN/INGY/Inline-Module-0.34.tar.gz
+    provides:
+      Inline::CPP::Config undef
+      Inline::Module 0.34
+    requirements:
+      ExtUtils::CppGuess 0
+      ExtUtils::MakeMaker 0
+      File::Share 0
+      File::ShareDir::Install 0.06
+      Inline 0
+      Inline::C 0
+      perl 5.008001
   JSON-MaybeXS-1.004008
     pathname: E/ET/ETHER/JSON-MaybeXS-1.004008.tar.gz
     provides:
@@ -964,10 +971,10 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       perl 5.008001
       utf8 0
-  Minilla-v3.1.27
-    pathname: S/SY/SYOHEX/Minilla-v3.1.27.tar.gz
+  Minilla-v3.1.28
+    pathname: S/SK/SKAJI/Minilla-v3.1.28.tar.gz
     provides:
-      Minilla v3.1.27
+      Minilla v3.1.28
       Minilla::CLI undef
       Minilla::CLI::Build undef
       Minilla::CLI::Clean undef
@@ -1202,13 +1209,13 @@ DISTRIBUTIONS
       Sub::Defer 2.006006
       Sub::Quote 2.006006
       perl 5.006
-  Net-HTTP-6.23
-    pathname: O/OA/OALDERS/Net-HTTP-6.23.tar.gz
+  Net-HTTP-6.24
+    pathname: O/OA/OALDERS/Net-HTTP-6.24.tar.gz
     provides:
-      Net::HTTP 6.23
-      Net::HTTP::Methods 6.23
-      Net::HTTP::NB 6.23
-      Net::HTTPS 6.23
+      Net::HTTP 6.24
+      Net::HTTP::Methods 6.24
+      Net::HTTP::NB 6.24
+      Net::HTTPS 6.24
     requirements:
       Carp 0
       Compress::Raw::Zlib 0
@@ -1955,23 +1962,23 @@ DISTRIBUTIONS
       Compiler::Lexer 0.23
       Module::Build::Tiny 0.035
       perl 5.008005
-  Perl-Tidy-20250711
-    pathname: S/SH/SHANCOCK/Perl-Tidy-20250711.tar.gz
+  Perl-Tidy-20250912
+    pathname: S/SH/SHANCOCK/Perl-Tidy-20250912.tar.gz
     provides:
-      Perl::Tidy 20250711
-      Perl::Tidy::Debugger 20250711
-      Perl::Tidy::Diagnostics 20250711
-      Perl::Tidy::FileWriter 20250711
-      Perl::Tidy::Formatter 20250711
-      Perl::Tidy::HtmlWriter 20250711
-      Perl::Tidy::IOScalar 20250711
-      Perl::Tidy::IOScalarArray 20250711
-      Perl::Tidy::IndentationItem 20250711
-      Perl::Tidy::Logger 20250711
-      Perl::Tidy::Tokenizer 20250711
-      Perl::Tidy::VerticalAligner 20250711
-      Perl::Tidy::VerticalAligner::Alignment 20250711
-      Perl::Tidy::VerticalAligner::Line 20250711
+      Perl::Tidy 20250912
+      Perl::Tidy::Debugger 20250912
+      Perl::Tidy::Diagnostics 20250912
+      Perl::Tidy::FileWriter 20250912
+      Perl::Tidy::Formatter 20250912
+      Perl::Tidy::HtmlWriter 20250912
+      Perl::Tidy::IOScalar 20250912
+      Perl::Tidy::IOScalarArray 20250912
+      Perl::Tidy::IndentationItem 20250912
+      Perl::Tidy::Logger 20250912
+      Perl::Tidy::Tokenizer 20250912
+      Perl::Tidy::VerticalAligner 20250912
+      Perl::Tidy::VerticalAligner::Alignment 20250912
+      Perl::Tidy::VerticalAligner::Line 20250912
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
@@ -2213,10 +2220,10 @@ DISTRIBUTIONS
       XS::Parse::Keyword 0.13
       XS::Parse::Keyword::Builder 0.13
       perl 5.014
-  Syntax-Keyword-MultiSub-0.04
-    pathname: P/PE/PEVANS/Syntax-Keyword-MultiSub-0.04.tar.gz
+  Syntax-Keyword-MultiSub-0.05
+    pathname: P/PE/PEVANS/Syntax-Keyword-MultiSub-0.05.tar.gz
     provides:
-      Syntax::Keyword::MultiSub 0.04
+      Syntax::Keyword::MultiSub 0.05
     requirements:
       ExtUtils::CBuilder 0
       Module::Build 0.4004
@@ -2631,63 +2638,66 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       common::sense 0
-  URI-5.32
-    pathname: O/OA/OALDERS/URI-5.32.tar.gz
+  URI-5.34
+    pathname: O/OA/OALDERS/URI-5.34.tar.gz
     provides:
-      URI 5.32
-      URI::Escape 5.32
-      URI::Heuristic 5.32
-      URI::IRI 5.32
-      URI::QueryParam 5.32
-      URI::Split 5.32
-      URI::URL 5.32
-      URI::WithBase 5.32
-      URI::data 5.32
-      URI::file 5.32
-      URI::file::Base 5.32
-      URI::file::FAT 5.32
-      URI::file::Mac 5.32
-      URI::file::OS2 5.32
-      URI::file::QNX 5.32
-      URI::file::Unix 5.32
-      URI::file::Win32 5.32
-      URI::ftp 5.32
-      URI::ftpes 5.32
-      URI::ftps 5.32
-      URI::geo 5.32
-      URI::gopher 5.32
-      URI::http 5.32
-      URI::https 5.32
-      URI::icap 5.32
-      URI::icaps 5.32
-      URI::irc 5.32
-      URI::ircs 5.32
-      URI::ldap 5.32
-      URI::ldapi 5.32
-      URI::ldaps 5.32
-      URI::mailto 5.32
-      URI::mms 5.32
-      URI::news 5.32
-      URI::nntp 5.32
-      URI::nntps 5.32
-      URI::otpauth 5.32
-      URI::pop 5.32
-      URI::rlogin 5.32
-      URI::rsync 5.32
-      URI::rtsp 5.32
-      URI::rtspu 5.32
-      URI::scp 5.32
-      URI::sftp 5.32
-      URI::sip 5.32
-      URI::sips 5.32
-      URI::smb 5.32
-      URI::snews 5.32
-      URI::ssh 5.32
-      URI::telnet 5.32
-      URI::tn3270 5.32
-      URI::urn 5.32
-      URI::urn::isbn 5.32
-      URI::urn::oid 5.32
+      URI 5.34
+      URI::Escape 5.34
+      URI::Heuristic 5.34
+      URI::IRI 5.34
+      URI::QueryParam 5.34
+      URI::Split 5.34
+      URI::URL 5.34
+      URI::WithBase 5.34
+      URI::data 5.34
+      URI::file 5.34
+      URI::file::Base 5.34
+      URI::file::FAT 5.34
+      URI::file::Mac 5.34
+      URI::file::OS2 5.34
+      URI::file::QNX 5.34
+      URI::file::Unix 5.34
+      URI::file::Win32 5.34
+      URI::ftp 5.34
+      URI::ftpes 5.34
+      URI::ftps 5.34
+      URI::geo 5.34
+      URI::gopher 5.34
+      URI::http 5.34
+      URI::https 5.34
+      URI::icap 5.34
+      URI::icaps 5.34
+      URI::irc 5.34
+      URI::ircs 5.34
+      URI::ldap 5.34
+      URI::ldapi 5.34
+      URI::ldaps 5.34
+      URI::mailto 5.34
+      URI::mms 5.34
+      URI::news 5.34
+      URI::nntp 5.34
+      URI::nntps 5.34
+      URI::otpauth 5.34
+      URI::pop 5.34
+      URI::rlogin 5.34
+      URI::rsync 5.34
+      URI::rtsp 5.34
+      URI::rtspu 5.34
+      URI::scp 5.34
+      URI::sftp 5.34
+      URI::sip 5.34
+      URI::sips 5.34
+      URI::smb 5.34
+      URI::smtp 5.34
+      URI::snews 5.34
+      URI::ssh 5.34
+      URI::telnet 5.34
+      URI::tn3270 5.34
+      URI::urn 5.34
+      URI::urn::isbn 5.34
+      URI::urn::oid 5.34
+      URI::ws 5.34
+      URI::wss 5.34
     requirements:
       Carp 0
       Cwd 0
@@ -2745,12 +2755,12 @@ DISTRIBUTIONS
       File::ShareDir 1.00
       Module::Build 0.4004
       perl 5.014
-  XS-Parse-Sublike-0.38
-    pathname: P/PE/PEVANS/XS-Parse-Sublike-0.38.tar.gz
+  XS-Parse-Sublike-0.39
+    pathname: P/PE/PEVANS/XS-Parse-Sublike-0.39.tar.gz
     provides:
-      Sublike::Extended 0.38
-      XS::Parse::Sublike 0.38
-      XS::Parse::Sublike::Builder 0.38
+      Sublike::Extended 0.39
+      XS::Parse::Sublike 0.39
+      XS::Parse::Sublike::Builder 0.39
     requirements:
       ExtUtils::CBuilder 0
       File::ShareDir 1.00
@@ -2841,32 +2851,32 @@ DISTRIBUTIONS
       common::sense 3.75
     requirements:
       ExtUtils::MakeMaker 0
-  libwww-perl-6.79
-    pathname: O/OA/OALDERS/libwww-perl-6.79.tar.gz
+  libwww-perl-6.80
+    pathname: O/OA/OALDERS/libwww-perl-6.80.tar.gz
     provides:
-      LWP 6.79
-      LWP::Authen::Basic 6.79
-      LWP::Authen::Digest 6.79
-      LWP::Authen::Ntlm 6.79
-      LWP::ConnCache 6.79
-      LWP::Debug 6.79
-      LWP::Debug::TraceHTTP 6.79
-      LWP::DebugFile 6.79
-      LWP::MemberMixin 6.79
-      LWP::Protocol 6.79
-      LWP::Protocol::cpan 6.79
-      LWP::Protocol::data 6.79
-      LWP::Protocol::file 6.79
-      LWP::Protocol::ftp 6.79
-      LWP::Protocol::gopher 6.79
-      LWP::Protocol::http 6.79
-      LWP::Protocol::loopback 6.79
-      LWP::Protocol::mailto 6.79
-      LWP::Protocol::nntp 6.79
-      LWP::Protocol::nogo 6.79
-      LWP::RobotUA 6.79
-      LWP::Simple 6.79
-      LWP::UserAgent 6.79
+      LWP 6.80
+      LWP::Authen::Basic 6.80
+      LWP::Authen::Digest 6.80
+      LWP::Authen::Ntlm 6.80
+      LWP::ConnCache 6.80
+      LWP::Debug 6.80
+      LWP::Debug::TraceHTTP 6.80
+      LWP::DebugFile 6.80
+      LWP::MemberMixin 6.80
+      LWP::Protocol 6.80
+      LWP::Protocol::cpan 6.80
+      LWP::Protocol::data 6.80
+      LWP::Protocol::file 6.80
+      LWP::Protocol::ftp 6.80
+      LWP::Protocol::gopher 6.80
+      LWP::Protocol::http 6.80
+      LWP::Protocol::loopback 6.80
+      LWP::Protocol::mailto 6.80
+      LWP::Protocol::nntp 6.80
+      LWP::Protocol::nogo 6.80
+      LWP::RobotUA 6.80
+      LWP::Simple 6.80
+      LWP::UserAgent 6.80
     requirements:
       Digest::MD5 0
       Encode 2.12
