@@ -439,10 +439,10 @@ DISTRIBUTIONS
       Text::ParseWords 3.24
       strict 0
       warnings 0
-  ExtUtils-InstallPaths-0.014
-    pathname: L/LE/LEONT/ExtUtils-InstallPaths-0.014.tar.gz
+  ExtUtils-InstallPaths-0.015
+    pathname: L/LE/LEONT/ExtUtils-InstallPaths-0.015.tar.gz
     provides:
-      ExtUtils::InstallPaths 0.014
+      ExtUtils::InstallPaths 0.015
     requirements:
       Carp 0
       ExtUtils::Config 0.009
@@ -1415,75 +1415,75 @@ DISTRIBUTIONS
       re 0
       strict 0
       warnings 0
-  PPIx-Regexp-0.089
-    pathname: W/WY/WYANT/PPIx-Regexp-0.089.tar.gz
+  PPIx-Regexp-0.090
+    pathname: W/WY/WYANT/PPIx-Regexp-0.090.tar.gz
     provides:
-      PPIx::Regexp 0.089
+      PPIx::Regexp 0.090
       PPIx::Regexp::Constant 0.085_04
-      PPIx::Regexp::Constant::Inf 0.089
-      PPIx::Regexp::Dumper 0.089
-      PPIx::Regexp::Element 0.089
-      PPIx::Regexp::Lexer 0.089
-      PPIx::Regexp::Node 0.089
-      PPIx::Regexp::Node::Range 0.089
-      PPIx::Regexp::Node::Unknown 0.089
-      PPIx::Regexp::Structure 0.089
-      PPIx::Regexp::Structure::Assertion 0.089
-      PPIx::Regexp::Structure::Atomic_Script_Run 0.089
-      PPIx::Regexp::Structure::BranchReset 0.089
-      PPIx::Regexp::Structure::Capture 0.089
-      PPIx::Regexp::Structure::CharClass 0.089
-      PPIx::Regexp::Structure::Code 0.089
-      PPIx::Regexp::Structure::Main 0.089
-      PPIx::Regexp::Structure::Modifier 0.089
-      PPIx::Regexp::Structure::NamedCapture 0.089
-      PPIx::Regexp::Structure::Quantifier 0.089
-      PPIx::Regexp::Structure::RegexSet 0.089
-      PPIx::Regexp::Structure::Regexp 0.089
-      PPIx::Regexp::Structure::Replacement 0.089
-      PPIx::Regexp::Structure::Script_Run 0.089
-      PPIx::Regexp::Structure::Subexpression 0.089
-      PPIx::Regexp::Structure::Switch 0.089
-      PPIx::Regexp::Structure::Unknown 0.089
-      PPIx::Regexp::Support 0.089
-      PPIx::Regexp::Token 0.089
-      PPIx::Regexp::Token::Assertion 0.089
-      PPIx::Regexp::Token::Backreference 0.089
-      PPIx::Regexp::Token::Backtrack 0.089
-      PPIx::Regexp::Token::CharClass 0.089
-      PPIx::Regexp::Token::CharClass::POSIX 0.089
-      PPIx::Regexp::Token::CharClass::POSIX::Unknown 0.089
-      PPIx::Regexp::Token::CharClass::Simple 0.089
-      PPIx::Regexp::Token::Code 0.089
-      PPIx::Regexp::Token::Comment 0.089
-      PPIx::Regexp::Token::Condition 0.089
-      PPIx::Regexp::Token::Control 0.089
-      PPIx::Regexp::Token::Delimiter 0.089
-      PPIx::Regexp::Token::Greediness 0.089
-      PPIx::Regexp::Token::GroupType 0.089
-      PPIx::Regexp::Token::GroupType::Assertion 0.089
-      PPIx::Regexp::Token::GroupType::Atomic_Script_Run 0.089
-      PPIx::Regexp::Token::GroupType::BranchReset 0.089
-      PPIx::Regexp::Token::GroupType::Code 0.089
-      PPIx::Regexp::Token::GroupType::Modifier 0.089
-      PPIx::Regexp::Token::GroupType::NamedCapture 0.089
-      PPIx::Regexp::Token::GroupType::Script_Run 0.089
-      PPIx::Regexp::Token::GroupType::Subexpression 0.089
-      PPIx::Regexp::Token::GroupType::Switch 0.089
-      PPIx::Regexp::Token::Interpolation 0.089
-      PPIx::Regexp::Token::Literal 0.089
-      PPIx::Regexp::Token::Modifier 0.089
-      PPIx::Regexp::Token::NoOp 0.089
-      PPIx::Regexp::Token::Operator 0.089
-      PPIx::Regexp::Token::Quantifier 0.089
-      PPIx::Regexp::Token::Recursion 0.089
-      PPIx::Regexp::Token::Reference 0.089
-      PPIx::Regexp::Token::Structure 0.089
-      PPIx::Regexp::Token::Unknown 0.089
-      PPIx::Regexp::Token::Unmatched 0.089
-      PPIx::Regexp::Token::Whitespace 0.089
-      PPIx::Regexp::Tokenizer 0.089
-      PPIx::Regexp::Util 0.089
+      PPIx::Regexp::Constant::Inf 0.090
+      PPIx::Regexp::Dumper 0.090
+      PPIx::Regexp::Element 0.090
+      PPIx::Regexp::Lexer 0.090
+      PPIx::Regexp::Node 0.090
+      PPIx::Regexp::Node::Range 0.090
+      PPIx::Regexp::Node::Unknown 0.090
+      PPIx::Regexp::Structure 0.090
+      PPIx::Regexp::Structure::Assertion 0.090
+      PPIx::Regexp::Structure::Atomic_Script_Run 0.090
+      PPIx::Regexp::Structure::BranchReset 0.090
+      PPIx::Regexp::Structure::Capture 0.090
+      PPIx::Regexp::Structure::CharClass 0.090
+      PPIx::Regexp::Structure::Code 0.090
+      PPIx::Regexp::Structure::Main 0.090
+      PPIx::Regexp::Structure::Modifier 0.090
+      PPIx::Regexp::Structure::NamedCapture 0.090
+      PPIx::Regexp::Structure::Quantifier 0.090
+      PPIx::Regexp::Structure::RegexSet 0.090
+      PPIx::Regexp::Structure::Regexp 0.090
+      PPIx::Regexp::Structure::Replacement 0.090
+      PPIx::Regexp::Structure::Script_Run 0.090
+      PPIx::Regexp::Structure::Subexpression 0.090
+      PPIx::Regexp::Structure::Switch 0.090
+      PPIx::Regexp::Structure::Unknown 0.090
+      PPIx::Regexp::Support 0.090
+      PPIx::Regexp::Token 0.090
+      PPIx::Regexp::Token::Assertion 0.090
+      PPIx::Regexp::Token::Backreference 0.090
+      PPIx::Regexp::Token::Backtrack 0.090
+      PPIx::Regexp::Token::CharClass 0.090
+      PPIx::Regexp::Token::CharClass::POSIX 0.090
+      PPIx::Regexp::Token::CharClass::POSIX::Unknown 0.090
+      PPIx::Regexp::Token::CharClass::Simple 0.090
+      PPIx::Regexp::Token::Code 0.090
+      PPIx::Regexp::Token::Comment 0.090
+      PPIx::Regexp::Token::Condition 0.090
+      PPIx::Regexp::Token::Control 0.090
+      PPIx::Regexp::Token::Delimiter 0.090
+      PPIx::Regexp::Token::Greediness 0.090
+      PPIx::Regexp::Token::GroupType 0.090
+      PPIx::Regexp::Token::GroupType::Assertion 0.090
+      PPIx::Regexp::Token::GroupType::Atomic_Script_Run 0.090
+      PPIx::Regexp::Token::GroupType::BranchReset 0.090
+      PPIx::Regexp::Token::GroupType::Code 0.090
+      PPIx::Regexp::Token::GroupType::Modifier 0.090
+      PPIx::Regexp::Token::GroupType::NamedCapture 0.090
+      PPIx::Regexp::Token::GroupType::Script_Run 0.090
+      PPIx::Regexp::Token::GroupType::Subexpression 0.090
+      PPIx::Regexp::Token::GroupType::Switch 0.090
+      PPIx::Regexp::Token::Interpolation 0.090
+      PPIx::Regexp::Token::Literal 0.090
+      PPIx::Regexp::Token::Modifier 0.090
+      PPIx::Regexp::Token::NoOp 0.090
+      PPIx::Regexp::Token::Operator 0.090
+      PPIx::Regexp::Token::Quantifier 0.090
+      PPIx::Regexp::Token::Recursion 0.090
+      PPIx::Regexp::Token::Reference 0.090
+      PPIx::Regexp::Token::Structure 0.090
+      PPIx::Regexp::Token::Unknown 0.090
+      PPIx::Regexp::Token::Unmatched 0.090
+      PPIx::Regexp::Token::Whitespace 0.090
+      PPIx::Regexp::Tokenizer 0.090
+      PPIx::Regexp::Util 0.090
     requirements:
       Carp 0
       Encode 0
@@ -2151,10 +2151,10 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  Struct-Dumb-0.15
-    pathname: P/PE/PEVANS/Struct-Dumb-0.15.tar.gz
+  Struct-Dumb-0.16
+    pathname: P/PE/PEVANS/Struct-Dumb-0.16.tar.gz
     provides:
-      Struct::Dumb 0.15
+      Struct::Dumb 0.16
     requirements:
       Module::Build 0.4004
       perl 5.014
@@ -2230,11 +2230,11 @@ DISTRIBUTIONS
       XS::Parse::Sublike 0.15
       XS::Parse::Sublike::Builder 0.15
       perl 5.026
-  Syntax-Keyword-Try-0.30
-    pathname: P/PE/PEVANS/Syntax-Keyword-Try-0.30.tar.gz
+  Syntax-Keyword-Try-0.31
+    pathname: P/PE/PEVANS/Syntax-Keyword-Try-0.31.tar.gz
     provides:
-      Syntax::Keyword::Try 0.30
-      Syntax::Keyword::Try::Deparse 0.30
+      Syntax::Keyword::Try 0.31
+      Syntax::Keyword::Try::Deparse 0.31
     requirements:
       ExtUtils::CBuilder 0
       Module::Build 0.4004
@@ -2741,13 +2741,13 @@ DISTRIBUTIONS
       Fcntl 0
       URI 1.10
       perl 5.008001
-  XS-Parse-Keyword-0.48
-    pathname: P/PE/PEVANS/XS-Parse-Keyword-0.48.tar.gz
+  XS-Parse-Keyword-0.49
+    pathname: P/PE/PEVANS/XS-Parse-Keyword-0.49.tar.gz
     provides:
-      XS::Parse::Infix 0.48
-      XS::Parse::Infix::Builder 0.48
-      XS::Parse::Keyword 0.48
-      XS::Parse::Keyword::Builder 0.48
+      XS::Parse::Infix 0.49
+      XS::Parse::Infix::Builder 0.49
+      XS::Parse::Keyword 0.49
+      XS::Parse::Keyword::Builder 0.49
     requirements:
       ExtUtils::CBuilder 0
       ExtUtils::CChecker 0.11

@@ -175,7 +175,7 @@ $fatpacked{"App/BS/CLI.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'APP_
   field $bareargs : param(argv) : mutator(argv);
   field $handle_bareargs : param = undef;
   
-  ADJUSTPARAMS ($params) {
+  ADJUSTPARAMS($params) {
       my @handle_bareargs_arr;
       my $has_bareargs_handler = 0;
   
@@ -251,9 +251,8 @@ $fatpacked{"App/BS/Common.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'A
   use Const::Fast;
   use List::Util qw(uniq any);
   use Struct::Dumb;
-  use Data::Printer;
   use Syntax::Keyword::Dynamically;
-  use Exporter ;
+  use Exporter;
   
   const our $DEFAULT_ENVPREFIXRE => qr/^(?:BS_)?(.+)/;
   const our $DEFAULT_CONFIGPATH  => '/etc/bs/config.toml';
@@ -264,8 +263,8 @@ $fatpacked{"App/BS/Common.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'A
   field $config;
   field $getopts_setup : param(getopts) : accessor;
   field $cliopts : param(dest) : mutator = {};
-  field $aliases                         = {};
-  field $queue : mutator                 = ();
+  field $aliases = {};
+  field $queue : mutator = ();
   
   field $env : mutator = {
       pkgext              => '.pkg.tar.zst',
@@ -390,6 +389,7 @@ $fatpacked{"App/BS/pkgdepends.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".
     : isa(App::BS::CLI);
   
   use BS::Ext::pactree;
+  use BS::Ext::expac;
   
   use utf8;
   use v5.40;
@@ -467,11 +467,11 @@ $fatpacked{"BS/Common.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_CO
       field @out;
       field @err;
   
-      field $cmd : param : reader;
+      field $cmd : param     : reader;
       field $inh : param(in) : reader = \undef;
       field $outh : param(out) : mutator(out) //= \@out;
       field $errh : param(err) : reader //= \@err;
-      field $dest : param : reader   = \@out;
+      field $dest   : param : reader = \@out;
       field $status : param : reader = 0;
   
       ADJUST {
@@ -530,7 +530,7 @@ $fatpacked{"BS/Common.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_CO
       my $self =    # Maybe there's a reason to make an anon class here?
         blessed $msgs[0] && $msgs[0]->DOES('BS::Common') ? shift @msgs : undef;
   
-      if ( state $debug = $DEBUG || $ENV{DEBUG} // undef ) {
+      if ( state $debug = ( $DEBUG || $ENV{DEBUG} // undef ) ) {
   
           my @caller = caller 0;
   
@@ -711,30 +711,34 @@ $fatpacked{"BS/Ext/expac.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS
   use Const::Fast::Exporter;
   
   const our $split_comma_re => qr/,/;
-  const our %DB => ('local' => 'Q', sync => 'S');
+  const our %DB             => ( 'local' => 'Q', sync => 'S' );
   
   method $parse_line : common ( $line, %opts ) {
       my @fields = $opts{fields}->@*;
-      map { shift @fields => $_ } split $split_comma_re, $line
-  };
+      map { shift @fields => $_ } split $split_comma_re, $line;
+  }
   
   method $out : common ($line, %opts) {
       chomp $line;
       my %res = $class->$parse_line( $line, %opts );
       BS::Common::dmsg { line => $line, res => \%res, opts => \%opts };
-      push $opts{dest}->@*, \%res
-  };
+      push $opts{dest}->@*, \%res;
+  }
   
   method search : common ( $search, %opts ) {
       $opts{fields} //= [qw(base name)];
       $opts{dest}   //= [];
   
       $opts{find} and $opts{find} = 's';
+  
       #$opts{find} = 's' if $opts{find};
   
-      dmsg({ and        => eval { $opts{find} and $opts{find} = 's' }
-           , postfix_if => eval { $opts{find} = 's' if $opts{find} } 
-      });
+      dmsg(
+          {
+              and        => eval { $opts{find} and $opts{find} = 's' },
+              postfix_if => eval { $opts{find} = 's' if $opts{find} }
+          }
+      );
   
       const my %fields => (
           base                 => '%e',
@@ -772,17 +776,17 @@ $fatpacked{"BS/Ext/expac.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS
       my $fmtstr = $opts{fmt} // join ',', @fields{ $opts{fields}->@* };
   
       my $res = BS::Common->bsx(
-          [ 'expac'
-            , "$opts{db}$opts{find}"
-            , $fmtstr
-            , ($search isa 'ARRAY' ? @$search : $search) ]
-          , out => sub ( $line, %_opts ) {
-                      $class->$out( $line, %opts, %_opts, fmtstr => $fmtstr );
-                  }
-          , %opts
+          [
+              'expac', "$opts{db}$opts{find}",
+              $fmtstr, ( $search isa 'ARRAY' ? @$search : $search )
+          ],
+          out => sub ( $line, %_opts ) {
+              $class->$out( $line, %opts, %_opts, fmtstr => $fmtstr );
+          },
+          %opts
       );
   
-      BS::Common::dmsg { res => $res };
+      dmsg( { res => $res } );
   
       $res;
   }
@@ -1098,10 +1102,9 @@ $fatpacked{"BS/Ext/pactree.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'
   
   use Carp;
   use List::Util 'uniq';
-  use Data::Printer;
   
   method list_deps : common ($pkgstr, %args) {
-      BS::Common::dmsg { pkgstr => $pkgstr, args => \%args };
+      BS::Common::dmsg( { pkgstr => $pkgstr, args => \%args } );
   
       use constant DEFORDER_RE => qr/^asc.*/i;
   
@@ -1130,7 +1133,7 @@ $fatpacked{"BS/Ext/pactree.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'
             unless $depid eq $pkgstr;
       }
   
-      carp np @deps if $ENV{DEBUG};
+      dmsg( { deps => \@deps } );
   
       @deps = $args{unique} ? reverse uniq reverse @deps : @deps;
   
@@ -1143,9 +1146,7 @@ $fatpacked{"BS/Ext/pactree.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'
   }
   
   method tree : common ($pkgstr, %args) {
-      carp "${class}::tree('$pkgstr', ...) args:"
-        if $args{debug} // $ENV{DEBUG};
-  
+      dmsg( { args => \%args } );
       my ( @flagsargs, @intsargs, @out, $in, $err );
       $args{optional} //= 1;
   
@@ -1167,7 +1168,7 @@ $fatpacked{"BS/Ext/pactree.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'
       die "$err"   if $err;
       die "$?: $!" if $res->cmdexit->[0] != 0;
   
-      carp np @out if $ENV{DEBUG};
+      dmsg( { out => \@out } );
   
       \@out;
   }
@@ -1186,8 +1187,83 @@ $fatpacked{"BS/Package.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_P
   use Carp;
   use List::Util 'any';
   use File::chdir;
-  use Path::Tiny;
   use File::Temp;
+  use Const::Fast;
+  
+  role BS::Package::Stub : does(BS::Package::Meta) {
+      field $search : inheritable : param : accessor = "";
+  
+      method upgrade ( $field_href, %opts ) {
+          ...;
+      }
+  };
+  
+  ADJUSTPARAMS($params) {
+  
+      # if ( $search && none( @$name, $base ) ) {
+      #     ( $base, $name ) = $self->$search()->@[qw(name base)];
+      # }
+  }
+  
+  # method $search ( $pkgstr = $search, %opts ) {
+  
+  # }
+  
+  method search : common ($search) {
+      my $self = BS::Package->new( search => $search );
+      $self->$search();
+  
+      #$self->p
+  }
+  
+  method parse_pkgstr : common ($pkgstr) {
+      const my $pkgstr_name_ptn => qr'[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
+  
+      const my $pkgstr_name_re => qr/
+          ^(lib\:)?
+          ($pkgstr_name_ptn(\.so(?:\.[0-9\]+)?)
+          |$pkgstr_name_ptn)
+        /x;
+  
+      const my $pkgver_forbidden => quotemeta(':/-') . '\s';
+  
+      const my $pkgver_re => qr'
+        (\=|[\<\>](?:\=)?)
+        ([^$pkgver_forbidden]+)
+      'x;
+      const my $optdep_re => qr/(:(:)\s+(.+))/;
+  
+      const my $pkgstr_re => qr/
+          $pkgstr_name_re #
+          (?:$pkgver_re)?
+          $optdep_re
+        /x;
+  
+      # Not working...
+      #const my $_pkgstr_re => qr/$pkgstr_re_str/;
+  
+      #:wqwarn np nojoin => $pkgstr_re join => $_pkgstr_re if $DEBUG;
+  
+      my ( $prefix, $_pkgstr, $isfile, $sep, $attr, @extra ) =
+        $pkgstr =~ $pkgstr_re;
+  
+      dmsg( { $prefix, $_pkgstr, $isfile, $sep, $attr, @extra } );
+  }
+  
+  method lookup : common ($field_href, %opts) {
+      my $stub = BS::Package::Stub->new(%$field_href);
+  
+      if ( $stub->is_file ) {
+  
+      }
+      else {
+          # TODO: More constraints
+          if ( $stub->version ) {
+  
+          }
+      }
+  
+  }
   
   method updchecksums : common {
       $class->bsx( ['updchecksums'] );
@@ -1236,6 +1312,7 @@ $fatpacked{"BS/Package.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_P
   
       carp $res->out;
   }
+  
 BS_PACKAGE
 
 $fatpacked{"BS/Package/Manifest.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_PACKAGE_MANIFEST';
@@ -1251,184 +1328,21 @@ BS_PACKAGE_MANIFEST
 $fatpacked{"BS/Package/Meta.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_PACKAGE_META';
   use Object::Pad ':experimental(:all)';
   
-  package BS::Package::Meta;
-  role BS::Package::Meta : does(BS::Common) : does(BS::alpm);
-  
   use utf8;
   use v5.40;
   
-  use Carp;
-  use Const::Fast;
-  use Const::Fast::Exporter;
-  use List::Util qw(any);
-  use Data::Printer;
-  use Struct::Dumb;
-  use Syntax::Keyword::MultiSub;
+  package BS::Package::Meta;
+  role BS::Package::Meta : does(BS::Common);
   
-  const our $VALID_PKG_RE_CCLASS_START => "a-zA-Z0-9\@_\+";
-  const our $VALID_PKG_RE_NB => (
-      qr/[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+(\.so)
-      |[$VALID_PKG_RE_CCLASS_START]{1}[$VALID_PKG_RE_CCLASS_START\.\-]+/
-  );
+  field $base    : inheritable : param : accessor = "";
+  field $name    : inheritable : param : accessor //= [$base];
+  field $current : inheritable : accessor //= $$name[0];
   
-  struct PkgDepends   => [qw(make optional check depends)];
-  struct PkgChecksums => [qw(ck md5 sha1 sha256 sha512 b2)];
-  
-  #field $pkgname : param(name);
-  
-  #field $name = [ ref $pkgname eq 'ARRAY' ? $pkgname->@* : $pkgname ];
-  #field $name{ ref $pkgname eq 'ARRAY' ? $pkgname : [$pkgname] };
-  #field $base : param { $pkgname unless defined ref $pkgname };
-  
-  field $depends : param   = undef;
-  field $pkgver : param    = undef;
-  field $pkgrel : param    = undef;
-  field $pkgdesc : param   = undef;
-  field $url : param       = undef;
-  field $changelog : param = undef;
-  
-  field @license;
-  field @source;
-  field @validpgpkeys;
-  field @noextract;
-  field @groups;
-  field @arch;
-  field @backup;
-  field @conflicts;
-  field @replaces;
-  field @provides;
-  field $options;
-  field $checksums;
-  
-  #field $srcinfo : param;
-  field $srcinfo_path;
-  
-  ADJUSTPARAMS($params) {
-  
-      #$self->_srcinfo_unpack_into
-  }
-  
-  method resolve_base : common ($line, %args) {
-      const my $PACINFO_SO_PREFIX => qr/(?:lib\:)?/;
-      const my $DEP_SO_RE         => qr/\.so/;
-      const my $VALID_DEPIDEN_RE =>
-        qr/$PACINFO_SO_PREFIX($VALID_PKG_RE_NB)(?:$DEP_SO_RE)?/;
-      const my $DEP_ATTRSEP_RE => qr/(?:\=)|(?:[\<\>]\=?)|(?:(?:\:))|(?:\.)/;
-      const my $DEP_ATTR_RE =>
-        qr/^$VALID_DEPIDEN_RE(?:\s*($DEP_ATTRSEP_RE)\s*(.+))?\n?$/;
-  
-      my ( $depname, $soext, $sep, $attr ) = $line =~ $DEP_ATTR_RE;
-      my %dep_pkgargs = ();
-  
-      $dep_pkgargs{name} = $depname;
-  
-      if ($sep) {
-          if ( $sep ne ':' ) {
-              $dep_pkgargs{version} = $attr;
-              $dep_pkgargs{cmp_op}  = $sep;
-              $dep_pkgargs{file}    = $depname if $soext;
-          }
-          elsif ( $sep eq ':' ) {    # Optional dependency most likely
-                                     # Will have parsed that out elsewhere
-              $dep_pkgargs{description} = $attr;
-              $dep_pkgargs{name}        = $depname;
-          }
-      }
-  
-      if ($soext) {
-          $dep_pkgargs{file} //= $depname;
-  
-          my $res   = BS::Ext::pacman->file_query($depname);
-          my $match = $res->out->[-1];
-          chomp $match;
-  
-          ( $dep_pkgargs{repo}, $dep_pkgargs{name} ) = ( split /\//, $match );
-      }
-  
-      if ( $args{resolve_base} // $ENV{RESOLVE_BASE} // 1 ) {
-          try {
-              $dep_pkgargs{base} //= BS::Ext::pacinfo->pkgbase(
-                  $dep_pkgargs{name},
-                  resolve_deps => 0,
-                  no_dupes     => 1
-              );
-  
-              $dep_pkgargs{base} = $dep_pkgargs{base}->out if $dep_pkgargs{base};
-  
-              croak %dep_pkgargs unless $dep_pkgargs{base}
-          }
-          catch ($e) {
-              my $res = BS::Ext::pacman->pkg_query( $dep_pkgargs{name} );
-  
-              BS::Common::dmsg $res;
-              chomp $res->out->[-1];
-  
-              try {
-                  $dep_pkgargs{base} //= BS::Ext::pacinfo->pkgbase(
-                      $res->out->[-1],
-                      resolve_deps => 0,
-                      no_dupes     => 1
-                  );
-  
-                  $dep_pkgargs{base} = $dep_pkgargs{base}->out
-                    if $dep_pkgargs{base};
-              }
-              catch ($e) {
-                  croak np $e
-              }
-          }
-      }
-  
-      if ( $args{fetch} ) {
-          $class->fetch( $dep_pkgargs{base}, %args );
-      }
-  
-      \%dep_pkgargs;
-  }
-  
-  method parse_dep : common ($line, %args) {
-      $class->resolve_base( $line, %args );
-  }
-  
-  method from_srcinfo : common ($in, %args) {
-      my $href =
-        $class->parse_srcinfo( BS::Common->tie_file( $in, delete $args{out} ),
-          %args );
-  
-      BS::Package->new( srcinfo => $href );
-  }
-  
-  method parse_srcinfo : common ($in, %args) {
-      my ( $as_aref, $as_path );
-      BS::Common->open_as_href(
-          $in, %args,
-          parse_line => sub ( $line, %args ) {
-              __PACKAGE__->parse_srcinfo_line( $line, %args );
-          }
-      );
-  }
-  
-  method parse_srcinfo_line : common ($line, %args) {
-  
-      # Not sure if this bit is thread-safe, but there shouldn't be any
-      # issues with usage in non-blocking event-loop or forking code
-      state $_res_buff = $args{dest};
-      $_res_buff = $args{dest}
-        if keys $args{dest}->%* && $args{dest} ne $_res_buff;
-  
-      const my $SRCINFO_LINE_RE => qr/^([a-z0-9_]+)\s*=\s*(.+)\n?$/i;
-  
-      my ( $key, $val ) = ( $line =~ $SRCINFO_LINE_RE );
-      return undef unless $key && $val;
-  
-      const my $DEPKEY_ANY_RE => qr/depends/i;
-  
-      if ( $key =~ $DEPKEY_ANY_RE ) {
-          $val = $class->parse_dep( $val, %args );
-      }
-  
-      return $key, $val;
-  }
+  field $version   : inheritable : param : accessor = "";
+  field $rel       : inheritable : param : accessor = "";
+  field $epoch     : inheritable : param : accessor = "";
+  field $sources   : inheritable : param : accessor = [];
+  field $checksums : inheritable : param : accessor = [];
 BS_PACKAGE_META
 
 $fatpacked{"BS/Path.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_PATH';
@@ -1508,8 +1422,6 @@ $fatpacked{"BS/alpm.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_ALPM
   use utf8;
   use v5.40;
   
-  use Data::Printer;
-  
   use Inline C               => config => enable => autowrap => myextlib =>
     '/usr/lib/libalpm.so.15' => libs   =>
     '-lalpm -lalpm_list -lalpm_depends -lalpm_packages';
@@ -1525,1670 +1437,9 @@ $fatpacked{"BS/alpm.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_ALPM
   
       #say BS::alpm::alpm_initialize();
       #say Dumper($self);
-      warn np $self if $self->debug // $ENV{DEBUG};
+      warn BS::Common::dmsg( { self => $self } );
   }
 BS_ALPM
-
-$fatpacked{"IPC/Run3.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'IPC_RUN3';
-  use strict;
-  use warnings;
-  package IPC::Run3;
-  
-  =head1 NAME
-  
-  IPC::Run3 - run a subprocess with input/output redirection
-  
-  =head1 VERSION
-  
-  version 0.049
-  
-  =cut
-  
-  our $VERSION = '0.049';
-  
-  =head1 SYNOPSIS
-  
-      use IPC::Run3;    # Exports run3() by default
-  
-      run3 \@cmd, \$in, \$out, \$err;
-  
-  =head1 DESCRIPTION
-  
-  This module allows you to run a subprocess and redirect stdin, stdout,
-  and/or stderr to files and perl data structures.  It aims to satisfy 99% of the
-  need for using C<system>, C<qx>, and C<open3>
-  with a simple, extremely Perlish API.
-  
-  Speed, simplicity, and portability are paramount.  (That's speed of Perl code;
-  which is often much slower than the kind of buffered I/O that this module uses
-  to spool input to and output from the child command.)
-  
-  =cut
-  
-  use Exporter;
-  our @ISA = qw(Exporter);
-  our @EXPORT = qw( run3 );
-  our %EXPORT_TAGS = ( all => \@EXPORT );
-  
-  use constant debugging => $ENV{IPCRUN3DEBUG} || $ENV{IPCRUNDEBUG} || 0;
-  use constant profiling => $ENV{IPCRUN3PROFILE} || $ENV{IPCRUNPROFILE} || 0;
-  use constant is_win32  => 0 <= index $^O, "Win32";
-  
-  BEGIN {
-     if ( is_win32 ) {
-        eval "use Win32 qw( GetOSName ); use Win32::ShellQuote qw(quote_native); 1" or die $@;
-     }
-  }
-  
-  #use constant is_win2k => is_win32 && GetOSName() =~ /Win2000/i;
-  #use constant is_winXP => is_win32 && GetOSName() =~ /WinXP/i;
-  
-  use Carp qw( croak );
-  use File::Temp qw( tempfile );
-  use POSIX qw( dup dup2 );
-  
-  # We cache the handles of our temp files in order to
-  # keep from having to incur the (largish) overhead of File::Temp
-  my %fh_cache;
-  my $fh_cache_pid = $$;
-  
-  my $profiler;
-  
-  sub _profiler { $profiler } # test suite access
-  
-  BEGIN {
-      if ( profiling ) {
-          eval "use Time::HiRes qw( gettimeofday ); 1" or die $@;
-          if ( $ENV{IPCRUN3PROFILE} =~ /\A\d+\z/ ) {
-              require IPC::Run3::ProfPP;
-              IPC::Run3::ProfPP->import;
-              $profiler = IPC::Run3::ProfPP->new(Level => $ENV{IPCRUN3PROFILE});
-          } else {
-              my ( $dest, undef, $class ) =
-                 reverse split /(=)/, $ENV{IPCRUN3PROFILE}, 2;
-              $class = "IPC::Run3::ProfLogger"
-                  unless defined $class && length $class;
-              if ( not eval "require $class" ) {
-                  my $e = $@;
-                  $class = "IPC::Run3::$class";
-                  eval "require IPC::Run3::$class" or die $e;
-              }
-              $profiler = $class->new( Destination => $dest );
-          }
-          $profiler->app_call( [ $0, @ARGV ], scalar gettimeofday() );
-      }
-  }
-  
-  
-  END {
-      $profiler->app_exit( scalar gettimeofday() ) if profiling;
-  }
-  
-  sub _binmode {
-      my ( $fh, $mode, $what ) = @_;
-      # if $mode is not given, then default to ":raw", except on Windows,
-      # where we default to ":crlf";
-      # otherwise if a proper layer string was given, use that,
-      # else use ":raw"
-      my $layer = !$mode
-         ? (is_win32 ? ":crlf" : ":raw")
-         : ($mode =~ /^:/ ? $mode : ":raw");
-      warn "binmode $what, $layer\n" if debugging >= 2;
-  
-      binmode $fh, ":raw" unless $layer eq ":raw";      # remove all layers first
-      binmode $fh, $layer or croak "binmode $layer failed: $!";
-  }
-  
-  sub _spool_data_to_child {
-      my ( $type, $source, $binmode_it ) = @_;
-  
-      # If undef (not \undef) passed, they want the child to inherit
-      # the parent's STDIN.
-      return undef unless defined $source;
-  
-      my $fh;
-      if ( ! $type ) {
-          open $fh, "<", $source or croak "$!: $source";
-         _binmode($fh, $binmode_it, "STDIN");
-          warn "run3(): feeding file '$source' to child STDIN\n"
-              if debugging >= 2;
-      } elsif ( $type eq "FH" ) {
-          $fh = $source;
-          warn "run3(): feeding filehandle '$source' to child STDIN\n"
-              if debugging >= 2;
-      } else {
-          $fh = $fh_cache{in} ||= tempfile;
-          truncate $fh, 0;
-          seek $fh, 0, 0;
-         _binmode($fh, $binmode_it, "STDIN");
-          my $seekit;
-          if ( $type eq "SCALAR" ) {
-  
-              # When the run3()'s caller asks to feed an empty file
-              # to the child's stdin, we want to pass a live file
-              # descriptor to an empty file (like /dev/null) so that
-              # they don't get surprised by invalid fd errors and get
-              # normal EOF behaviors.
-              return $fh unless defined $$source;  # \undef passed
-  
-              warn "run3(): feeding SCALAR to child STDIN",
-                  debugging >= 3
-                     ? ( ": '", $$source, "' (", length $$source, " chars)" )
-                     : (),
-                  "\n"
-                  if debugging >= 2;
-  
-              $seekit = length $$source;
-              print $fh $$source or die "$! writing to temp file";
-  
-          } elsif ( $type eq "ARRAY" ) {
-              warn "run3(): feeding ARRAY to child STDIN",
-                  debugging >= 3 ? ( ": '", @$source, "'" ) : (),
-                  "\n"
-              if debugging >= 2;
-  
-              print $fh @$source or die "$! writing to temp file";
-              $seekit = grep length, @$source;
-          } elsif ( $type eq "CODE" ) {
-              warn "run3(): feeding output of CODE ref '$source' to child STDIN\n"
-                  if debugging >= 2;
-              my $params = [];  # TODO: get these from $options
-              while (1) {
-                  my $data = $source->( @$params );
-                  last unless defined $data;
-                  print $fh $data or die "$! writing to temp file";
-                  $seekit = length $data;
-              }
-          }
-  
-          seek $fh, 0, 0 or croak "$! seeking on temp file for child's stdin"
-              if $seekit;
-      }
-  
-      croak "run3() can't redirect $type to child stdin"
-          unless defined $fh;
-  
-      return $fh;
-  }
-  
-  sub _fh_for_child_output {
-      my ( $what, $type, $dest, $options ) = @_;
-  
-      my $fh;
-      if ( $type eq "SCALAR" && $dest == \undef ) {
-          warn "run3(): redirecting child $what to oblivion\n"
-              if debugging >= 2;
-  
-          $fh = $fh_cache{nul} ||= do {
-              open $fh, ">", File::Spec->devnull;
-             $fh;
-          };
-      } elsif ( $type eq "FH" ) {
-          $fh = $dest;
-          warn "run3(): redirecting $what to filehandle '$dest'\n"
-              if debugging >= 3;
-      } elsif ( !$type ) {
-          warn "run3(): feeding child $what to file '$dest'\n"
-              if debugging >= 2;
-  
-          open $fh, $options->{"append_$what"} ? ">>" : ">", $dest
-             or croak "$!: $dest";
-      } else {
-          warn "run3(): capturing child $what\n"
-              if debugging >= 2;
-  
-          $fh = $fh_cache{$what} ||= tempfile;
-          seek $fh, 0, 0;
-          truncate $fh, 0;
-      }
-  
-      my $binmode_it = $options->{"binmode_$what"};
-      _binmode($fh, $binmode_it, uc $what);
-  
-      return $fh;
-  }
-  
-  sub _read_child_output_fh {
-      my ( $what, $type, $dest, $fh, $options ) = @_;
-  
-      return if $type eq "SCALAR" && $dest == \undef;
-  
-      seek $fh, 0, 0 or croak "$! seeking on temp file for child $what";
-  
-      if ( $type eq "SCALAR" ) {
-          warn "run3(): reading child $what to SCALAR\n"
-              if debugging >= 3;
-  
-          # two read()s are used instead of 1 so that the first will be
-          # logged even it reads 0 bytes; the second won't.
-          my $count = read $fh, $$dest, 10_000,
-             $options->{"append_$what"} ? length $$dest : 0;
-          while (1) {
-              croak "$! reading child $what from temp file"
-                  unless defined $count;
-  
-              last unless $count;
-  
-              warn "run3(): read $count bytes from child $what",
-                  debugging >= 3 ? ( ": '", substr( $$dest, -$count ), "'" ) : (),
-                  "\n"
-                  if debugging >= 2;
-  
-              $count = read $fh, $$dest, 10_000, length $$dest;
-          }
-      } elsif ( $type eq "ARRAY" ) {
-         if ($options->{"append_$what"}) {
-             push @$dest, <$fh>;
-         } else {
-             @$dest = <$fh>;
-         }
-          if ( debugging >= 2 ) {
-              my $count = 0;
-              $count += length for @$dest;
-              warn
-                  "run3(): read ",
-                  scalar @$dest,
-                  " records, $count bytes from child $what",
-                  debugging >= 3 ? ( ": '", @$dest, "'" ) : (),
-                  "\n";
-          }
-      } elsif ( $type eq "CODE" ) {
-          warn "run3(): capturing child $what to CODE ref\n"
-              if debugging >= 3;
-  
-          local $_;
-          while ( <$fh> ) {
-              warn
-                  "run3(): read ",
-                  length,
-                  " bytes from child $what",
-                  debugging >= 3 ? ( ": '", $_, "'" ) : (),
-                  "\n"
-                  if debugging >= 2;
-  
-              $dest->( $_ );
-          }
-      } else {
-          croak "run3() can't redirect child $what to a $type";
-      }
-  
-  }
-  
-  sub _type {
-      my ( $redir ) = @_;
-  
-      return "FH" if eval {
-          local $SIG{'__DIE__'};
-          $redir->isa("IO::Handle")
-      };
-  
-      my $type = ref $redir;
-      return $type eq "GLOB" ? "FH" : $type;
-  }
-  
-  sub _max_fd {
-      my $fd = dup(0);
-      POSIX::close $fd;
-      return $fd;
-  }
-  
-  my $run_call_time;
-  my $sys_call_time;
-  my $sys_exit_time;
-  
-  sub run3 {
-      $run_call_time = gettimeofday() if profiling;
-  
-      my $options = @_ && ref $_[-1] eq "HASH" ? pop : {};
-  
-      my ( $cmd, $stdin, $stdout, $stderr ) = @_;
-  
-      print STDERR "run3(): running ",
-         join( " ", map "'$_'", ref $cmd ? @$cmd : $cmd ),
-         "\n"
-         if debugging;
-  
-      if ( ref $cmd ) {
-          croak "run3(): empty command"     unless @$cmd;
-          croak "run3(): undefined command" unless defined $cmd->[0];
-          croak "run3(): command name ('')" unless length  $cmd->[0];
-      } else {
-          croak "run3(): missing command" unless @_;
-          croak "run3(): undefined command" unless defined $cmd;
-          croak "run3(): command ('')" unless length  $cmd;
-      }
-  
-      foreach (qw/binmode_stdin binmode_stdout binmode_stderr/) {
-         if (my $mode = $options->{$_}) {
-             croak qq[option $_ must be a number or a proper layer string: "$mode"]
-                unless $mode =~ /^(:|\d+$)/;
-         }
-      }
-  
-      my $in_type  = _type $stdin;
-      my $out_type = _type $stdout;
-      my $err_type = _type $stderr;
-  
-      if ($fh_cache_pid != $$) {
-         # fork detected, close all cached filehandles and clear the cache
-         close $_ foreach values %fh_cache;
-         %fh_cache = ();
-         $fh_cache_pid = $$;
-      }
-  
-      # This routine proceeds in stages so that a failure in an early
-      # stage prevents later stages from running, and thus from needing
-      # cleanup.
-  
-      my ($in_fh, $out_fh, $err_fh);
-      $in_fh  = _spool_data_to_child $in_type, $stdin,
-          $options->{binmode_stdin} if defined $stdin;
-  
-      $out_fh = _fh_for_child_output "stdout", $out_type, $stdout,
-          $options if defined $stdout;
-  
-      my $tie_err_to_out =
-          defined $stderr && defined $stdout && $stderr eq $stdout;
-  
-      $err_fh = $tie_err_to_out
-          ? $out_fh
-          : _fh_for_child_output "stderr", $err_type, $stderr,
-              $options if defined $stderr;
-  
-      # this should make perl close these on exceptions
-  #    local *STDIN_SAVE;
-      local *STDOUT_SAVE;
-      local *STDERR_SAVE;
-  
-      my $saved_fd0 = defined $in_fh ? dup( 0 ) : undef;
-  
-  #    open STDIN_SAVE,  "<&STDIN"#  or croak "run3(): $! saving STDIN"
-  #        if defined $in_fh;
-      open STDOUT_SAVE, ">&STDOUT" or croak "run3(): $! saving STDOUT"
-          if defined $out_fh;
-      open STDERR_SAVE, ">&STDERR" or croak "run3(): $! saving STDERR"
-          if defined $err_fh;
-  
-      my $errno;
-      my $ok = eval {
-          # The open() call here seems to not force fd 0 in some cases;
-          # I ran in to trouble when using this in VCP, not sure why.
-          # the dup2() seems to work.
-          dup2( fileno $in_fh, 0 )
-  #        open STDIN,  "<&=" . fileno $in_fh
-              or croak "run3(): $! redirecting STDIN"
-              if defined $in_fh;
-  
-  #        close $in_fh or croak "$! closing STDIN temp file"
-  #            if ref $stdin;
-  
-          open STDOUT, ">&" . fileno $out_fh
-              or croak "run3(): $! redirecting STDOUT"
-              if defined $out_fh;
-  
-          open STDERR, ">&" . fileno $err_fh
-              or croak "run3(): $! redirecting STDERR"
-              if defined $err_fh;
-  
-          $sys_call_time = gettimeofday() if profiling;
-  
-          $! = 0;                  # make sure we don't test below against some previous error
-  
-          my $r = ref $cmd
-                ? system { $cmd->[0] } is_win32 ? quote_native( @$cmd ) : @$cmd
-                : system $cmd;
-  
-         $errno = $!;              # save $!, because later failures will overwrite it
-          $sys_exit_time = gettimeofday() if profiling;
-          if ( debugging ) {
-              my $err_fh = defined $err_fh ? \*STDERR_SAVE : \*STDERR;
-             if ( defined $r && $r != -1 ) {
-                print $err_fh "run3(): \$? is $?\n";
-             } else {
-                print $err_fh "run3(): \$? is $?, \$! is $errno\n";
-             }
-          }
-  
-          if (
-              defined $r
-              && ( $r == -1 || ( is_win32 && $r == 0xFF00 && $errno != 0 ) )
-              && !$options->{return_if_system_error}
-          ) {
-              croak( $errno );
-          }
-  
-          1;
-      };
-      my $x = $@;
-  
-      my @errs;
-  
-      if ( defined $saved_fd0 ) {
-          dup2( $saved_fd0, 0 );
-          POSIX::close( $saved_fd0 );
-      }
-  
-  #    open STDIN,  "<&STDIN_SAVE"#  or push @errs, "run3(): $! restoring STDIN"
-  #        if defined $in_fh;
-      open STDOUT, ">&STDOUT_SAVE" or push @errs, "run3(): $! restoring STDOUT"
-          if defined $out_fh;
-      open STDERR, ">&STDERR_SAVE" or push @errs, "run3(): $! restoring STDERR"
-          if defined $err_fh;
-  
-      croak join ", ", @errs if @errs;
-  
-      die $x unless $ok;
-  
-      _read_child_output_fh "stdout", $out_type, $stdout, $out_fh, $options
-          if defined $out_fh && $out_type && $out_type ne "FH";
-      _read_child_output_fh "stderr", $err_type, $stderr, $err_fh, $options
-          if defined $err_fh && $err_type && $err_type ne "FH" && !$tie_err_to_out;
-      $profiler->run_exit(
-         $cmd,
-         $run_call_time,
-         $sys_call_time,
-         $sys_exit_time,
-         scalar gettimeofday()
-      ) if profiling;
-  
-      $! = $errno;              # restore $! from system()
-  
-      return 1;
-  }
-  
-  1;
-  
-  __END__
-  
-  =head2 C<< run3($cmd, $stdin, $stdout, $stderr, \%options) >>
-  
-  All parameters after C<$cmd> are optional.
-  
-  The parameters C<$stdin>, C<$stdout> and C<$stderr> indicate how the child's
-  corresponding filehandle (C<STDIN>, C<STDOUT> and C<STDERR>, resp.) will be
-  redirected.  Because the redirects come last, this allows C<STDOUT> and
-  C<STDERR> to default to the parent's by just not specifying them -- a common
-  use case.
-  
-  C<run3> throws an exception if the wrapped C<system> call returned -1 or
-  anything went wrong with C<run3>'s processing of filehandles.  Otherwise it
-  returns true.  It leaves C<$?> intact for inspection of exit and wait status.
-  
-  Note that a true return value from C<run3> doesn't mean that the command had a
-  successful exit code. Hence you should always check C<$?>.
-  
-  See L</%options> for an option to handle the case of C<system> returning -1
-  yourself.
-  
-  =head3 C<$cmd>
-  
-  Usually C<$cmd> will be an ARRAY reference and the child is invoked via
-  
-    system @$cmd;
-  
-  But C<$cmd> may also be a string in which case the child is invoked via
-  
-    system $cmd;
-  
-  (cf. L<perlfunc/system> for the difference and the pitfalls of using
-  the latter form).
-  
-  =head3 C<$stdin>, C<$stdout>, C<$stderr>
-  
-  The parameters C<$stdin>, C<$stdout> and C<$stderr> can take one of the
-  following forms:
-  
-  =over 4
-  
-  =item C<undef> (or not specified at all)
-  
-  The child inherits the corresponding filehandle from the parent.
-  
-    run3 \@cmd, $stdin;                   # child writes to same STDOUT and STDERR as parent
-    run3 \@cmd, undef, $stdout, $stderr;  # child reads from same STDIN as parent
-  
-  =item C<\undef>
-  
-  The child's filehandle is redirected from or to the local equivalent of
-  C</dev/null> (as returned by C<< File::Spec->devnull() >>).
-  
-    run3 \@cmd, \undef, $stdout, $stderr; # child reads from /dev/null
-  
-  =item a simple scalar
-  
-  The parameter is taken to be the name of a file to read from
-  or write to. In the latter case, the file will be opened via
-  
-    open FH, ">", ...
-  
-  i.e. it is created if it doesn't exist and truncated otherwise.
-  Note that the file is opened by the parent which will L<croak|Carp/croak>
-  in case of failure.
-  
-    run3 \@cmd, \undef, "out.txt";        # child writes to file "out.txt"
-  
-  =item a filehandle (either a reference to a GLOB or an C<IO::Handle>)
-  
-  The filehandle is inherited by the child.
-  
-    open my $fh, ">", "out.txt";
-    print $fh "prologue\n";
-    ...
-    run3 \@cmd, \undef, $fh;              # child writes to $fh
-    ...
-    print $fh "epilogue\n";
-    close $fh;
-  
-  =item a SCALAR reference
-  
-  The referenced scalar is treated as a string to be read from or
-  written to. In the latter case, the previous content of the string
-  is overwritten.
-  
-    my $out;
-    run3 \@cmd, \undef, \$out;           # child writes into string
-    run3 \@cmd, \<<EOF;                  # child reads from string (can use "here" notation)
-    Input
-    to
-    child
-    EOF
-  
-  =item an ARRAY reference
-  
-  For C<$stdin>, the elements of C<@$stdin> are simply spooled to the child.
-  
-  For C<$stdout> or C<$stderr>, the child's corresponding file descriptor
-  is read line by line (as determined by the current setting of C<$/>)
-  into C<@$stdout> or C<@$stderr>, resp. The previous content of the array
-  is overwritten.
-  
-    my @lines;
-    run3 \@cmd, \undef, \@lines;         # child writes into array
-  
-  =item a CODE reference
-  
-  For C<$stdin>, C<&$stdin> will be called repeatedly (with no arguments) and
-  the return values are spooled to the child. C<&$stdin> must signal the end of
-  input by returning C<undef>.
-  
-  For C<$stdout> or C<$stderr>, the child's corresponding file descriptor
-  is read line by line (as determined by the current setting of C<$/>)
-  and C<&$stdout> or C<&$stderr>, resp., is called with the contents of the line.
-  Note that there's no end-of-file indication.
-  
-    my $i = 0;
-    sub producer {
-      return $i < 10 ? "line".$i++."\n" : undef;
-    }
-  
-    run3 \@cmd, \&producer;              # child reads 10 lines
-  
-  Note that this form of redirecting the child's I/O doesn't imply
-  any form of concurrency between parent and child - run3()'s method of
-  operation is the same no matter which form of redirection you specify.
-  
-  =back
-  
-  If the same value is passed for C<$stdout> and C<$stderr>, then the child
-  will write both C<STDOUT> and C<STDERR> to the same filehandle.
-  In general, this means that
-  
-      run3 \@cmd, \undef, "foo.txt", "foo.txt";
-      run3 \@cmd, \undef, \$both, \$both;
-  
-  will DWIM and pass a single file handle to the child for both C<STDOUT> and
-  C<STDERR>, collecting all into file "foo.txt" or C<$both>.
-  
-  =head3 C<\%options>
-  
-  The last parameter, C<\%options>, must be a hash reference if present.
-  
-  Currently the following keys are supported:
-  
-  =over 4
-  
-  =item C<binmode_stdin>, C<binmode_stdout>, C<binmode_stderr>
-  
-  The value must a "layer" as described in L<perlfunc/binmode>.  If specified the
-  corresponding parameter C<$stdin>, C<$stdout> or C<$stderr>, resp., operates
-  with the given layer.
-  
-  For backward compatibility, a true value that doesn't start with ":"
-  (e.g. a number) is interpreted as ":raw". If the value is false
-  or not specified, the default is ":crlf" on Windows and ":raw" otherwise.
-  
-  Don't expect that values other than the built-in layers ":raw", ":crlf",
-  and (on newer Perls) ":bytes", ":utf8", ":encoding(...)" will work.
-  
-  =item C<append_stdout>, C<append_stderr>
-  
-  If their value is true then the corresponding parameter C<$stdout> or
-  C<$stderr>, resp., will append the child's output to the existing "contents" of
-  the redirector. This only makes sense if the redirector is a simple scalar (the
-  corresponding file is opened in append mode), a SCALAR reference (the output is
-  appended to the previous contents of the string) or an ARRAY reference (the
-  output is C<push>ed onto the previous contents of the array).
-  
-  =item C<return_if_system_error>
-  
-  If this is true C<run3> does B<not> throw an exception if C<system> returns -1
-  (cf. L<perlfunc/system> for possible failure scenarios.), but returns true
-  instead.  In this case C<$?> has the value -1 and C<$!> contains the errno of
-  the failing C<system> call.
-  
-  =back
-  
-  =head1 HOW IT WORKS
-  
-  =over 4
-  
-  =item (1)
-  
-  For each redirector C<$stdin>, C<$stdout>, and C<$stderr>, C<run3()> furnishes
-  a filehandle:
-  
-  =over 4
-  
-  =item *
-  
-  if the redirector already specifies a filehandle it just uses that
-  
-  =item *
-  
-  if the redirector specifies a filename, C<run3()> opens the file
-  in the appropriate mode
-  
-  =item *
-  
-  in all other cases, C<run3()> opens a temporary file (using
-  L<tempfile|Temp/tempfile>)
-  
-  =back
-  
-  =item (2)
-  
-  If C<run3()> opened a temporary file for C<$stdin> in step (1),
-  it writes the data using the specified method (either
-  from a string, an array or returned by a function) to the temporary file and rewinds it.
-  
-  =item (3)
-  
-  C<run3()> saves the parent's C<STDIN>, C<STDOUT> and C<STDERR> by duplicating
-  them to new filehandles. It duplicates the filehandles from step (1)
-  to C<STDIN>, C<STDOUT> and C<STDERR>, resp.
-  
-  =item (4)
-  
-  C<run3()> runs the child by invoking L<system|perlfunc/system> with C<$cmd> as
-  specified above.
-  
-  =item (5)
-  
-  C<run3()> restores the parent's C<STDIN>, C<STDOUT> and C<STDERR> saved in step (3).
-  
-  =item (6)
-  
-  If C<run3()> opened a temporary file for C<$stdout> or C<$stderr> in step (1),
-  it rewinds it and reads back its contents using the specified method (either to
-  a string, an array or by calling a function).
-  
-  =item (7)
-  
-  C<run3()> closes all filehandles that it opened explicitly in step (1).
-  
-  =back
-  
-  Note that when using temporary files, C<run3()> tries to amortize the overhead
-  by reusing them (i.e. it keeps them open and rewinds and truncates them
-  before the next operation).
-  
-  =head1 LIMITATIONS
-  
-  Often uses intermediate files (determined by File::Temp, and thus by the
-  File::Spec defaults and the TMPDIR env. variable) for speed, portability and
-  simplicity.
-  
-  Use extreme caution when using C<run3> in a threaded environment if concurrent
-  calls of C<run3> are possible. Most likely, I/O from different invocations will
-  get mixed up. The reason is that in most thread implementations all threads in
-  a process share the same STDIN/STDOUT/STDERR.  Known failures are Perl ithreads
-  on Linux and Win32. Note that C<fork> on Win32 is emulated via Win32 threads
-  and hence I/O mix up is possible between forked children here (C<run3> is "fork
-  safe" on Unix, though).
-  
-  =head1 DEBUGGING
-  
-  To enable debugging use the IPCRUN3DEBUG environment variable to
-  a non-zero integer value:
-  
-    $ IPCRUN3DEBUG=1 myapp
-  
-  =head1 PROFILING
-  
-  To enable profiling, set IPCRUN3PROFILE to a number to enable emitting profile
-  information to STDERR (1 to get timestamps, 2 to get a summary report at the
-  END of the program, 3 to get mini reports after each run) or to a filename to
-  emit raw data to a file for later analysis.
-  
-  =head1 COMPARISON
-  
-  Here's how it stacks up to existing APIs:
-  
-  =head2 compared to C<system()>, C<qx''>, C<open "...|">, C<open "|...">
-  
-  =over
-  
-  =item *
-  
-  better: redirects more than one file descriptor
-  
-  =item *
-  
-  better: returns TRUE on success, FALSE on failure
-  
-  =item *
-  
-  better: throws an error if problems occur in the parent process (or the
-  pre-exec child)
-  
-  =item *
-  
-  better: allows a very perlish interface to Perl data structures and subroutines
-  
-  =item *
-  
-  better: allows 1 word invocations to avoid the shell easily:
-  
-   run3 ["foo"];  # does not invoke shell
-  
-  =item *
-  
-  worse: does not return the exit code, leaves it in $?
-  
-  =back
-  
-  =head2 compared to C<open2()>, C<open3()>
-  
-  =over
-  
-  =item *
-  
-  better: no lengthy, error prone polling/select loop needed
-  
-  =item *
-  
-  better: hides OS dependencies
-  
-  =item *
-  
-  better: allows SCALAR, ARRAY, and CODE references to source and sink I/O
-  
-  =item *
-  
-  better: I/O parameter order is like C<open3()>  (not like C<open2()>).
-  
-  =item *
-  
-  worse: does not allow interaction with the subprocess
-  
-  =back
-  
-  =head2 compared to L<IPC::Run::run()|IPC::Run/run>
-  
-  =over
-  
-  =item *
-  
-  better: smaller, lower overhead, simpler, more portable
-  
-  =item *
-  
-  better: no select() loop portability issues
-  
-  =item *
-  
-  better: does not fall prey to Perl closure leaks
-  
-  =item *
-  
-  worse: does not allow interaction with the subprocess (which IPC::Run::run()
-  allows by redirecting subroutines)
-  
-  =item *
-  
-  worse: lacks many features of C<IPC::Run::run()> (filters, pipes, redirects,
-  pty support)
-  
-  =back
-  
-  =head1 COPYRIGHT
-  
-  Copyright 2003, R. Barrie Slaymaker, Jr., All Rights Reserved
-  
-  =head1 LICENSE
-  
-  You may use this module under the terms of the BSD, Artistic, or GPL licenses,
-  any version.
-  
-  =head1 AUTHOR
-  
-  Barrie Slaymaker E<lt>C<barries@slaysys.com>E<gt>
-  
-  Ricardo SIGNES E<lt>C<rjbs@cpan.org>E<gt> performed routine maintenance since
-  2010, thanks to help from the following ticket and/or patch submitters: Jody
-  Belka, Roderich Schupp, David Morel, Jeff Lavallee, and anonymous others.
-  
-  =cut
-IPC_RUN3
-
-$fatpacked{"IPC/Run3/ProfArrayBuffer.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'IPC_RUN3_PROFARRAYBUFFER';
-  use strict;
-  use warnings;
-  package IPC::Run3::ProfArrayBuffer;
-  
-  our $VERSION = 0.049;
-  
-  =head1 NAME
-  
-  IPC::Run3::ProfArrayBuffer - Store profile events in RAM in an array
-  
-  =head1 SYNOPSIS
-  
-  =head1 DESCRIPTION
-  
-  =head1 METHODS
-  
-  =over
-  
-  =item C<< IPC::Run3::ProfArrayBuffer->new() >>
-  
-  =cut
-  
-  sub new {
-      my $class = ref $_[0] ? ref shift : shift;
-  
-      my $self = bless { @_ }, $class;
-  
-      $self->{Events} = [];
-  
-      return $self;
-  }
-  
-  =item C<< $buffer->app_call(@events) >>
-  
-  =item C<< $buffer->app_exit(@events) >>
-  
-  =item C<< $buffer->run_exit(@events) >>
-  
-  The three above methods push the given events onto the stack of recorded
-  events.
-  
-  =cut
-  
-  for my $subname ( qw(app_call app_exit run_exit) ) {
-    no strict 'refs';
-    *{$subname} = sub {
-        push @{shift->{Events}}, [ $subname => @_ ];
-    };
-  }
-  
-  =item get_events
-  
-  Returns a list of all the events.  Each event is an ARRAY reference
-  like:
-  
-     [ "app_call", 1.1, ... ];
-  
-  =cut
-  
-  sub get_events {
-      my $self = shift;
-      @{$self->{Events}};
-  }
-  
-  =back
-  
-  =head1 LIMITATIONS
-  
-  =head1 COPYRIGHT
-  
-  Copyright 2003, R. Barrie Slaymaker, Jr., All Rights Reserved
-  
-  =head1 LICENSE
-  
-  You may use this module under the terms of the BSD, Artistic, or GPL licenses,
-  any version.
-  
-  =head1 AUTHOR
-  
-  Barrie Slaymaker E<lt>barries@slaysys.comE<gt>
-  
-  =cut
-  
-  1;
-IPC_RUN3_PROFARRAYBUFFER
-
-$fatpacked{"IPC/Run3/ProfLogReader.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'IPC_RUN3_PROFLOGREADER';
-  use strict;
-  use warnings;
-  package IPC::Run3::ProfLogReader;
-  
-  our $VERSION = 0.049;
-  
-  =head1 NAME
-  
-  IPC::Run3::ProfLogReader -  read and process a ProfLogger file
-  
-  =head1 SYNOPSIS
-  
-   use IPC::Run3::ProfLogReader;
-  
-   my $reader = IPC::Run3::ProfLogReader->new; ## use "run3.out"
-   my $reader = IPC::Run3::ProfLogReader->new( Source => $fn );
-  
-   my $profiler = IPC::Run3::ProfPP;   ## For example
-   my $reader   = IPC::Run3::ProfLogReader->new( ..., Handler => $p );
-  
-   $reader->read;
-   $eaderr->read_all;
-  
-  =head1 DESCRIPTION
-  
-  Reads a log file.  Use the filename "-" to read from STDIN.
-  
-  =cut
-  
-  =head1 METHODS
-  
-  =head2 C<< IPC::Run3::ProfLogReader->new( ... ) >>
-  
-  =cut
-  
-  sub new {
-      my $class = ref $_[0] ? ref shift : shift;
-      my $self = bless { @_ }, $class;
-  
-      $self->{Source} = "run3.out"
-          unless defined $self->{Source} && length $self->{Source};
-  
-      my $source = $self->{Source};
-  
-      if ( ref $source eq "GLOB" || UNIVERSAL::isa( $source, "IO::Handle" ) ) {
-          $self->{FH} = $source;
-      }
-      elsif ( $source eq "-" ) {
-          $self->{FH} = \*STDIN;
-      }
-      else {
-          open PROFILE, "<$self->{Source}" or die "$!: $self->{Source}\n";
-          $self->{FH} = *PROFILE{IO};
-      }
-      return $self;
-  }
-  
-  
-  =head2 C<< $reader->set_handler( $handler ) >>
-  
-  =cut
-  
-  sub set_handler { $_[0]->{Handler} = $_[1] }
-  
-  =head2 C<< $reader->get_handler() >>
-  
-  =cut
-  
-  sub get_handler { $_[0]->{Handler} }
-  
-  =head2 C<< $reader->read() >>
-  
-  =cut
-  
-  sub read {
-      my $self = shift;
-  
-      my $fh = $self->{FH};
-      my $ln = <$fh>;
-      my @ln = defined $ln ? (split / /, $ln) : ();
-  
-      return 0 unless @ln;
-      return 1 unless $self->{Handler};
-  
-      chomp $ln[-1];
-  
-      ## Ignore blank and comment lines.
-      return 1 if @ln == 1 && ! length $ln[0] || 0 == index $ln[0], "#";
-  
-      if ( $ln[0] eq "\\app_call" ) {
-          shift @ln;
-          my @times = split /,/, pop @ln;
-          $self->{Handler}->app_call(
-              [
-                  map {
-                      s/\\\\/\\/g;
-                      s/\\_/ /g;
-                      $_;
-                  } @ln
-              ],
-              @times
-          );
-      }
-      elsif ( $ln[0] eq "\\app_exit" ) {
-          shift @ln;
-          $self->{Handler}->app_exit( pop @ln, @ln );
-      }
-      else {
-          my @times = split /,/, pop @ln;
-          $self->{Handler}->run_exit(
-              [
-                  map {
-                      s/\\\\/\\/g;
-                      s/\\_/ /g;
-                      $_;
-                  } @ln
-              ],
-              @times
-          );
-      }
-  
-      return 1;
-  }
-  
-  
-  =head2 C<< $reader->read_all() >>
-  
-  This method reads until there is nothing left to read, and then returns true.
-  
-  =cut
-  
-  sub read_all {
-      my $self = shift;
-  
-      1 while $self->read;
-  
-      return 1;
-  }
-  
-  
-  =head1 LIMITATIONS
-  
-  =head1 COPYRIGHT
-  
-      Copyright 2003, R. Barrie Slaymaker, Jr., All Rights Reserved
-  
-  =head1 LICENSE
-  
-  You may use this module under the terms of the BSD, Artistic, or GPL licenses,
-  any version.
-  
-  =head1 AUTHOR
-  
-  Barrie Slaymaker E<lt>barries@slaysys.comE<gt>
-  
-  =cut
-  
-  1;
-IPC_RUN3_PROFLOGREADER
-
-$fatpacked{"IPC/Run3/ProfLogger.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'IPC_RUN3_PROFLOGGER';
-  use strict;
-  use warnings;
-  package IPC::Run3::ProfLogger;
-  
-  our $VERSION = 0.049;
-  
-  =head1 NAME
-  
-  IPC::Run3::ProfLogger - write profiling data to a log file
-  
-  =head1 SYNOPSIS
-  
-   use IPC::Run3::ProfLogger;
-  
-   my $logger = IPC::Run3::ProfLogger->new;  ## write to "run3.out"
-   my $logger = IPC::Run3::ProfLogger->new( Destination => $fn );
-  
-   $logger->app_call( \@cmd, $time );
-  
-   $logger->run_exit( \@cmd1, @times1 );
-   $logger->run_exit( \@cmd1, @times1 );
-  
-   $logger->app_exit( $time );
-  
-  =head1 DESCRIPTION
-  
-  Used by IPC::Run3 to write a profiling log file.  Does not
-  generate reports or maintain statistics; its meant to have minimal
-  overhead.
-  
-  Its API is compatible with a tiny subset of the other IPC::Run profiling
-  classes.
-  
-  =cut
-  
-  =head1 METHODS
-  
-  =head2 C<< IPC::Run3::ProfLogger->new( ... ) >>
-  
-  =cut
-  
-  sub new {
-      my $class = ref $_[0] ? ref shift : shift;
-      my $self = bless { @_ }, $class;
-  
-      $self->{Destination} = "run3.out"
-          unless defined $self->{Destination} && length $self->{Destination};
-  
-      open PROFILE, ">$self->{Destination}"
-          or die "$!: $self->{Destination}\n";
-      binmode PROFILE;
-      $self->{FH} = *PROFILE{IO};
-  
-      $self->{times} = [];
-      return $self;
-  }
-  
-  =head2 C<< $logger->run_exit( ... ) >>
-  
-  =cut
-  
-  sub run_exit {
-      my $self = shift;
-      my $fh = $self->{FH};
-      print( $fh
-          join(
-              " ",
-              (
-                  map {
-                      my $s = $_;
-                      $s =~ s/\\/\\\\/g;
-                      $s =~ s/ /_/g;
-                      $s;
-                  } @{shift()}
-              ),
-              join(
-                  ",",
-                  @{$self->{times}},
-                  @_,
-              ),
-          ),
-          "\n"
-      );
-  }
-  
-  =head2 C<< $logger->app_exit( $arg ) >>
-  
-  =cut
-  
-  sub app_exit {
-      my $self = shift;
-      my $fh = $self->{FH};
-      print $fh "\\app_exit ", shift, "\n";
-  }
-  
-  =head2 C<< $logger->app_call( $t, @args) >>
-  
-  =cut
-  
-  sub app_call {
-      my $self = shift;
-      my $fh = $self->{FH};
-      my $t = shift;
-      print( $fh
-          join(
-              " ",
-              "\\app_call",
-              (
-                  map {
-                      my $s = $_;
-                      $s =~ s/\\\\/\\/g;
-                      $s =~ s/ /\\_/g;
-                      $s;
-                  } @_
-              ),
-              $t,
-          ),
-          "\n"
-      );
-  }
-  
-  =head1 LIMITATIONS
-  
-  =head1 COPYRIGHT
-  
-  Copyright 2003, R. Barrie Slaymaker, Jr., All Rights Reserved
-  
-  =head1 LICENSE
-  
-  You may use this module under the terms of the BSD, Artistic, or GPL licenses,
-  any version.
-  
-  =head1 AUTHOR
-  
-  Barrie Slaymaker E<lt>barries@slaysys.comE<gt>
-  
-  =cut
-  
-  1;
-IPC_RUN3_PROFLOGGER
-
-$fatpacked{"IPC/Run3/ProfPP.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'IPC_RUN3_PROFPP';
-  use strict;
-  use warnings;
-  package IPC::Run3::ProfPP;
-  
-  our $VERSION = 0.049;
-  
-  =head1 NAME
-  
-  IPC::Run3::ProfPP - Generate reports from IPC::Run3 profiling data
-  
-  =head1 SYNOPSIS
-  
-  =head1 DESCRIPTION
-  
-  Used by IPC::Run3 and/or run3profpp to print out profiling reports for
-  human readers.  Use other classes for extracting data in other ways.
-  
-  The output methods are plain text, override these (see the source for
-  now) to provide other formats.
-  
-  This class generates reports on each run3_exit() and app_exit() call.
-  
-  =cut
-  
-  require IPC::Run3::ProfReporter;
-  our @ISA = qw( IPC::Run3::ProfReporter );
-  
-  use POSIX qw( floor );
-  
-  =head1 METHODS
-  
-  =head2 C<< IPC::Run3::ProfPP->new() >>
-  
-  Returns a new profile reporting object.
-  
-  =cut
-  
-  sub _emit { shift; warn @_ }
-  
-  sub _t {
-      sprintf "%10.6f secs", @_;
-  }
-  
-  sub _r {
-      my ( $num, $denom ) = @_;
-      return () unless $denom;
-      sprintf "%10.6f", $num / $denom;
-  }
-  
-  sub _pct {
-      my ( $num, $denom ) = @_;
-      return () unless $denom;
-      sprintf  " (%3d%%)", floor( 100 * $num / $denom + 0.5 );
-  }
-  
-  =head2 C<< $profpp->handle_app_call() >>
-  
-  =cut
-  
-  sub handle_app_call {
-      my $self = shift;
-      $self->_emit("IPC::Run3 parent: ",
-          join( " ", @{$self->get_app_cmd} ),
-          "\n",
-      );
-  
-      $self->{NeedNL} = 1;
-  }
-  
-  =head2 C<< $profpp->handle_app_exit() >>
-  
-  =cut
-  
-  sub handle_app_exit {
-      my $self = shift;
-  
-      $self->_emit("\n") if $self->{NeedNL} && $self->{NeedNL} != 1;
-  
-      $self->_emit( "IPC::Run3 total elapsed:             ",
-          _t( $self->get_app_cumulative_time ),
-          "\n");
-      $self->_emit( "IPC::Run3 calls to run3():    ",
-          sprintf( "%10d", $self->get_run_count ),
-          "\n");
-      $self->_emit( "IPC::Run3 total spent in run3():     ",
-          _t( $self->get_run_cumulative_time ),
-          _pct( $self->get_run_cumulative_time, $self->get_app_cumulative_time ),
-          ", ",
-          _r( $self->get_run_cumulative_time, $self->get_run_count ),
-          " per call",
-          "\n");
-      my $exclusive =
-          $self->get_app_cumulative_time - $self->get_run_cumulative_time;
-      $self->_emit( "IPC::Run3 total spent not in run3(): ",
-          _t( $exclusive ),
-          _pct( $exclusive, $self->get_app_cumulative_time ),
-          "\n");
-      $self->_emit( "IPC::Run3 total spent in children:   ",
-          _t( $self->get_sys_cumulative_time ),
-          _pct( $self->get_sys_cumulative_time, $self->get_app_cumulative_time ),
-          ", ",
-          _r( $self->get_sys_cumulative_time, $self->get_run_count ),
-          " per call",
-          "\n");
-      my $overhead =
-          $self->get_run_cumulative_time - $self->get_sys_cumulative_time;
-      $self->_emit( "IPC::Run3 total overhead:            ",
-          _t( $overhead ),
-          _pct(
-              $overhead,
-              $self->get_sys_cumulative_time
-          ),
-          ", ",
-          _r( $overhead, $self->get_run_count ),
-          " per call",
-          "\n");
-  }
-  
-  =head2 C<< $profpp->handle_run_exit() >>
-  
-  =cut
-  
-  sub handle_run_exit {
-      my $self = shift;
-      my $overhead = $self->get_run_time - $self->get_sys_time;
-  
-      $self->_emit("\n") if $self->{NeedNL} && $self->{NeedNL} != 2;
-      $self->{NeedNL} = 3;
-  
-      $self->_emit( "IPC::Run3 child: ",
-          join( " ", @{$self->get_run_cmd} ),
-          "\n");
-      $self->_emit( "IPC::Run3 run3()  : ", _t( $self->get_run_time ), "\n",
-           "IPC::Run3 child   : ", _t( $self->get_sys_time ), "\n",
-           "IPC::Run3 overhead: ", _t( $overhead ),
-               _pct( $overhead, $self->get_sys_time ),
-               "\n");
-  }
-  
-  =head1 LIMITATIONS
-  
-  =head1 COPYRIGHT
-  
-      Copyright 2003, R. Barrie Slaymaker, Jr., All Rights Reserved
-  
-  =head1 LICENSE
-  
-  You may use this module under the terms of the BSD, Artistic, or GPL licenses,
-  any version.
-  
-  =head1 AUTHOR
-  
-  Barrie Slaymaker E<lt>barries@slaysys.comE<gt>
-  
-  =cut
-  
-  1;
-IPC_RUN3_PROFPP
-
-$fatpacked{"IPC/Run3/ProfReporter.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'IPC_RUN3_PROFREPORTER';
-  use strict;
-  use warnings;
-  package IPC::Run3::ProfReporter;
-  
-  our $VERSION = 0.049;
-  
-  =head1 NAME
-  
-  IPC::Run3::ProfReporter - base class for handling profiling data
-  
-  =head1 SYNOPSIS
-  
-  =head1 DESCRIPTION
-  
-  See L<IPC::Run3::ProfPP|IPC::Run3::ProfPP> and for an example subclass.
-  
-  This class just notes and accumulates times; subclasses use methods like
-  "handle_app_call", "handle_run_exit" and "handle_app_exit" to emit reports on
-  it.  The default methods for these handlers are noops.
-  
-  If run from the command line, a reporter will be created and run on
-  each logfile given as a command line parameter or on run3.out if none
-  are given.
-  
-  This allows reports to be run like:
-  
-      perl -MIPC::Run3::ProfPP -e1
-      perl -MIPC::Run3::ProfPP -e1 foo.out bar.out
-  
-  Use "-" to read from STDIN (the log file format is meant to be moderately
-  greppable):
-  
-      grep "^cvs " run3.out perl -MIPC::Run3::ProfPP -e1 -
-  
-  Use --app to show only application level statistics (ie don't emit
-  a report section for each command run).
-  
-  =cut
-  
-  my $loaded_by;
-  
-  sub import {
-      $loaded_by = shift;
-  }
-  
-  END {
-      my @caller;
-      for ( my $i = 0;; ++$i ) {
-          my @c = caller $i;
-          last unless @c;
-          @caller = @c;
-      }
-  
-      if ( $caller[0] eq "main"
-          && $caller[1] eq "-e"
-      ) {
-          require IPC::Run3::ProfLogReader;
-          require Getopt::Long;
-          my ( $app, $run );
-  
-          Getopt::Long::GetOptions(
-              "app" => \$app,
-              "run" => \$run,
-          );
-  
-          $app = 1, $run = 1 unless $app || $run;
-  
-          for ( @ARGV ? @ARGV : "" ) {
-              my $r = IPC::Run3::ProfLogReader->new(
-                  Source  => $_,
-                  Handler => $loaded_by->new(
-                      Source => $_,
-                      app_report => $app,
-                      run_report => $run,
-                  ),
-              );
-              $r->read_all;
-          }
-      }
-  }
-  
-  =head1 METHODS
-  
-  =over
-  
-  =item C<< IPC::Run3::ProfReporter->new >>
-  
-  Returns a new profile reporting object.
-  
-  =cut
-  
-  sub new {
-      my $class = ref $_[0] ? ref shift : shift;
-      my $self = bless { @_ }, $class;
-      $self->{app_report} = 1, $self->{run_report} = 1
-          unless $self->{app_report} || $self->{run_report};
-  
-      return $self;
-  }
-  
-  =item C<< $reporter->handle_app_call( ... ) >>
-  
-  =item C<< $reporter->handle_app_exit( ... ) >>
-  
-  =item C<< $reporter->handle_run_exit( ... ) >>
-  
-  These methods are called by the handled events (see below).
-  
-  =cut
-  
-  sub handle_app_call {}
-  sub handle_app_exit {}
-  
-  sub handle_run_exit {}
-  
-  =item C<< $reporter->app_call(\@cmd, $time) >>
-  
-  =item C<< $reporter->app_exit($time) >>
-  
-  =item C<< $reporter->run_exit(@times) >>
-  
-     $self->app_call( $time );
-     my $time = $self->get_app_call_time;
-  
-  Sets the time (in floating point seconds) when the application, run3(),
-  or system() was called or exited.  If no time parameter is passed, uses
-  IPC::Run3's time routine.
-  
-  Use get_...() to retrieve these values (and _accum values, too).  This
-  is a separate method to speed the execution time of the setters just a
-  bit.
-  
-  =cut
-  
-  sub app_call {
-      my $self = shift;
-      ( $self->{app_cmd}, $self->{app_call_time} ) = @_;
-      $self->handle_app_call if $self->{app_report};
-  }
-  
-  sub app_exit {
-      my $self = shift;
-      $self->{app_exit_time} = shift;
-      $self->handle_app_exit if $self->{app_report};
-  }
-  
-  sub run_exit {
-      my $self = shift;
-      @{$self}{qw(
-          run_cmd run_call_time sys_call_time sys_exit_time run_exit_time
-      )} = @_;
-  
-      ++$self->{run_count};
-      $self->{run_cumulative_time} += $self->get_run_time;
-      $self->{sys_cumulative_time} += $self->get_sys_time;
-      $self->handle_run_exit if $self->{run_report};
-  }
-  
-  =item C<< $reporter->get_run_count() >>
-  
-  =item C<< $reporter->get_app_call_time() >>
-  
-  =item C<< $reporter->get_app_exit_time() >>
-  
-  =item C<< $reporter->get_app_cmd() >>
-  
-  =item C<< $reporter->get_app_time() >>
-  
-  =cut
-  
-  sub get_run_count     { shift->{run_count} }
-  sub get_app_call_time { shift->{app_call_time} }
-  sub get_app_exit_time { shift->{app_exit_time} }
-  sub get_app_cmd       { shift->{app_cmd}       }
-  sub get_app_time {
-      my $self = shift;
-      $self->get_app_exit_time - $self->get_app_call_time;
-  }
-  
-  =item C<< $reporter->get_app_cumulative_time() >>
-  
-  =cut
-  
-  sub get_app_cumulative_time {
-      my $self = shift;
-      $self->get_app_exit_time - $self->get_app_call_time;
-  }
-  
-  =item C<< $reporter->get_run_call_time() >>
-  
-  =item C<< $reporter->get_run_exit_time() >>
-  
-  =item C<< $reporter->get_run_time() >>
-  
-  =cut
-  
-  sub get_run_call_time { shift->{run_call_time} }
-  sub get_run_exit_time { shift->{run_exit_time} }
-  sub get_run_time {
-      my $self = shift;
-      $self->get_run_exit_time - $self->get_run_call_time;
-  }
-  
-  =item C<< $reporter->get_run_cumulative_time() >>
-  
-  =cut
-  
-  sub get_run_cumulative_time { shift->{run_cumulative_time} }
-  
-  =item C<< $reporter->get_sys_call_time() >>
-  
-  =item C<< $reporter->get_sys_exit_time() >>
-  
-  =item C<< $reporter->get_sys_time() >>
-  
-  =cut
-  
-  sub get_sys_call_time { shift->{sys_call_time} }
-  sub get_sys_exit_time { shift->{sys_exit_time} }
-  sub get_sys_time {
-      my $self = shift;
-      $self->get_sys_exit_time - $self->get_sys_call_time;
-  }
-  
-  =item C<< $reporter->get_sys_cumulative_time() >>
-  
-  =cut
-  
-  sub get_sys_cumulative_time { shift->{sys_cumulative_time} }
-  
-  =item C<< $reporter->get_run_cmd() >>
-  
-  =cut
-  
-  sub get_run_cmd { shift->{run_cmd} }
-  
-  =back
-  
-  =head1 LIMITATIONS
-  
-  =head1 COPYRIGHT
-  
-      Copyright 2003, R. Barrie Slaymaker, Jr., All Rights Reserved
-  
-  =head1 LICENSE
-  
-  You may use this module under the terms of the BSD, Artistic, or GPL licenses,
-  any version.
-  
-  =head1 AUTHOR
-  
-  Barrie Slaymaker <barries@slaysys.com>
-  
-  =cut
-  
-  1;
-IPC_RUN3_PROFREPORTER
 
 $fatpacked{"Minilla/ModuleMaker/InlineMakeMaker.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'MINILLA_MODULEMAKER_INLINEMAKEMAKER';
   package Minilla::ModuleMaker::InlineMakeMaker;
@@ -3341,40 +1592,104 @@ else {
 unshift @INC, bless \%fatpacked, $class;
   } # END OF FATPACK CODE
 
+use Object::Pad ':experimental(:all)';
+
+package App::BS::CLI::pacman;
+
+class App::BS::CLI::pacman : does(BS::Common);
 
 use utf8;
 use v5.40;
 
 use lib 'lib';
 
-#use BS::Common;
-use Data::Dumper;
 use IPC::Run3;
+use Const::Fast;
+use Syntax::Keyword::Try;
+use Syntax::Keyword::Dynamically;
 
-if ( $ENV{DEBUG} ) {
-    warn Dumper( { argv => \@ARGV } ) . "\n";
+use BS::Common 'dmsg';
+
+const our $S_IPCRUN3_FATAL =>
+"!! ERROR: $0 ran into An unknown fatal error has while attempting to execute your system's pacman binary. Your system may be experiencing instability at the moment. Consider booting from a live image and clearing up the issue before running $0 again.";
+
+field $cliopts : param(dest) = { verbose => 1 };
+field $env : param : reader = { %ENV{qw'as_needed debug verbose'} };
+
+field $status : reader;
+field $errmsg : reader;
+field $out_aref = [];
+field $err_aref = [];
+
+method $run (%opts) {
+
+    # Why am I using Syntax::Keyword::Dynamically over local outside of suppport
+    # for Ojbect::Pad?
+    dynamically $status   = 0;
+    dynamically $errmsg   = "";
+    dynamically $out_aref = [];
+
+    my @overwrite = $ARGV[0] eq '-S' ? qw(--overwrite '*' --noconfirm) : ();
+    push @overwrite, '--needed' if $$env{as_needed};
+
+    try {
+        my $ret = run3(
+            [ 'pacman', @overwrite, '--verbose', @ARGV ],
+            $opts{stdin} // undef,
+            sub ($line) {
+                chomp $line;
+                say $line;
+                push @$out_aref, $line;
+            },
+            sub ($line) {
+                chomp $line;
+                say STDERR $line;
+                push @$err_aref, $line;
+            }
+        );
+
+        ( $status, $errmsg ) =
+          $? != 0 ? ( $?, $! ) : ( 0, '', $$err_aref[ scalar @$err_aref ] );
+
+        BS::Common::dmsg(
+            {
+                overwrite => \@overwrite,
+                ret       => $ret,
+                errmsg    => $errmsg,
+                status    => $status,
+                opts      => \%opts
+            }
+        )
+    }
+    catch ($e) {
+        die $S_IPCRUN3_FATAL;
+    }
+    finally {
+        chomp $errmsg;
+        $errmsg =~ s/^(.+)[\s\r\n]*/$1/g;
+
+        BS::Common::dmsg(
+            { errmsg => $errmsg, status => $status, opts => \%opts } )
+    };
+
+    $status ? 0 : 1;
 }
 
-my @out;
-my @overwrite = $ARGV[0] eq '-S' ? qw(--overwrite '*' --noconfirm) : ();
-push @overwrite, '--needed' if $ENV{ASNEEDED};
-
-my $ret = run3(
-    [ 'pacman', @overwrite, '--verbose', @ARGV ],
-    \*STDIN,
-    sub { chomp $_[0]; say $_[0]; push @out, $_[0] },
-    sub { chomp $_[0]; warn $_[0]; }
-);
-
-my $status = $?;
-
-if ( $ENV{DEBUG} ) {
-    warn Dumper(
-        overwrite => \@overwrite,
-        status    => $status,
-        ret       => $ret,
-        out       => \@out
-       ) . "\n"
+method run : common ($argv, %opts) {
+    my $app  = $class->new( argv => $argv, %opts{qw''} );
+    my $exit = $app->$run;
+    $app;
 }
 
-exit $status
+package main;
+
+use v5.40;
+
+use BS::Common 'dmsg';
+
+sub run {
+    our $app = App::BS::CLI::pacman->run( \@ARGV );
+    BS::Common::dmsg( { app => $app } );
+}
+
+run

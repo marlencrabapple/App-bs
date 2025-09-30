@@ -1,38 +1,102 @@
 #!/usr/bin/env perl
+use Object::Pad ':experimental(:all)';
+
+package App::BS::CLI::pacman;
+
+class App::BS::CLI::pacman : does(BS::Common);
 
 use utf8;
 use v5.40;
 
 use lib 'lib';
 
-use BS::Common;
-use Data::Dumper;
 use IPC::Run3;
+use Const::Fast;
+use Syntax::Keyword::Try;
+use Syntax::Keyword::Dynamically;
 
-if ( $ENV{DEBUG} ) {
-    warn Dumper( { argv => \@ARGV } ) . "\n";
+use BS::Common 'dmsg';
+
+const our $S_IPCRUN3_FATAL =>
+"!! ERROR: $0 ran into An unknown fatal error has while attempting to execute your system's pacman binary. Your system may be experiencing instability at the moment. Consider booting from a live image and clearing up the issue before running $0 again.";
+
+field $cliopts : param(dest) = { verbose => 1 };
+field $env : param : reader = { %ENV{qw'as_needed debug verbose'} };
+
+field $status : reader;
+field $errmsg : reader;
+field $out_aref = [];
+field $err_aref = [];
+
+method $run (%opts) {
+
+    # Why am I using Syntax::Keyword::Dynamically over local outside of suppport
+    # for Ojbect::Pad?
+    dynamically $status   = 0;
+    dynamically $errmsg   = "";
+    dynamically $out_aref = [];
+
+    my @overwrite = $ARGV[0] eq '-S' ? qw(--overwrite '*' --noconfirm) : ();
+    push @overwrite, '--needed' if $$env{as_needed};
+
+    try {
+        my $ret = run3(
+            [ 'pacman', @overwrite, '--verbose', @ARGV ],
+            $opts{stdin} // undef,
+            sub ($line) {
+                chomp $line;
+                say $line;
+                push @$out_aref, $line;
+            },
+            sub ($line) {
+                chomp $line;
+                say STDERR $line;
+                push @$err_aref, $line;
+            }
+        );
+
+        ( $status, $errmsg ) =
+          $? != 0 ? ( $?, $! ) : ( 0, '', $$err_aref[ scalar @$err_aref ] );
+
+        BS::Common::dmsg(
+            {
+                overwrite => \@overwrite,
+                ret       => $ret,
+                errmsg    => $errmsg,
+                status    => $status,
+                opts      => \%opts
+            }
+        )
+    }
+    catch ($e) {
+        die $S_IPCRUN3_FATAL;
+    }
+    finally {
+        chomp $errmsg;
+        $errmsg =~ s/^(.+)[\s\r\n]*/$1/g;
+
+        BS::Common::dmsg(
+            { errmsg => $errmsg, status => $status, opts => \%opts } )
+    };
+
+    $status ? 0 : 1;
 }
 
-my @out;
-my @overwrite = $ARGV[0] eq '-S' ? qw(--overwrite '*' --noconfirm) : ();
-push @overwrite, '--needed' if $ENV{ASNEEDED};
-
-my $ret = run3(
-    [ 'pacman', @overwrite, '--verbose', @ARGV ],
-    \*STDIN,
-    sub { chomp $_[0]; say $_[0]; push @out, $_[0] },
-    sub { chomp $_[0]; warn $_[0]; }
-);
-
-my $status = $?;
-
-if ( $ENV{DEBUG} ) {
-    warn Dumper(
-        overwrite => \@overwrite,
-        status    => $status,
-        ret       => $ret,
-        out       => \@out
-       ) . "\n"
+method run : common ($argv, %opts) {
+    my $app  = $class->new( argv => $argv, %opts{qw''} );
+    my $exit = $app->$run;
+    $app;
 }
 
-exit $status
+package main;
+
+use v5.40;
+
+use BS::Common 'dmsg';
+
+sub run {
+    our $app = App::BS::CLI::pacman->run( \@ARGV );
+    BS::Common::dmsg( { app => $app } );
+}
+
+run
