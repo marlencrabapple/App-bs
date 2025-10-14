@@ -157,8 +157,7 @@ $fatpacked{"App/BS/CLI.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'APP_
   
   package App::BS::CLI;
   
-  class App::BS::CLI : isa(App::BS) : does(App::BS::Common)
-    : does(BS::alpm);
+  class App::BS::CLI : does(App::BS::Common);
   
   use utf8;
   use v5.40;
@@ -172,10 +171,13 @@ $fatpacked{"App/BS/CLI.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'APP_
   const our $S_MULTI_BAREARG => "Two bare argument handlers are defined. Please"
     . " remove either 'getopts->{\"<>\"}' or 'handle_bareargs' in 'new'.";
   
-  field $bareargs : param(argv) : mutator(argv);
+  field $bareargs        : param(argv) : mutator(argv);
   field $handle_bareargs : param = undef;
+  field $getopts_setup   : param(clispec) : mutator;
+  field $cliopts         : param(dest)    : mutator = {};
   
   ADJUSTPARAMS($params) {
+      say STDERR Dumper( { params => $params } );
       my @handle_bareargs_arr;
       my $has_bareargs_handler = 0;
   
@@ -261,8 +263,7 @@ $fatpacked{"App/BS/Common.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'A
     [ BS::Path->path($DEFAULT_CONFIGPATH) ];
   
   field $config;
-  field $getopts_setup : param(getopts) : accessor;
-  field $cliopts : param(dest) : mutator = {};
+  
   field $aliases = {};
   field $queue : mutator = ();
   
@@ -271,9 +272,9 @@ $fatpacked{"App/BS/Common.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'A
       debug               => 0,
       charset             => 'utf-8',
       default_config_path => $DEFAULT_CONFIGPATH,
-      arch                => $cliopts->%{enabled_targets} // [
-          $$cliopts{target} // $ENV{CARCH} // qw(x86_64 x86_64_v3 aarch64 armv7l)
-      ]
+  
+      # arch => $env->%{enabled_targets} // [ $env->{target} // $ENV{CARCH}
+      #       // qw(x86_64 x86_64_v3 aarch64 armv7l) ]
   };
   
   ADJUST {
@@ -443,9 +444,14 @@ $fatpacked{"BS/Common.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_CO
   use Syntax::Keyword::Dynamically;
   use Time::HiRes qw(gettimeofday);
   
-  use subs qw(dmsg bsx callstack __pkgfn__ const);
+  BEGIN {
+      use Exporter;
+      use parent 'Exporter';
+      use vars '@EXPORT';
+      use subs qw(dmsg bsx callstack __pkgfn__ const);
   
-  our @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
+      @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
+  }
   
   const our $DEBUG   => ( any { $_ } @ENV{qw(BS_DEBUG DEBUG)} ) || 0;
   const our $TRIM_RE => qr/\s*(.+)\s*\n*/i;
@@ -456,7 +462,7 @@ $fatpacked{"BS/Common.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_CO
       use Module::Metadata;
   } if $DEBUG;
   
-  my class BsxResult {
+  my class BsxRes {
       use utf8;
       use v5.40;
   
@@ -1173,6 +1179,40 @@ $fatpacked{"BS/Ext/pactree.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'
       \@out;
   }
 BS_EXT_PACTREE
+
+$fatpacked{"BS/GPG.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_GPG';
+  use Object::Pad ':experimental(:all)';
+  
+  package BS::GPG;
+  
+  class BS::GPG : does(BS::Common);
+  
+  use v5.40;
+  
+  use parent 'Exporter';
+  
+  use IPC::Run3;
+  use BS::Common 'dmsg';
+  
+  sub can_sign ( $gpgiden, %opts ) {
+      my @out = ();
+  
+      my $ret = run3(
+          [ qw(gpg --verbose -a --export), $gpgiden ],
+          \undef,
+          sub ($line) {
+              chomp $line, say $line;
+              push @out, $line;
+          },
+          sub ($line) {
+              chomp $line;
+              say $line;
+          }
+      );
+  
+      1 if scalar @out;
+  }
+BS_GPG
 
 $fatpacked{"BS/Package.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'BS_PACKAGE';
   use Object::Pad qw(:experimental(:all));

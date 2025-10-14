@@ -18,9 +18,14 @@ use Const::Fast::Exporter;
 use Syntax::Keyword::Dynamically;
 use Time::HiRes qw(gettimeofday);
 
-use subs qw(dmsg bsx callstack __pkgfn__ const);
+BEGIN {
+    use Exporter;
+    use parent 'Exporter';
+    use vars '@EXPORT';
+    use subs qw(dmsg bsx callstack __pkgfn__ const);
 
-our @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
+    @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
+}
 
 const our $DEBUG   => ( any { $_ } @ENV{qw(BS_DEBUG DEBUG)} ) || 0;
 const our $TRIM_RE => qr/\s*(.+)\s*\n*/i;
@@ -31,7 +36,7 @@ eval {
     use Module::Metadata;
 } if $DEBUG;
 
-my class BsxResult {
+my class BsxRes {
     use utf8;
     use v5.40;
 

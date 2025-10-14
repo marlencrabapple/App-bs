@@ -1,4 +1,3 @@
-[![Actions Status](https://github.com/marlencrabapple/App-bs/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/marlencrabapple/App-bs/actions?workflow=test)
 # NAME
 
 App::BS - Build system for PKGBUILD based Linux distributions

@@ -1,5 +1,5 @@
 name = "App-BS"
-badges = ["github-actions/test.yml"]
+# badges = ["github-actions/test.yml"]
 module_maker = "ModuleBuild"
 static_install = "auto"
 authority = "cpan:CRABAPP"

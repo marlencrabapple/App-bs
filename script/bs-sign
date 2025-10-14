@@ -2,15 +2,15 @@
 
 shopt -s nullglob
 
-[[ ${BS_DEBUG:-0} -ne 0 ]] && set -x;
+[[ "${BS_DEBUG:-${DEBUG:-0}}" -ne 0 ]] && set -x
 
-#export scriptdir="${0//\/$(basename "$0")}"
+scriptdir="${0//\/$(basename "$0")/}"
 . "$scriptdir/bs-common.sh"
 
-export repodb="${BS_REPO:-$AURDIT_REPO}/universe.db.tar.zst"
-export repodb_base="$(basename $repodb)"
-export repodir="${repodb//$repodb_base/}"
-export gpgpubid="${BS_GPG_PUBID:-${BS_GPGFPR:-${GPGKEYID}}}"
+repodb="${BS_REPO:-$AURDIT_REPO}/universe.db.tar.zst"
+repodb_base="$(basename "$repodb")"
+repodir="${repodb//$repodb_base/}"
+gpgpubid="${BS_GPGID:-${BS_GPGFPR:-${BS_GPG_PUBID:-${GPGKEYID}}}}"
 export pkgdest="${BS_PKGDEST:-$PKGDEST}"
 
 signpkgs() {
@@ -26,21 +26,25 @@ _sign_rel_flow() {
 
   for f in "${files[@]}"; do
     if [[ ! -e "$f" ]]; then
-        echo "Could not locate package file '$f'!! Skipping..."
+      echo "Could not locate package file '$f'!! Skipping..."
     fi
     for pkg in "${complete[@]}"; do
-      [[ -z "${f//$pkg}" ]] && echo "[◎] Already signed '$f'. Skipping..." \
-        && continue 2
+      [[ -z "${f//$pkg/}" ]] &&
+        echo "[◎] Already signed '$f'. Skipping..." &&
+        continue 2
     done
 
     signpkg "$f"
     copy2repo "$f"
-    repoadd "$f"
+    # repoadd "$f"
     err=$?
 
     echo ""
     complete+=("$f")
   done
+
+  repoadd "${files[@]}"
+  err=$?
 
   echo "${complete[@]}"
   return $err
@@ -60,8 +64,8 @@ signpkg() {
   else
     gpg -u "$gpgpubid" -sb "$f"
     gpgerr=$?
-    [[ $gpgerr -eq 0 ]] \
-       && echo "[●] Signed '$f' with '$gpgpubid'"
+    [[ $gpgerr -eq 0 ]] &&
+      echo "[●] Signed '$f' with '$gpgpubid'"
   fi
 
   return $gpgerr
@@ -78,18 +82,16 @@ copy2repo() {
   else
     cp -vaf "$f" "${f}.sig" "$repodir" 2>&1
     status=$?
-    [[ $status -eq 0 ]] \
-      && echo "[●] Copied '$f' to repo '$repodir'..."
+    [[ $status -eq 0 ]] &&
+      echo "[●] Copied '$f' to repo '$repodir'..."
   fi
 
   return $status
 }
 
 repoadd() {
-  f="$1"
 
-  repo-add -$([[ $BS_CLOBBER -ne 1 ]] && printf "%s" "n")psv --include-sigs \
-   -k"${gpgpubid}" "${repodb}" "${repodir}/$(basename "$f")"
+  perl ${DEBUG:+-d:Trace} -MIPC::Run3 -e 'use v5.40; use BS::GPG; my $gpgid = shift @ARGV; my $repodb = shift @ARGV; my @args = qw(psv); push @args, "n" if $ENV{BS_CLOBBER}; my @gpgid = $gpgid && BS::GPG::can_sign($gpgid) ? ("-k", $gpgid) : (); my $ret = run3([ qw(repo-add --include-sigs), @gpgid, "-" . (join "", @args), $repodb, @ARGV ]);' "$gpgpubid" "$repodb" "$@"
 
   repoaddexit=$?
   if [[ $repoaddexit -eq 0 ]]; then

@@ -20,7 +20,7 @@ prepare() {
   cd "$srcdir/$pkgname"
   unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
 
-  _cpanm_args=( -Llocal --dev --save-dists . --verbose)
+  _cpanm_args=(-Llocal --dev --save-dists . --verbose)
 
   cpanm ${_cpanm_args[*]} --installdeps .
 
@@ -44,7 +44,7 @@ package() {
   cd "$srcdir/$pkgname"
   unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
 
-  cpanm --verbose -L$pkgdir
+  cpanm --verbose -L"$pkgdir/usr"
 
   find "${pkgdir}" -name '.packlist' -delete
 }

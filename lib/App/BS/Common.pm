@@ -22,8 +22,7 @@ field $config_path : param(config) : mutator =
   [ BS::Path->path($DEFAULT_CONFIGPATH) ];
 
 field $config;
-field $getopts_setup : param(getopts) : accessor;
-field $cliopts : param(dest) : mutator = {};
+
 field $aliases = {};
 field $queue : mutator = ();
 
@@ -32,9 +31,9 @@ field $env : mutator = {
     debug               => 0,
     charset             => 'utf-8',
     default_config_path => $DEFAULT_CONFIGPATH,
-    arch                => $cliopts->%{enabled_targets} // [
-        $$cliopts{target} // $ENV{CARCH} // qw(x86_64 x86_64_v3 aarch64 armv7l)
-    ]
+
+    # arch => $env->%{enabled_targets} // [ $env->{target} // $ENV{CARCH}
+    #       // qw(x86_64 x86_64_v3 aarch64 armv7l) ]
 };
 
 ADJUST {

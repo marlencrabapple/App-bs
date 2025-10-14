@@ -2,16 +2,45 @@ use Object::Pad qw(:experimental(:all));
 
 package BS::Package;
 
-class BS::Package : does(BS::Package::Meta);
+class BS::Package : does(BS::Common);    #: does(BS::Package::Meta);
 
 use utf8;
 use v5.40;
+
+{
+    no warnings 'experimental';
+    use re 'strict';
+}
 
 use Carp;
 use List::Util 'any';
 use File::chdir;
 use File::Temp;
 use Const::Fast;
+
+const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?';
+
+const our $pkgprefix_re => qr/(?:(lib)\:)?/;
+
+const our $pkgstr_re => qr/^$pkgprefix_re
+          		           ($pkgname_common_re(\.so(?:\.[0-9]+)?)
+			              | $pkgname_common_re )
+                          /xxi;
+
+const our $epoch_re  => qr'([0-9]+?):'xi;
+const our $pkgver_re => qr'([^\s:/\-]+?)'xi;
+const our $pkgrel_re => qr'([0-9]+?)'xi;
+const our $arch_re   => qr'(any|aarch64|i368|i638|(?:x86_64(?:_v3)?))'xi;
+const our $pkgext_re => qr'(pkg.tar.(?:zst|xz|gz|bz2|zip))'xi;
+
+const our $pkgfile_re => qr'$pkgstr_re
+                            -(?:$epoch_re:)?
+                            $pkgver_re-$pkgrel_re
+	               		    -$arch_re
+			                .$pkgext_re
+			               'xxi;
+
+const our $pkgspec_re => qr'';
 
 role BS::Package::Stub : does(BS::Package::Meta) {
     field $search : inheritable : param : accessor = "";
@@ -40,37 +69,10 @@ method search : common ($search) {
 }
 
 method parse_pkgstr : common ($pkgstr) {
-    const my $pkgstr_name_ptn => qr'[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
-
-    const my $pkgstr_name_re => qr/
-        ^(lib\:)?
-        ($pkgstr_name_ptn(\.so(?:\.[0-9\]+)?)
-        |$pkgstr_name_ptn)
-      /x;
-
-    const my $pkgver_forbidden => quotemeta(':/-') . '\s';
-
-    const my $pkgver_re => qr'
-      (\=|[\<\>](?:\=)?)
-      ([^$pkgver_forbidden]+)
-    'x;
-    const my $optdep_re => qr/(:(:)\s+(.+))/;
-
-    const my $pkgstr_re => qr/
-        $pkgstr_name_re #
-        (?:$pkgver_re)?
-        $optdep_re
-      /x;
-
-    # Not working...
-    #const my $_pkgstr_re => qr/$pkgstr_re_str/;
-
-    #:wqwarn np nojoin => $pkgstr_re join => $_pkgstr_re if $DEBUG;
-
-    my ( $prefix, $_pkgstr, $isfile, $sep, $attr, @extra ) =
+    my ( $prefix, $_pkgidenstr, $isfile, $sep, $attr, @extra ) =
       $pkgstr =~ $pkgstr_re;
 
-    dmsg( { $prefix, $_pkgstr, $isfile, $sep, $attr, @extra } );
+    BS::Common::dmsg( { $prefix, $_pkgidenstr, $isfile, $sep, $attr, @extra } );
 }
 
 method lookup : common ($field_href, %opts) {

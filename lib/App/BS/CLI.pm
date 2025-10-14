@@ -2,8 +2,7 @@ use Object::Pad ':experimental(:all)';
 
 package App::BS::CLI;
 
-class App::BS::CLI : isa(App::BS) : does(App::BS::Common)
-  : does(BS::alpm);
+class App::BS::CLI : does(App::BS::Common);
 
 use utf8;
 use v5.40;
@@ -17,10 +16,13 @@ use Getopt::Long qw(GetOptionsFromArray :config auto_abbrev permute bundling);
 const our $S_MULTI_BAREARG => "Two bare argument handlers are defined. Please"
   . " remove either 'getopts->{\"<>\"}' or 'handle_bareargs' in 'new'.";
 
-field $bareargs : param(argv) : mutator(argv);
+field $bareargs        : param(argv) : mutator(argv);
 field $handle_bareargs : param = undef;
+field $getopts_setup   : param(clispec) : mutator;
+field $cliopts         : param(dest)    : mutator = {};
 
 ADJUSTPARAMS($params) {
+    say STDERR Dumper( { params => $params } );
     my @handle_bareargs_arr;
     my $has_bareargs_handler = 0;
 

@@ -1,0 +1,133 @@
+#!/usr/bin/env perl
+use Object::Pad ':experimental(:all)';
+use lib 'lib';
+
+package BS::repoctl;
+
+class BS::repoctl : isa(App::BS::CLI);
+
+use utf8;
+use v5.40;
+
+use List::Util 'first';
+use IPC::Run3;
+use Data::Dumper;
+use Const::Fast;
+use Path::Tiny;
+
+use BS::Common;
+use BS::GPG;
+
+const our @clispec => (
+
+# TODO: Simplify below with somethign like App::BS::CLI::optkeyptn(qr//)
+# More than likely there's a module that expands a regular expression into defined possibilities
+    'gpg-key|-signing-key|-key|gpg-pubkey|gpg-fpr|gpg-fingerprint=s',
+    'verify-database-signature|verify-db-signature',
+    'clobber',
+    'update-only|new|freshen-up',
+    'repo-db|repo-database|db-file=s',
+    '<>' => sub ($barearg) {
+        try {
+            my $path = path($barearg)->assert( sub { $_->exists } );
+        }
+        catch ($e) {
+            say STDERR "$e";
+        }
+    }
+);
+
+field $err     : param = [];
+field $out     : param = [];
+field $gpgiden : param = $ENV{BS_GPGFPR} // $ENV{BS_GPGPUBID};
+
+field $pkgqueue : param(packages) =
+  path( %ENV{ first { -d $_ } qw'BS_PKGDEST PKGDEST' } )
+  ->children(qr/.+-(any|x86_64_v3)\.pkg.tar.zst/);
+
+ADJUSTPARAMS($params) {
+    say STDERR Dumper( { params => $params } );
+    $self->getopts_setup = $$params{clispec} //= \@clispec
+}
+
+method handler(@handle) {
+    our $outh = sub ($line) {
+        chomp $line;
+        say $line;
+        push @$out, $line;
+    };
+
+    our $errh = sub ($line) {
+        chomp $line;
+        say STDERR $line;
+        push @$err, $line;
+    };
+
+    const our %ioh = (
+        out => $outh,
+        err => $errh
+    );
+
+    map { $ioh{$_} } @handle;
+}
+
+method sign( $pkg_aref = $pkgqueue, %opts ) {
+    die "\$pkg_aref (" . Dumper($pkg_aref) . ")" unless $pkg_aref isa 'ARRAY';
+
+    my $runerr =
+      run3( [ qw(gpg -sb -u), $opts{gpgiden} //= $gpgiden, @$pkg_aref ],
+        undef, $self->handler(qw(out err)) );
+
+    $self;
+}
+
+method copy ( $pkg_aref = $pkgqueue, %opts ) {
+    $self;
+}
+
+method repoadd ( $pkg_aref = $pkgqueue, %opts ) {
+    $self;
+}
+
+method $run (%opts) {
+    $self->sign->copy->repoadd;
+}
+
+method run : common ($argv = \@ARGV, $dest = {}, %opts) {
+    $opts{constuctor} //= {};
+
+    die
+"\$opts{constructor} (' . Dumper($opts{constructor}) . ') must be a hashref."
+      unless $opts{constructor} isa 'HASH';
+
+    my $app = $class->new(
+        argv    => $argv,
+        dest    => $dest,
+        clispec => \@clispec,
+        ( delete $opts{constructor} )->%*
+    );
+
+    BS::Common::dmsg(
+        { app => $app, argv => $argv, dest => $dest, opts => \%opts } );
+
+    my $res = $app->$run(%opts);
+
+    ( $app, $res );
+}
+
+#
+# Entrypoint
+#
+
+package bsrepoctl;
+
+use lib 'lib';
+
+use utf8;
+use v5.40;
+use BS::Common;
+
+my %cli = ();
+my ( $app, $asdf ) = BS::repoctl->run( argv => \@ARGV, dest => \%cli );
+
+BS::Common::dmsg( { app => $app, cliopts => \%cli, asdf => $asdf } )

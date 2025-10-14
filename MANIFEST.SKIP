@@ -1,0 +1,12 @@
+dist
+vendor
+llocal
+.carmel
+.vscode
+.build
+_build
+._logs
+authors
+TODO.md
+^MYMETA\.yml$
+^MYMETA\.json$

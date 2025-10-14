@@ -60,7 +60,6 @@ my %args = (
         'Struct::Dumb' => '0',
         'Syntax::Keyword::Defer' => '0',
         'Syntax::Keyword::Dynamically' => '0',
-        'Syntax::Keyword::MultiSub' => '0',
         'Syntax::Keyword::Try' => '0',
         'TOML::Tiny' => '0',
         'perl' => 'v5.40.0',
@@ -89,7 +88,7 @@ my %args = (
     },
 
     test_requires => {
-        'Test::CPAN::Meta' => '0',
+        'Test::CPAN::Meta' => '0.25',
         'Test::MinimumVersion::Fast' => '0',
         'Test::More' => '0.98',
         'Test::Pod' => '0',

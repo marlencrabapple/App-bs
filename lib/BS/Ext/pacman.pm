@@ -10,8 +10,8 @@ use v5.40;
 use Carp;
 use BS::Common;
 use Const::Fast;
-use Data::Printer;
-use BS::Package::Meta;
+
+#use BS::Package::Meta;
 use List::Util 'any';
 
 const our %DBPATTERN_MAP => qw(package p(?:ac)?ka?ge? file file);
@@ -35,7 +35,7 @@ method $parse_line : common ( $line, %opts ) {
     #BS::Common::dmsg \%ret;
 
     %ret;
-};
+}
 
 method $filter_output : common ($line, %opts) {
     if ( my %fields = ( $class->$parse_line( $line, %opts ) ) ) {
@@ -45,7 +45,7 @@ method $filter_output : common ($line, %opts) {
     }
 
     undef;
-};
+}
 
 method db_valid : common (@list) {
     grep { $VALIDDB_RE } @list;
