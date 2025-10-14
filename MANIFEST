@@ -81,7 +81,6 @@ App-BS-0/lib/BS/GPG.pm
 App-BS-0/lib/BS/Package.pm
 App-BS-0/lib/BS/Package/Manifest.pm
 App-BS-0/lib/BS/Package/Meta.pm
-App-BS-0/lib/BS/Package/Meta.pm.1.
 App-BS-0/lib/BS/Path.pm
 App-BS-0/lib/BS/Repo.pm
 App-BS-0/lib/BS/Repo/User.pm
@@ -908,6 +907,7 @@ blib/script/bs-mirrorlist.replout.pl
 blib/script/bs-pacman
 blib/script/bs-pacman.fat.pl
 blib/script/bs-pkgdeps.pl
+blib/script/bs-pkgres.pl
 blib/script/bs-repo
 blib/script/bs-repoadd
 blib/script/bs-repoctl
@@ -2423,10 +2423,10 @@ local/lib/perl5/YAML/PP/Writer.pm
 local/lib/perl5/YAML/PP/Writer/File.pm
 local/lib/perl5/YAML/Tiny.pm
 Makefile.PL
-MANIFEST			This list of files
+MANIFEST This list of files
 MANIFEST.bak
-MANIFEST.skip
 MANIFEST.SKIP
+MANIFEST.skip
 META.json
 minil.toml
 ppport.h
@@ -2442,6 +2442,7 @@ script/bs-mirrorlist.replout.pl
 script/bs-pacman
 script/bs-pacman.fat.pl
 script/bs-pkgdeps.pl
+script/bs-pkgres.pl
 script/bs-repo
 script/bs-repoadd
 script/bs-repoctl
@@ -3345,4 +3346,3 @@ src/pacutils/t/99-pu_list_shift.c
 src/pacutils/t/pacutils_test.h
 src/pacutils/t/runtest.sh
 t/00_compile.t
-xshelper.h

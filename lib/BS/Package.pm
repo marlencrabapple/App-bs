@@ -2,18 +2,18 @@ use Object::Pad qw(:experimental(:all));
 
 package BS::Package;
 
-class BS::Package : does(BS::Common);    #: does(BS::Package::Meta);
+role BS::Package : does(BS::Common);    #: does(BS::Package::Meta);
 
 use utf8;
 use v5.40;
 
 {
     no warnings 'experimental';
-    use re 'strict';
+    use re 'strict'; 
 }
 
 use Carp;
-use List::Util 'any';
+use List::Util qw'any uniq'; 
 use File::chdir;
 use File::Temp;
 use Const::Fast;

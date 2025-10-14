@@ -1,17 +1,25 @@
 #!/usr/bin/env bash
-
 shopt -s nullglob
-
 [[ "${BS_DEBUG:-${DEBUG:-0}}" -ne 0 ]] && set -x
+
+[[ -z "$BS_REPOROOT" ]] &&
+  [[ -d "$BS_REPOROOT" ]] &&
+  echo "Error BS_REPOROOT must be defined" && exit 1
+
+[[ -z "$BS_ROOT" ]] &&
+  [[ -d "$BS_REPOROOT" ]] &&
+  echo "Error: BS_ROOT must be defined" && exit 1
 
 scriptdir="${0//\/$(basename "$0")/}"
 . "$scriptdir/bs-common.sh"
 
-repodb="${BS_REPO:-$AURDIT_REPO}/universe.db.tar.zst"
-repodb_base="$(basename "$repodb")"
-repodir="${repodb//$repodb_base/}"
+repo="${BS_REPO:-universe}"
+repodb="$BS_REPOROOT/$repo/os/$BS_TARGET/$repo.db.tar.zst"
 gpgpubid="${BS_GPGID:-${BS_GPGFPR:-${BS_GPG_PUBID:-${GPGKEYID}}}}"
-export pkgdest="${BS_PKGDEST:-$PKGDEST}"
+
+rebodb() {
+  echo "$BS_REPOROOT/$BS_REPO/os/$BS_TARGET"
+}
 
 signpkgs() {
   _sign_rel_flow "$@"
@@ -28,6 +36,7 @@ _sign_rel_flow() {
     if [[ ! -e "$f" ]]; then
       echo "Could not locate package file '$f'!! Skipping..."
     fi
+
     for pkg in "${complete[@]}"; do
       [[ -z "${f//$pkg/}" ]] &&
         echo "[◎] Already signed '$f'. Skipping..." &&
@@ -36,7 +45,7 @@ _sign_rel_flow() {
 
     signpkg "$f"
     copy2repo "$f"
-    # repoadd "$f"
+    [[ "${REPOADD_IGNOREERROR:-0}" ]] && repoadd "$f"
     err=$?
 
     echo ""
@@ -68,14 +77,14 @@ signpkg() {
       echo "[●] Signed '$f' with '$gpgpubid'"
   fi
 
-  return $gpgerr
+  return "$gpgerr"
 }
 
 copy2repo() {
   f="$1"
   status=0
 
-  if [[ -f "$repodir/$(basename $f)" ]] && [[ "$BS_CLOBBER" -ne 1 ]]; then
+  if [[ -f "$repodir/$(basename "$f")" ]] && [[ "$BS_CLOBBER" -ne 1 ]]; then
     printf "[◎] Package with identical filename '%s' already exists " \
       "$(basename "$f")"
     printf "in repo '%s'. Skipping...\n" "$repodb"
@@ -90,7 +99,6 @@ copy2repo() {
 }
 
 repoadd() {
-
   perl ${DEBUG:+-d:Trace} -MIPC::Run3 -e 'use v5.40; use BS::GPG; my $gpgid = shift @ARGV; my $repodb = shift @ARGV; my @args = qw(psv); push @args, "n" if $ENV{BS_CLOBBER}; my @gpgid = $gpgid && BS::GPG::can_sign($gpgid) ? ("-k", $gpgid) : (); my $ret = run3([ qw(repo-add --include-sigs), @gpgid, "-" . (join "", @args), $repodb, @ARGV ]);' "$gpgpubid" "$repodb" "$@"
 
   repoaddexit=$?

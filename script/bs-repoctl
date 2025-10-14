@@ -50,7 +50,7 @@ ADJUSTPARAMS($params) {
     $self->getopts_setup = $$params{clispec} //= \@clispec
 }
 
-method handler(@handle) {
+method handler (@handle) {
     our $outh = sub ($line) {
         chomp $line;
         say $line;
@@ -96,8 +96,9 @@ method $run (%opts) {
 method run : common ($argv = \@ARGV, $dest = {}, %opts) {
     $opts{constuctor} //= {};
 
-    die
-"\$opts{constructor} (' . Dumper($opts{constructor}) . ') must be a hashref."
+    die "\$opts{constructor} ("
+      . ( Dumper( $opts{constructor} ) =~ s/\$VAR1 = ([^;]+);?[\n\r]+$/$1/r )
+      . ') must be a hashref.'
       unless $opts{constructor} isa 'HASH';
 
     my $app = $class->new(

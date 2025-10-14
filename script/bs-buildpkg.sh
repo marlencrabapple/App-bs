@@ -77,7 +77,7 @@ rebasebuild() {
 			rebaseexit="$?"
 		done
 
-		echo "▶ Opening current PKGBUILD for viewing and final edits. Please review it closely!"
+		echo "▶ Opening current PKGBUILD for viewing and final edits. Please review it closely!\m"
 		nvim PKGBUILD
 
 		echo "▶ Building '$pkg' in '$chroot/$WKCHROOT'"

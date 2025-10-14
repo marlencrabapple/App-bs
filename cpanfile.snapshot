@@ -2220,16 +2220,6 @@ DISTRIBUTIONS
       XS::Parse::Keyword 0.13
       XS::Parse::Keyword::Builder 0.13
       perl 5.014
-  Syntax-Keyword-MultiSub-0.05
-    pathname: P/PE/PEVANS/Syntax-Keyword-MultiSub-0.05.tar.gz
-    provides:
-      Syntax::Keyword::MultiSub 0.05
-    requirements:
-      ExtUtils::CBuilder 0
-      Module::Build 0.4004
-      XS::Parse::Sublike 0.15
-      XS::Parse::Sublike::Builder 0.15
-      perl 5.026
   Syntax-Keyword-Try-0.31
     pathname: P/PE/PEVANS/Syntax-Keyword-Try-0.31.tar.gz
     provides:
