@@ -18,7 +18,7 @@ repodb="$BS_REPOROOT/$repo/os/$BS_TARGET/$repo.db.tar.zst"
 gpgpubid="${BS_GPGID:-${BS_GPGFPR:-${BS_GPG_PUBID:-${GPGKEYID}}}}"
 
 rebodb() {
-  echo "$BS_REPOROOT/$BS_REPO/os/$BS_TARGET"
+  echo "$BS_REPOROOT/$BS_REPO/os/$BS_TARGET/$repo.db.tar.zst"
 }
 
 signpkgs() {

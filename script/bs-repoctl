@@ -97,7 +97,7 @@ method run : common ($argv = \@ARGV, $dest = {}, %opts) {
     $opts{constuctor} //= {};
 
     die "\$opts{constructor} ("
-      . ( Dumper( $opts{constructor} ) =~ s/\$VAR1 = ([^;]+);?[\n\r]+$/$1/r )
+      . ( Dumper( $opts{constructor} ) =~ s/\$VAR1 = ([^;]+);?[\n\r]+$/= $1/r )
       . ') must be a hashref.'
       unless $opts{constructor} isa 'HASH';
 

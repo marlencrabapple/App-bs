@@ -6,6 +6,10 @@ user="$(whoami)"
 targetcarch="${TARGET_CARCH:-${CARCH:-$(uname -m)}}"
 chroot="${CHROOT:-/var/lib/bs/chroot/$targetcarch}"
 
+repo="${BS_REPO:-universe}"
+repodb="$BS_REPOROOT/$repo/os/$BS_TARGET/$repo.db.tar.zst"
+gpgpubid="${BS_GPGID:-${BS_GPGFPR:-${BS_GPG_PUBID:-${GPGKEYID}}}}"
+
 hostfqdn=$(
 	perl -Mv5.40 -MNet::Domain \
 		-e 'say Net::Domain::hostfqdn || Net::Domain::domainname;'
@@ -60,6 +64,9 @@ rebasebuild() {
 	for pkg in "${pkgs[@]}"; do
 		cd "$pkg" || continue
 
+		. .SRCINFO
+		commit="${source//*commit=/}/}"
+
 		[[ -n "${MERGETOOL}" ]] && git config merge.tool "$MERGETOOL"
 
 		echo "▶ Updating .SRCINFO and committing changes since last pull..."
@@ -80,19 +87,29 @@ rebasebuild() {
 		echo "▶ Opening current PKGBUILD for viewing and final edits. Please review it closely!\m"
 		nvim PKGBUILD
 
+		. .SRCINFO
+		commit_postrebase="${source//*commit=/}/}"
+
+		if [[ -z "$(perl -Mv5.40 -e \
+			'say (s/.*commit=([a-z0-9]{41})/$1/r)[0]')" ]]; then
+			echo "▶ New commit detected in source array URL!"
+			echo "▶ Updating checksums..."
+			updpkgsums
+		fi
+
 		echo "▶ Building '$pkg' in '$chroot/$WKCHROOT'"
 		makechrootpkg -Cun -r"$chroot" ${WKCHROOT:+-l"$WKCHROOT"} - -Lisf
 
 		echo "▶ Signing and adding '$pkg' to '$BS_REPO'"
 		(
 			setopt CSH_NULL_GLOB
-			BS_CLOBBER=1 bs-repoadd \
+			bs-repoadd \
 				"${PKGDEST:-$BS_ROOT/pkgdest/}"*-{any,"$targetcarch"}.pkg.tar.zst
 		)
 
 		echo "▶ Removing copied artifacts and pacman cache (to avoid duplicate packages from the official repos)"
 		paccache -rk0
-		rm -r "${PKGDEST:-$BS_ROOT/pkgdest/}"*
+		rm -r "${PKGDEST:-$BS_ROOT/pkgdest}"/*
 
 		cd ..
 	done
