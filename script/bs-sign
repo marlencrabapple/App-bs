@@ -27,14 +27,14 @@ signpkgs() {
 
 _sign_rel_flow() {
   files=("$@")
-  echo "Signing ${files[*]}..."
+  echo "▶ Signing ${files[*]}..."
 
   [[ -e "${files[*]:0:1}" ]] || files=("$pkgdest"/*.pkg.tar.zst)
   complete=()
 
   for f in "${files[@]}"; do
     if [[ ! -e "$f" ]]; then
-      echo "Could not locate package file '$f'!! Skipping..."
+      echo "✖ Could not locate package file '$f'!! Skipping..."
     fi
 
     for pkg in "${complete[@]}"; do

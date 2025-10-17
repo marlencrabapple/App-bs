@@ -2,36 +2,88 @@
 
 use Object::Pad ':experimental(:all)';
 
-package srcinfo;
-class srcinfo : does(BS:Common);
+use lib 'lib';
 
+package srcinfo;
+class srcinfo : does(BS::Common);
+
+use utf8;
+use v5.40;
+
+use Const::Fast;
 use File::chdir;
 use Cwd;
+use Data::Dumper;
+use Getopt::Long 'GetOptionsFromArray';
 use Path::Tiny;
 
-field $srcinfo = {};
-field $path :param = path(Cwd)
-field $basename = $path->basename;
-field $parentdir $path->parentdir;
+field $argv = \@ARGV;
+field $cliopt :param(clidest) = {};
+field $clispec = { asdf => 'fdsa' };
+
+#field $srcinfo = {};
+#field $path :param = path(cwd);
+field $filein;
+field $basename; #= $path->basename;
+field $parentdir;# = $path->parentdir;
 
 ADJUSTPARAMS ($params) {
-  BS::Common::dmsg({self => $self, params => $params});
-  ...
+  GetOptionsFromArray($argv, $cliopt, %$clispec);
+  BS::Common::dmsg({ self => $self
+                 , params => $params });
+  #...
 }
 
-method parse_srcinfo {
+method parse_srcinfo ($path) {
+const my $SRCINFO_LINE_RE => qr/^([a-z0-9_]+)\s*=\s*(.+)\n?$/i;
+const my $XDEPENDS_RE=> qr/depends/i;
+
+  my %srcinfo = ();
   $CWD = $path->parentdir;
-  ...
+  foreach my $line ($path->lines_utf8) {
+    my ($key, $val) = ($line =~ $SRCINFO_LINE_RE);
+    next unless $key && $val;
+#     if ( $key =~ $DEPKEY_ANY_RE ) {
+#         $val = $class->parse_dep( $val, %args );
+#     }
+    if (ref $srcinfo{$key} eq 'ARRAY') {
+      push $srcinfo{key}->@*, $val
+    }
+    else {
+      $srcinfo{key} = [$val]
+    }
+  }
+
+  return \%srcinfo
 }
 
 method $run {
-  $self->parse_srcinfo
+  foreach my $file (@$filein) {
+ my   $srcinfo = $self->parse_srcinfo($file);
+    say Dumper({ srcinfo => $srcinfo })
+  }
+
+  $self
 }
 
-sub run :common ($argv = \@ARGV, $clidest = {}, %opts) {
-  $class->new(argv => $argv, dest => $clidest, %opts)
+method run :common ($argv = \@ARGV,  %opts) {
+  my $self = $class->new(argv => $argv, %opts{qw'clispec clidest'});
+  $self->$run
 }
 
 package main;
 
-srcinfo->run(\@ARGV)
+our @wuwue;
+our %clidest;
+our @clispec =   (
+  'help|?',
+  'lint',
+  'outformat|format|serialize',
+  '<>' => sub ($barearg) { 
+    push @wuwue, path($barearg)->assert( sub {$_->is_file } )
+  });
+
+my $app = srcinfo->run(\@ARGV
+, clispec => \@clispec
+, clidest => \%clidest
+, queue => \@wuwue)
