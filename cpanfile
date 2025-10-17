@@ -28,8 +28,8 @@ requires 'Struct::Dumb';
 requires 'Future::AsyncAwait';
 requires 'IO::Async';
 requires 'IO::Async::SSL';
-requires 'File::chdir';
 requires 'Devel::CheckBin';
+requires 'meta';
 
 on 'test' => sub {
     requires 'Test::More',       '0.98';

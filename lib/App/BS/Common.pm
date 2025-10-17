@@ -1,8 +1,8 @@
 use Object::Pad;
 
 package App::BS::Common;
-role App::BS::Common : does(BS::Common) : does(BS::Path);
 
+class App::BS::Common : does(BS::Common);
 use utf8;
 use v5.40;
 
@@ -11,6 +11,7 @@ use IPC::Run3;
 use TOML::Tiny;
 use Const::Fast;
 use List::Util qw(uniq any);
+use Path::Tiny;
 use Struct::Dumb;
 use Syntax::Keyword::Dynamically;
 use Exporter;
@@ -18,8 +19,7 @@ use Exporter;
 const our $DEFAULT_ENVPREFIXRE => qr/^(?:BS_)?(.+)/;
 const our $DEFAULT_CONFIGPATH  => '/etc/bs/config.toml';
 
-field $config_path : param(config) : mutator =
-  [ BS::Path->path($DEFAULT_CONFIGPATH) ];
+field $config_path : param(config) : mutator = path($DEFAULT_CONFIGPATH);
 
 field $config;
 

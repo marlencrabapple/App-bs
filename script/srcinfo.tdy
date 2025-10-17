@@ -25,7 +25,8 @@ use TOML::Tiny;
 use YAML::Tiny;
 use Const::Fast::Exporter;
 
-const our $PKGVER_CURR => '-current';
+const our $PKGVER_CURR =>;
+
 our $json = JSON::MaybeXS->new( utf8 => 1, pretty => 1 );
 
 field $argv : param //= \@ARGV;
@@ -94,42 +95,29 @@ method load ($_path) {
 sub pkgfile_glob ( $srcinfo, $pkgver ) {
     my $pkgver_str;
 
-    BS::Common::dmsg( { srcinfo => $srcinfo, pkgver => $pkgver } );
+    if ( my $pkgver_href = ( ref $pkgver eq 'HASH' ? %$pkgver : undef )
+        // ( $pkgver == $PKGVER_CURR ? $srcinfo->%{qw'epoch ver rel'} : undef )
+      )
+    {
+        #$pkgver_str "$$pkgver"
 
-    if ($pkgver) {
-        if (
-            my $pkgver_href =
-            ( ( $pkgver && ref $pkgver eq 'HASH' ) ? \%$pkgver : undef ) // (
-                $pkgver eq $PKGVER_CURR
-                ? { $srcinfo->%{qw'epoch ver rel'} }
-                : undef
-            )
-          )
-        {
-            $pkgver_str .= "$$pkgver_href{epoch}:" if $$pkgver_href{epoch};
-            $pkgver_str .= $$pkgver_href{ver};
-            $pkgver_str .= "-$$pkgver_href{rel}" if $$pkgver_href{rel};
-        }
-        elsif ($pkgver) {
-            $pkgver_str = $pkgver;
-        }
+        $pkgver_str .= "$$pkgver_href{epoch}:" if $$pkgver_href{epoch};
+        $pkgver_str .= $$pkgver_href{ver};
+        $pkgver_str .= "-$$pkgver_href{rel}" if $$pkgver_href{rel};
     }
-    my $glob =
-      $$srcinfo{pkgname} eq 'ARRAY'
-      ? '{' . ( join ',', $$srcinfo{pkgname}->@* ) . '}-'
-      : "$$srcinfo{pkgname}"
-      . (
-        ref $$srcinfo{arch} eq 'ARRAY'
-        ? ( $pkgver_str ? " -$pkgver_str-" : "-*" ) . "-{"
-          . ( join ',', $$srcinfo{arch}->@* ) . '}'
-        : "-$$srcinfo{arch}"
-      ) . ".pkg.tar.zst";
+    elsif ($pkgver) {
+        $pkgver_str = $pkgver;
+    }
 
-    $glob;
+    '{'
+      . ( join ',', $$srcinfo{pkgname}->@* ) . "}*"
+      . ( $pkgver_str ? " *-$pkgver_str-*" : "" ) . "-{"
+      . ( join ',', $$srcinfo{arch}->@* )
+      . '}.pkg.tar.zst';
 }
 
 method fn_as_glob ( $pkgver = undef ) {  # pass your own or set to 1 for current
-    pkgfile_glob( $srcinfo, $pkgver );
+    glob( $srcinfo, $pkgver );
 }
 
 method $run (%opts) {
@@ -162,14 +150,12 @@ our %clidest = (
 our @clispec = (
     'help|?', 'lint',
     'pretty-print',
-    'field=s',
     'format|out-format|serialize=s',
     '<>' => sub ( $self, $barearg ) {
         try {
             my $asdf = $self->load($barearg);
 
-            BS::Common::dmsg(
-                { loadout => $asdf, barearg => $barearg, self => $self } )
+    # BS::Common::dmsg({ loadout => $asdf, barearg => $barearg, self => $self })
         }
         catch ($e) {
             BS::Common::fatal($e)
@@ -193,7 +179,7 @@ use Data::Dumper;
 #say $json->encode_json($srcinfo_href)
 
 say encode_json($srcinfo_href);
-say $app->fn_as_glob;
+$app->fn_as_glob;
 
 #->($app->srcinfo);
 

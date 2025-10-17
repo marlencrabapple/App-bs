@@ -104,7 +104,7 @@ rebasebuild() {
 		(
 			setopt CSH_NULL_GLOB
 			bs-repoadd \
-				"${PKGDEST:-$BS_ROOT/pkgdest}"/*-{any,"$targetcarch"}.pkg.tar.zst
+				"${PKGDEST:-$BS_ROOT/pkgdest}"/*.pkg.tar.zst # $(srcinfo --fields pkgname --format glob)
 		)
 
 		echo "▶ Removing copied artifacts and pacman cache (to avoid duplicate packages from the official repos)"

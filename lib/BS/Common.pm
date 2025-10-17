@@ -1,7 +1,7 @@
 use Object::Pad qw(:experimental(:all));
 
 package BS::Common;
-role BS::Common : does(BS::Path);
+role BS::Common;
 
 use utf8;
 use v5.40;
@@ -76,7 +76,12 @@ APPLY($mop) {
 ADJUST {
     use utf8;
     use v5.40;
-    $ENV{DEBUG} = $debug = $BS::Common::DEBUG
+    $ENV{DEBUG} = $debug = $BS::Common::DEBUG;
+
+    use parent 'Exporter';
+
+    use subs qw(dmsg bsx callstack __pkgfn__ const);
+    our @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
 };
 
 method __pkgfn__ : common ($pkgname = undef) {
@@ -104,6 +109,27 @@ method callstack : common {
 
 method alldef : common (@items) {
     all { $_ } @items;
+}
+
+sub success ( $msg, %opts ) {
+    say "⭕️ $msg";
+}
+
+sub warn ( $msg, %opts ) {
+    say STDERR "‼️ $msg";
+}
+
+sub info ( $msg, %opts ) {
+    say "▶ $msg";
+}
+
+sub err ( $msg, %opts ) {
+    say STDERR "❌️ Error: $msg";
+}
+
+sub fatal ( $msg, %opts ) {
+    $msg = err( $msg, %opts, silent => 1 );
+    die $msg;
 }
 
 sub dmsg (@msgs) {

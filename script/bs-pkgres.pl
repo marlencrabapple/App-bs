@@ -48,12 +48,12 @@ method rebuild_order :common ($pkgs, %opts) {
 }
 
 method pkgbase :common (@pkgs) {
-map { `expac -S "%e" $_` } @pkgs
+  map { `expac -S "%e" $_` } @pkgs
 }
 
 method pkgname :common (@pkgs) {
     #my $run3ret
-map { `expac -S "%n" $_` } @pkgs
+  map { `expac -S "%n" $_` } @pkgs
 }
 
 method pactree :common (@pkgs) {
