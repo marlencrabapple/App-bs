@@ -60,6 +60,7 @@ moveclone() {
 
 rebasebuild() {
 	pkgs=("$@")
+	[[ ${#pkgs} -eq 0 ]] && pkgs=("$(basname "$(pwd)")")
 
 	for pkg in "${pkgs[@]}"; do
 		cd "$pkg" || continue
