@@ -1,9 +1,9 @@
 #!/usr/bin/env perl
 use Object::Pad ':experimental(:all)';
 
-package srcinfo;
+package srcinfo::cli;
 use lib 'lib';
-class srcinfo : does(BS::Common);
+class srcinfo::cli : does(BS::Common);
 
 use utf8;
 use v5.40;
@@ -37,7 +37,25 @@ field $format = { %OUTFMT{bash} };
 field $srcinfo;
 
 ADJUSTPARAMS($params) {
-    GetOptionsFromArray( $argv, $cliopt, @$clispec );
+    my @getoptspec = ();
+
+    foreach my ( $k, $v ) (@$clispec) {
+        if ($k eq '<>' && ref $v eq 'CODE') {
+           my $ogsub = $v;
+           $v = sub ($barearg) {
+              $ogsub->( $self, $barearg );
+           };
+
+           push @getoptspec, ($k, $v);
+        }
+        else {
+            my $opt = "$k"; #=$v"
+            $opt .= "=$v" unless $v eq 'f';
+            push @getoptspec, $opt
+        }
+    }
+
+    GetOptionsFromArray( $argv, $cliopt, @getoptspec );
 }
 
 method run : common ($argv, $clispec, $cliopt = {} ) {
@@ -47,22 +65,25 @@ method run : common ($argv, $clispec, $cliopt = {} ) {
 }
 
 method load ($in = undef) {
-    srcinfo::SRCINFO->new($in)
+    srcinfo::SRCINFO->new(file => $in)
 }
 
 package main;
 
+use Path::Tiny;
+
 our @clispec = (
-    'field=s',
-    'format=s',
-    'pretty-print',
+    'field' => 's',
+    'format' => 's',
+    'pretty-print' => 'f',
     '<>' => sub ( $self, $barearg ) {
-        #$self->load( path($barearg)->assert( sub { $_->exists } ) )
+        my $srcinfo = $self->load( path($barearg)->assert( sub { $_->exists } ) );
+        BS::Common::dmsg({ srcinfo => $srcinfo, $srcinfo->srcinfo})
     }
 );
 
 sub run {
-    srcinfo->run(\@ARGV ,\@clispec);
+    srcinfo::cli->run(\@ARGV ,\@clispec);
 }
 
 run()

@@ -1,0 +1,23 @@
+pkgbase = perl-app-bs
+	pkgdesc = Build system for PKGBUILD based Linux distributions
+	pkgver = 0.01.1
+	pkgrel = 1
+	url = https://github.com/marlencrabapple/App-bs
+	arch = any
+	license = Artistic-1.0-Perl
+	license = GPL-1.0-or-later
+	makedepends = perl-syntax-keyword-try
+	makedepends = perl-cpanel-json-xs
+	makedepends = perl-module-build
+	makedepends = perl-dbi
+	makedepends = cpanminus
+	makedepends = perl-inline-c
+	makedepends = perl-path-tiny
+	makedepends = perl-net-ssleay
+	depends = perl
+	options = !emptydirs
+	source = perl-app-bs::https://ppan.pi4u.lan/authors/id/C/CR/CRABAPP/App-BS-0.01.1.tar.gz
+	validpgpkeys = 4D8733704B740FC4B330EF5E8FFAD8B7BA73987
+	b2sums = dffsdf
+
+pkgname = perl-app-bs

@@ -18,35 +18,40 @@ use meta;
 
 no warnings 'meta::experimental';
 
-field $pkgbase;
-field $pkgname;
-field $pkgver;
-field $epoch;
-field $pkgrel;
-field $arch;
-field $source;
-field $conflicts;
-field $provides;
 
-field $depends = {
+field $pkgname :param;
+field $pkgbase :param//= ref $pkgname eq 'ARRAY' ?$$pkgname[0] : $pkgname;
+field $pkgver :param;
+field $epoch :param;
+field $pkgrel :param``;
+field $arch :param = 'any';
+field $source :param = [];
+field $conflicts :param = [];
+field $provides :param = [];
+
+field $depends :param= {
     make     => {},
     optional => {},
     depends  => {},
     check    => {}
 };
 
-field $cksums  = {};
-field $options = [];
-field $file :param;
+field $cksums  :param= {};
+field $options :param = [];
+
+field $file :param //= Path::Tiny::tempfile('.SRCINFOXXXXXXX');
+field $srcinfo :param;
 
 ADJUSTPARAMS($params) {
     if ($file) {
         $self->from_srcinfo($file);
-    }
+    }else {
 
+    }
 }
 
-method from_srcinfo ($in) {
+method from_srcinfo :common ($in) {
+    my $file = "";
     if ( blessed $in && $in->DOES('lines_utf8') || ref $in eq 'Path::Tiny' ) {
         $file = $in;
     }
@@ -54,6 +59,7 @@ method from_srcinfo ($in) {
         $file = path($in)->assert( sub { $_->exists } );
     }
 
+    __PACKAGE__->parse_srcinfo($file)
 }
 
 method srcinfo (%opts) {
@@ -73,13 +79,13 @@ method srcinfo (%opts) {
     const my $PKGBASENAME_RE => qr/^pkg(name|base)$/;
     my $handle = $opts{writeh} ? $opts{writeh} : *STDOUT;
 
-    foreach my ( $k, $v ) ( map { $_->name, $_->value } @fields ) {
 
+
+    foreach my ( $k, $v ) ( map { $_->name, $_->value } @fields ) {
         my $line = "$k=$v";
         $line = "\t$line" if $k !~ $PKGBASENAME_RE;
         say $handle $line if ( @opts{qw'stdout print console'} );
         push @lines, $line;
-
     }
     continue {
         state $i = 0;
@@ -87,6 +93,8 @@ method srcinfo (%opts) {
         $i = 0 if $i == scalar @fields;
         last   if $i == 0;
     }
+
+    BS::Common::dmsg({ handle => $handle, self => $self, fields => @fields, lines => \@lines,  });
 
     $opts{wantarray}
       ? @lines
