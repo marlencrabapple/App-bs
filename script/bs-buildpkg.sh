@@ -82,6 +82,7 @@ rebasebuild() {
 			git mergetool
 			git rebase --continue
 			rebaseexit="$?"
+			[[  "$rebaseexit" -eq 128 ]] && break
 		done
 
 		echo "▶ Opening current PKGBUILD for viewing and final edits. Please review it closely!\m"

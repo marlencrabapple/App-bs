@@ -144,7 +144,8 @@ method parse_srcinfo : common ($path) {
         }
     }
 
-    srcinfo::SRCINFO->new(%srcinfo);
+    my $srcinfo = srcinfo::SRCINFO->new(%srcinfo);
+    BS::COmmon::dmsg({ srcinfo =>$srcinfo , srcinfo_constructor => \%srcinfo})
 }
 
 method pkgfile_glob ($pkgver) {

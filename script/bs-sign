@@ -15,7 +15,7 @@ scriptdir="${0//\/$(basename "$0")/}"
 
 repo="${BS_REPO:-universe}"
 repodir="$BS_REPOROOT/$repo/os/$BS_TARGET/"
-repodb="$$repodir/$repo.db.tar.zst"
+repodb="$repodir/$repo.db.tar.zst"
 gpgpubid="${BS_GPGID:-${BS_GPGFPR:-${BS_GPG_PUBID:-${GPGKEYID}}}}"
 
 rebodb() {
