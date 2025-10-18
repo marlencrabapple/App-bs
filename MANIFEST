@@ -913,6 +913,7 @@ blib/script/bs-repoadd
 blib/script/bs-repoctl
 blib/script/bs-reposrv
 blib/script/bs-sign
+blib/script/bs-srcinfo
 blib/script/makepkg-conf
 blib/script/makepkgs.sh
 blib/script/pkg-depends
@@ -923,6 +924,7 @@ blib/script/pkgbase.pl
 blib/script/pkgiden.pl
 blib/script/pkgstrparse.pl
 blib/script/srcinfo
+blib/script/srcinfo.tdy
 blib/script/vcsutil.pl
 Build
 Build.PL
@@ -949,6 +951,7 @@ lib/BS/Ext/pactree.pm
 lib/BS/Ext/User.pm
 lib/BS/GPG.pm
 lib/BS/Package.pm
+lib/BS/Package/._Meta.pm.1.
 lib/BS/Package/Manifest.pm
 lib/BS/Package/Meta.pm
 lib/BS/Package/Meta.pm.1.
@@ -2423,10 +2426,10 @@ local/lib/perl5/YAML/PP/Writer.pm
 local/lib/perl5/YAML/PP/Writer/File.pm
 local/lib/perl5/YAML/Tiny.pm
 Makefile.PL
-MANIFEST This list of files
+MANIFEST			This list of files
 MANIFEST.bak
-MANIFEST.SKIP
 MANIFEST.skip
+MANIFEST.SKIP
 META.json
 minil.toml
 ppport.h
@@ -2448,6 +2451,7 @@ script/bs-repoadd
 script/bs-repoctl
 script/bs-reposrv
 script/bs-sign
+script/bs-srcinfo
 script/bs.pl
 script/makepkg-conf
 script/makepkgs.sh
@@ -2459,6 +2463,7 @@ script/pkgbase.pl
 script/pkgiden.pl
 script/pkgstrparse.pl
 script/srcinfo
+script/srcinfo.tdy
 script/vcsutil.pl
 share/bs-chroot.sh
 src/expac/.git

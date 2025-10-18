@@ -14,7 +14,8 @@ scriptdir="${0//\/$(basename "$0")/}"
 . "$scriptdir/bs-common.sh"
 
 repo="${BS_REPO:-universe}"
-repodb="$BS_REPOROOT/$repo/os/$BS_TARGET/$repo.db.tar.zst"
+repodir="$BS_REPOROOT/$repo/os/$BS_TARGET/"
+repodb="$$repodir/$repo.db.tar.zst"
 gpgpubid="${BS_GPGID:-${BS_GPGFPR:-${BS_GPG_PUBID:-${GPGKEYID}}}}"
 
 rebodb() {
@@ -99,7 +100,8 @@ copy2repo() {
 }
 
 repoadd() {
-  perl ${DEBUG:+-d:Trace} -MIPC::Run3 -e 'use v5.40; use BS::GPG; my $gpgid = shift @ARGV; my $repodb = shift @ARGV; my @args = qw(psv); push @args, "n" if $ENV{BS_CLOBBER}; my @gpgid = $gpgid && BS::GPG::can_sign($gpgid) ? ("-k", $gpgid) : (); my $ret = run3([ qw(repo-add --include-sigs), @gpgid, "-" . (join "", @args), $repodb, @ARGV ]);' "$gpgpubid" "$repodb" "$@"
+  [[ ${DEBUG:-0} -gt 1 ]] && trace=(-d:Trace)
+  perl "${trace[@]}" -Mv5.40 -MBS::GPG -MIPC::Run3 -e 'my $gpgid = shift @ARGV; my $repodb = shift @ARGV; my @args = qw(psv); push @args, "n" if $ENV{BS_CLOBBER}; my @gpgid = $gpgid && BS::GPG::can_sign($gpgid) ? ("-k", $gpgid) : (); my $ret = run3([ qw(repo-add --include-sigs), @gpgid, "-" . (join "", @args), $repodb, @ARGV ]);' "$gpgpubid" "$repodb" "$@"
 
   repoaddexit=$?
   if [[ $repoaddexit -eq 0 ]]; then

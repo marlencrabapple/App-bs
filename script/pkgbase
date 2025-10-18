@@ -15,7 +15,31 @@ class BS::App::pkgbase {
     use BS::Ext::expac;
     use BS::Ext::pacsift;
 
-    const our $DEBUG        => $ENV{DEBUG}        // 0;
+    const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?';
+
+const our $pkgprefix_re => qr/(?:(lib)\:)?/;
+
+const our $pkgstr_re => qr/^$pkgprefix_re
+          		           ($pkgname_common_re(\.so(?:\.[0-9]+)?)
+			              | $pkgname_common_re )
+                          /xxi;
+
+const our $epoch_re  => qr'([0-9]+?):'xi;
+const our $pkgver_re => qr'([^\s:/\-]+?)'xi;
+const our $pkgrel_re => qr'([0-9]+?)'xi;
+const our $arch_re   => qr'(any|aarch64|i368|i638|(?:x86_64(?:_v3)?))'xi;
+const our $pkgext_re => qr'(pkg.tar.(?:zst|xz|gz|bz2|zip))'xi;
+
+const our $pkgfile_re => qr'$pkgstr_re
+                            -(?:$epoch_re:)?
+                            $pkgver_re-$pkgrel_re
+	               		    -$arch_re
+			                .$pkgext_re
+			               'xxi;
+
+const our $pkgspec_re => qr'';
+
+    #const our $DEBUG        => $ENV{DEBUG}        // 0;
     const our $SHORTCIRCUIT => $ENV{SHORTCIRCUIT} // 0;
 
     const our $CONFIG => class {

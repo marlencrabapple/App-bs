@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/env bash
 [[ "${DEBUG:-0}" -ne 0 ]] && set -x
 
 pkgs=("$@")
@@ -101,15 +101,12 @@ rebasebuild() {
 		makechrootpkg -Cun -r"$chroot" ${WKCHROOT:+-l"$WKCHROOT"} - -Lisf
 
 		echo "▶ Signing and adding '$pkg' to '$BS_REPO'"
-		(
-			setopt CSH_NULL_GLOB
-			bs-repoadd \
-				"${PKGDEST:-$BS_ROOT/pkgdest}"/*.pkg.tar.zst # $(srcinfo --fields pkgname --format glob)
-		)
+		bs-repoadd \
+			"${PKGDEST:-$BS_ROOT/pkgdest}"/*.pkg.tar.zst # $(srcinfo --fields pkgname --format glob)
 
 		echo "▶ Removing copied artifacts and pacman cache (to avoid duplicate packages from the official repos)"
 		paccache -rk0
-		rm -r "${PKGDEST:-$BS_ROOT/pkgdest}"/*
+		#rm -r "${PKGDEST:-$BS_ROOT/pkgdest}"/*
 
 		cd ..
 	done

@@ -53,32 +53,35 @@ sub handle_run3_out ( $in, %opts ) {
 sub parse_pkgstr ( $pkgstr, %opts ) {
 
 # Should be possible to detect if file, regardless of file ext both before and after parsing as pkgspec
-    const my $pkgstr_name_ptn => qr'[a-zA-Z0-9\@_\+]{1}[a-zA-Z0-9\@_\+\.\-]+';
-
-    const my $pkgstr_name_re => qr/
-        ^(lib\:)?
-        ($pkgstr_name_ptn(\.so(?:\.[0-9\]+)?)
-        |$pkgstr_name_ptn)
-      /x;
-
-    const my $pkgver_forbidden => quotemeta(':/-') . '\s';
-
-    const my $pkgver_re => qr'
-      (\=|[\<\>](?:\=)?)
-      ([^$pkgver_forbidden]+)
-    'x;
-    const my $optdep_re => qr/(:(:)\s+(.+))/;
-
-    const my $pkgstr_re => qr/
-        $pkgstr_name_re #
-        (?:$pkgver_re)?
-        $optdep_re
-      /x;
 
     # Not working...
     #const my $_pkgstr_re => qr/$pkgstr_re_str/;
 
     #:wqwarn np nojoin => $pkgstr_re join => $_pkgstr_re if $DEBUG;
+
+    const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?';
+
+const our $pkgprefix_re => qr/(?:(lib)\:)?/;
+
+const our $pkgstr_re => qr/^$pkgprefix_re
+          		           ($pkgname_common_re(\.so(?:\.[0-9]+)?)
+			              | $pkgname_common_re )
+                          /xxi;
+
+const our $epoch_re  => qr'([0-9]+?):'xi;
+const our $pkgver_re => qr'([^\s:/\-]+?)'xi;
+const our $pkgrel_re => qr'([0-9]+?)'xi;
+const our $arch_re   => qr'(any|aarch64|i368|i638|(?:x86_64(?:_v3)?))'xi;
+const our $pkgext_re => qr'(pkg.tar.(?:zst|xz|gz|bz2|zip))'xi;
+
+const our $pkgfile_re => qr'$pkgstr_re
+                            -(?:$epoch_re:)?
+                            $pkgver_re-$pkgrel_re
+	               		    -$arch_re
+			                .$pkgext_re
+			               'xxi;
+
+const our $pkgspec_re => qr'';
 
     my ( $prefix, $_pkgstr, $isfile, $sep, $attr, @extra ) =
       $pkgstr =~ $pkgstr_re;

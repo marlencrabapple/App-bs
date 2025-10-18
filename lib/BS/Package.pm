@@ -16,7 +16,7 @@ use Carp;
 use List::Util qw'any uniq'; 
 use File::chdir;
 use File::Temp;
-use Const::Fast;
+use Const::Fast::Exporter;
 
 const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?';
 
