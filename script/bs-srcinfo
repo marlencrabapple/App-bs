@@ -56,7 +56,9 @@ ADJUSTPARAMS($params) {
     }
 
     GetOptionsFromArray( $argv, $cliopt, @getoptspec );
-}
+
+    dmsg({ self => $self, argv => $argv, clioptspec => \@getoptspec, caller => [[caller 0],[caller 1], [caller 3]]});
+} 
 
 method run : common ($argv, $clispec, $cliopt = {} ) {
     $class->new( clispec => $clispec
