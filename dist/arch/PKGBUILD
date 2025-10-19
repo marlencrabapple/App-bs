@@ -45,6 +45,7 @@ package() {
   unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
 
   cpanm --verbose -L"$pkgdir/usr"
+  INSTALLDIR="$pkgdir" ./Build install INSTALLDIR="$pkgdir"
 
   find "${pkgdir}" -name '.packlist' -delete
 }
