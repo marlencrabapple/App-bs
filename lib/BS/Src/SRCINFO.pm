@@ -9,48 +9,48 @@ class srcinfo::SRCINFO : does(BS::Common);
 use utf8;
 use v5.40;
 
-use List::Util 'any';
-use Const::Fast;
-use Scalar::Util 'blessed';
-use Path::Tiny;
-use Tie::File;
+use List::Util   qw( any );
+use Const::Fast  qw( const );
+use Scalar::Util qw( blessed );
+use Path::Tiny   qw( path );
+use Tie::File    ();
 use meta;
 
 no warnings 'meta::experimental';
 
+field $pkgname   : param;
+field $pkgbase   : param //= ref $pkgname eq 'ARRAY' ? $$pkgname[0] : $pkgname;
+field $pkgver    : param;
+field $epoch     : param;
+field $pkgrel    : param ``;
+field $arch      : param = 'any';
+field $source    : param = [];
+field $conflicts : param = [];
+field $provides  : param = [];
 
-field $pkgname :param;
-field $pkgbase :param//= ref $pkgname eq 'ARRAY' ?$$pkgname[0] : $pkgname;
-field $pkgver :param;
-field $epoch :param;
-field $pkgrel :param``;
-field $arch :param = 'any';
-field $source :param = [];
-field $conflicts :param = [];
-field $provides :param = [];
-
-field $depends :param= {
+field $depends : param = {
     make     => {},
     optional => {},
     depends  => {},
     check    => {}
 };
 
-field $cksums  :param= {};
-field $options :param = [];
+field $cksums  : param = {};
+field $options : param = [];
 
-field $file :param //= Path::Tiny::tempfile('.SRCINFOXXXXXXX');
-field $srcinfo :param;
+field $file : param //= Path::Tiny::tempfile('.SRCINFOXXXXXXX');
+field $srcinfo : param;
 
 ADJUSTPARAMS($params) {
     if ($file) {
         $self->from_srcinfo($file);
-    }else {
+    }
+    else {
 
     }
 }
 
-method from_srcinfo :common ($in) {
+method from_srcinfo : common ($in) {
     my $file = "";
     if ( blessed $in && $in->DOES('lines_utf8') || ref $in eq 'Path::Tiny' ) {
         $file = $in;
@@ -59,7 +59,7 @@ method from_srcinfo :common ($in) {
         $file = path($in)->assert( sub { $_->exists } );
     }
 
-    __PACKAGE__->parse_srcinfo($file)
+    __PACKAGE__->parse_srcinfo($file);
 }
 
 method srcinfo (%opts) {
@@ -79,8 +79,6 @@ method srcinfo (%opts) {
     const my $PKGBASENAME_RE => qr/^pkg(name|base)$/;
     my $handle = $opts{writeh} ? $opts{writeh} : *STDOUT;
 
-
-
     foreach my ( $k, $v ) ( map { $_->name, $_->value } @fields ) {
         my $line = "$k=$v";
         $line = "\t$line" if $k !~ $PKGBASENAME_RE;
@@ -94,13 +92,18 @@ method srcinfo (%opts) {
         last   if $i == 0;
     }
 
-    BS::Common::dmsg({ handle => $handle, self => $self, fields => @fields, lines => \@lines,  });
+    BS::Common::dmsg(
+        {
+            handle => $handle,
+            self   => $self,
+            fields => @fields,
+            lines  => \@lines,
+        }
+    );
 
-    $opts{wantarray}
-      ? @lines
-      : $opts{self}
-        ? $self
-        : join "\n", @lines;
+        $opts{wantarray} ? @lines
+      : $opts{self}      ? $self
+      :                    join "\n", @lines;
 }
 
 method as_hash {
@@ -145,7 +148,8 @@ method parse_srcinfo : common ($path) {
     }
 
     my $srcinfo = srcinfo::SRCINFO->new(%srcinfo);
-    BS::COmmon::dmsg({ srcinfo =>$srcinfo , srcinfo_constructor => \%srcinfo})
+    BS::COmmon::dmsg(
+        { srcinfo => $srcinfo, srcinfo_constructor => \%srcinfo } );
 }
 
 method pkgfile_glob ($pkgver) {

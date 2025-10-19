@@ -259,3 +259,11 @@ method tie_file : common ($in, %args) {
 
     $as_aref;
 }
+
+sub issha1 ($str) {
+    if ( $str =~ /^[[:alnum:]]{40}$/ ) {
+        say "'$str' is a valid SHA1 checksum.";
+        return 1;
+    }
+    undef;
+}
