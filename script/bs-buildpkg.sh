@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 [[ "${DEBUG:-0}" -ne 0 ]] && set -x
+. ./bs-sign
 
 pkgs=("$@")
 user="$(whoami)"
@@ -65,8 +66,8 @@ rebasebuild() {
 	for pkg in "${pkgs[@]}"; do
 		cd "$pkg" || continue
 
-		. .SRCINFO
-		commit="${source//*commit=/}/}"
+		# . .SRCINFO
+		# commit="${source//*commit=/}/}"
 
 		[[ -n "${MERGETOOL}" ]] && git config merge.tool "$MERGETOOL"
 
@@ -83,32 +84,34 @@ rebasebuild() {
 			git mergetool
 			git rebase --continue
 			rebaseexit="$?"
-			[[  "$rebaseexit" -eq 128 ]] && break
+			[[ "$rebaseexit" -eq 128 ]] && break
 		done
 
 		echo "▶ Opening current PKGBUILD for viewing and final edits. Please review it closely!\m"
 		nvim PKGBUILD
 
-		. .SRCINFO
-		commit_postrebase="${source//*commit=/}/}"
+		# . .SRCINFO
+		# commit_postrebase="${source//*commit=/}/}"
 
-		if [[ -z "$(perl -Mv5.40 -e \
-			'say (s/.*commit=([a-z0-9]{41})/$1/r)[0]')" ]]; then
-			echo "▶ New commit detected in source array URL!"
-			echo "▶ Updating checksums..."
-			updpkgsums
-		fi
+		# if [[ -z "$(perl -Mv5.40 -e \
+		# 	'say (s/.*commit=([a-z0-9]{41})/$1/r)[0]')" ]]; then
+		# 	echo "▶ New commit detected in source array URL!"
+		# 	echo "▶ Updating checksums..."
+		# 	updpkgsums
+		# fi
 
 		echo "▶ Building '$pkg' in '$chroot/$WKCHROOT'"
 		makechrootpkg -Cun -r"$chroot" ${WKCHROOT:+-l"$WKCHROOT"} - -Lisf
 
 		echo "▶ Signing and adding '$pkg' to '$BS_REPO'"
 		bs-repoadd \
-			"${PKGDEST:-$BS_ROOT/pkgdest}"/*.pkg.tar.zst # $(srcinfo --fields pkgname --format glob)
+			"${pkgdest:?}/"*.pkg.tar.zst # $(srcinfo --fields pkgname --format glob)
 
 		echo "▶ Removing copied artifacts and pacman cache (to avoid duplicate packages from the official repos)"
 		paccache -rk0
-		#rm -r "${PKGDEST:-$BS_ROOT/pkgdest}"/*
+
+		[[ ${CLEAN_PKGDEST:-0} -eq 1 ]] &&
+			rm -r "${pkgdest:?}/"*
 
 		cd ..
 	done
