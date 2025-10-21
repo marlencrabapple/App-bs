@@ -451,6 +451,52 @@ DISTRIBUTIONS
       perl 5.008
       strict 0
       warnings 0
+  ExtUtils-MakeMaker-7.76
+    pathname: B/BI/BINGOS/ExtUtils-MakeMaker-7.76.tar.gz
+    provides:
+      ExtUtils::Command 7.76
+      ExtUtils::Command::MM 7.76
+      ExtUtils::Liblist 7.76
+      ExtUtils::Liblist::Kid 7.76
+      ExtUtils::MM 7.76
+      ExtUtils::MM_AIX 7.76
+      ExtUtils::MM_Any 7.76
+      ExtUtils::MM_BeOS 7.76
+      ExtUtils::MM_Cygwin 7.76
+      ExtUtils::MM_DOS 7.76
+      ExtUtils::MM_Darwin 7.76
+      ExtUtils::MM_MacOS 7.76
+      ExtUtils::MM_NW5 7.76
+      ExtUtils::MM_OS2 7.76
+      ExtUtils::MM_OS390 7.76
+      ExtUtils::MM_QNX 7.76
+      ExtUtils::MM_UWIN 7.76
+      ExtUtils::MM_Unix 7.76
+      ExtUtils::MM_VMS 7.76
+      ExtUtils::MM_VOS 7.76
+      ExtUtils::MM_Win32 7.76
+      ExtUtils::MM_Win95 7.76
+      ExtUtils::MY 7.76
+      ExtUtils::MakeMaker 7.76
+      ExtUtils::MakeMaker::Config 7.76
+      ExtUtils::MakeMaker::Locale 7.76
+      ExtUtils::MakeMaker::_version 7.76
+      ExtUtils::MakeMaker::charstar 7.76
+      ExtUtils::MakeMaker::version 7.76
+      ExtUtils::MakeMaker::version::regex 7.76
+      ExtUtils::MakeMaker::version::vpp 7.76
+      ExtUtils::Mkbootstrap 7.76
+      ExtUtils::Mksymlists 7.76
+      ExtUtils::testlib 7.76
+      MM 7.76
+      MY 7.76
+    requirements:
+      Data::Dumper 0
+      Encode 0
+      File::Basename 0
+      File::Spec 0.8
+      Pod::Man 0
+      perl 5.006
   File-Find-Rule-0.35
     pathname: R/RC/RCLAMP/File-Find-Rule-0.35.tar.gz
     provides:
@@ -595,6 +641,14 @@ DISTRIBUTIONS
       XS::Parse::Sublike 0.31
       XS::Parse::Sublike::Builder 0.31
       perl 5.016
+  Getopt-Long-2.58
+    pathname: J/JV/JV/Getopt-Long-2.58.tar.gz
+    provides:
+      Getopt::Long 2.58
+      Getopt::Long::Parser 2.58
+    requirements:
+      ExtUtils::MakeMaker 0
+      Pod::Usage 1.14
   Getopt-Long-Descriptive-0.116
     pathname: R/RJ/RJBS/Getopt-Long-Descriptive-0.116.tar.gz
     provides:
@@ -669,19 +723,19 @@ DISTRIBUTIONS
       Time::Zone 0
       perl 5.006002
       strict 0
-  HTTP-Message-7.00
-    pathname: O/OA/OALDERS/HTTP-Message-7.00.tar.gz
+  HTTP-Message-7.01
+    pathname: O/OA/OALDERS/HTTP-Message-7.01.tar.gz
     provides:
-      HTTP::Config 7.00
-      HTTP::Headers 7.00
-      HTTP::Headers::Auth 7.00
-      HTTP::Headers::ETag 7.00
-      HTTP::Headers::Util 7.00
-      HTTP::Message 7.00
-      HTTP::Request 7.00
-      HTTP::Request::Common 7.00
-      HTTP::Response 7.00
-      HTTP::Status 7.00
+      HTTP::Config 7.01
+      HTTP::Headers 7.01
+      HTTP::Headers::Auth 7.01
+      HTTP::Headers::ETag 7.01
+      HTTP::Headers::Util 7.01
+      HTTP::Message 7.01
+      HTTP::Request 7.01
+      HTTP::Request::Common 7.01
+      HTTP::Response 7.01
+      HTTP::Status 7.01
     requirements:
       Carp 0
       Clone 0.46
@@ -2041,6 +2095,18 @@ DISTRIBUTIONS
       locale 0
       parent 0
       perl 5.008001
+  Pod-Usage-2.05
+    pathname: M/MA/MAREKR/Pod-Usage-2.05.tar.gz
+    provides:
+      Pod::Usage 2.05
+    requirements:
+      Cwd 0
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::Spec 0.82
+      Pod::Perldoc 3.28
+      Pod::Simple 3.40
+      Pod::Text 4.00
   Readonly-2.05
     pathname: S/SA/SANKO/Readonly-2.05.tar.gz
     provides:

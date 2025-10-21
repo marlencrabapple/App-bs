@@ -24,7 +24,8 @@ if ($update) {
 }
 
 if ($git) {
-    BS::Common::err('-git-pull not yet implemented') ...
+    BS::Common::err('-git-pull not yet implemented');
+    ...
 
     #`git pull
 }

@@ -2,8 +2,6 @@ use Object::Pad ':experimental(:all)';
 
 package srcinfo::SRCINFO;
 
-use lib 'lib';
-
 class srcinfo::SRCINFO : does(BS::Common);
 
 use utf8;

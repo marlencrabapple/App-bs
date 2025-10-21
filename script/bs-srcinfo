@@ -3,6 +3,7 @@ use Object::Pad ':experimental(:all)';
 
 package srcinfo::cli;
 use lib 'lib';
+
 class srcinfo::cli : does(BS::Common);
 
 use utf8;
@@ -13,12 +14,12 @@ use vars '@EXPORT';
 
 @EXPORT = qw(srcinfo);
 
-use Cwd;
-use Getopt::Long qw'GetOptionsFromArray :config bundling auto_abbrev';
-use Path::Tiny;
-use Const::Fast;
-use IPC::Run3;
-use BS::Src::SRCINFO;
+use Cwd              qw( cwd );
+use Getopt::Long     qw( GetOptionsFromArray );
+use Path::Tiny       qw( path );
+use Const::Fast      qw( const );
+use IPC::Run3        ();
+use BS::Src::SRCINFO ();
 
 const our %OUTFMT => (
     bash => 'srcinfo::bash'
@@ -31,7 +32,13 @@ const our %OUTFMT => (
 field $clispec : param;
 field $cliopt  : param(clidest) = {};
 field $argv    : param;
+
 field $infile = path( Cwd::abs_path(cwd) );
+
+# Is there somewhere we can handle a no clobber flag in the environment
+# more consistently?
+field $outfile { $infile unless %$cliopt{qw(readonly noop no-update)} };
+
 field $field;
 field $format = { %OUTFMT{bash} };
 field $srcinfo;
@@ -40,52 +47,104 @@ ADJUSTPARAMS($params) {
     my @getoptspec = ();
 
     foreach my ( $k, $v ) (@$clispec) {
-        if ($k eq '<>' && ref $v eq 'CODE') {
-           my $ogsub = $v;
-           $v = sub ($barearg) {
-              $ogsub->( $self, $barearg );
-           };
+        if ( $k eq '<>' && ref $v eq 'CODE' ) {
+            my $ogsub = $v;
+            $v = sub ($barearg) {
+                $ogsub->( $self, $barearg );
+            };
 
-           push @getoptspec, ($k, $v);
+            push @getoptspec, ( $k, $v );
         }
         else {
-            my $opt = "$k"; #=$v"
+            my $opt = "$k";    #=$v"
             $opt .= "=$v" unless $v eq 'f';
-            push @getoptspec, $opt
+            push @getoptspec, $opt;
         }
     }
 
     GetOptionsFromArray( $argv, $cliopt, @getoptspec );
 
-    dmsg({ self => $self, argv => $argv, clioptspec => \@getoptspec, caller => [[caller 0],[caller 1], [caller 3]]});
-} 
-
-method run : common ($argv, $clispec, $cliopt = {} ) {
-    $class->new( clispec => $clispec
-      , argv => $argv
-      , cliopt => $cliopt )
+    dmsg(
+        {
+            self       => $self,
+            argv       => $argv,
+            clioptspec => \@getoptspec,
+            caller     => [ [ caller 0 ], [ caller 1 ], [ caller 3 ] ]
+        }
+    );
 }
 
-method load ($in = undef) {
-    srcinfo::SRCINFO->new(file => $in)
+sub pkgfile_glob ( $srcinfo, $pkgver ) {
+    my $pkgver_str;
+
+    BS::Common::dmsg( { srcinfo => $srcinfo, pkgver => $pkgver } );
+
+    if ($pkgver) {
+        if (
+            my $pkgver_href =
+            ( ( $pkgver && ref $pkgver eq 'HASH' ) ? \%$pkgver : undef ) // (
+                $pkgver eq $PKGVER_CURR
+                ? { $srcinfo->%{qw'epoch ver rel'} }
+                : undef
+            )
+          )
+        {
+            $pkgver_str .= "$$pkgver_href{epoch}:" if $$pkgver_href{epoch};
+            $pkgver_str .= $$pkgver_href{ver};
+            $pkgver_str .= "-$$pkgver_href{rel}" if $$pkgver_href{rel};
+        }
+        elsif ($pkgver) {
+            $pkgver_str = $pkgver;
+        }
+    }
+    my $glob =
+      $$srcinfo{pkgname} eq 'ARRAY'
+      ? '{' . ( join ',', $$srcinfo{pkgname}->@* ) . '}-'
+      : "$$srcinfo{pkgname}"
+      . (
+        ref $$srcinfo{arch} eq 'ARRAY'
+        ? ( $pkgver_str ? " -$pkgver_str-" : "-*" ) . "-{"
+          . ( join ',', $$srcinfo{arch}->@* ) . '}'
+        : "-$$srcinfo{arch}"
+      ) . ".pkg.tar.zst";
+
+    $glob;
+}
+
+method fname_wildcard_nover ( $pkgver = undef, $arch = undef )
+{    # pass your own or set to 1 for current
+    pkgfile_glob( $srcinfo, $pkgver );
+}
+
+method run : common ($argv, $clispec, $cliopt = {} ) {
+    $class->new(
+        clispec => $clispec,
+        argv    => $argv,
+        cliopt  => $cliopt
+    );
+}
+
+method load ( $in = undef ) {
+    srcinfo::SRCINFO->new( file => $in );
 }
 
 package main;
 
-use Path::Tiny;
+use Path::Tiny qw( path );
 
 our @clispec = (
-    'field' => 's',
-    'format' => 's',
+    'field'        => 's',
+    'format'       => 's',
     'pretty-print' => 'f',
-    '<>' => sub ( $self, $barearg ) {
-        my $srcinfo = $self->load( path($barearg)->assert( sub { $_->exists } ) );
-        BS::Common::dmsg({ srcinfo => $srcinfo, $srcinfo->srcinfo})
+    '<>'           => sub ( $self, $barearg ) {
+        my $srcinfo =
+          $self->load( path($barearg)->assert( sub { $_->exists } ) );
+        BS::Common::dmsg( { srcinfo => $srcinfo, $srcinfo->srcinfo } );
     }
 );
 
 sub run {
-    srcinfo::cli->run(\@ARGV ,\@clispec);
+    srcinfo::cli->run( \@ARGV, \@clispec );
 }
 
 run()

@@ -2,74 +2,88 @@ package Minilla::ModuleMaker::InlineMakeMaker;
 use strict;
 use warnings;
 use utf8;
-use Data::Section::Simple qw(get_data_section);
-use Text::MicroTemplate qw(render_mt);
-use Data::Dumper;
-use File::Spec::Functions qw(catdir rel2abs);
-use File::Find ();
-use TAP::Harness::Env;
-use Cwd;
+use Data::Section::Simple qw( get_data_section );
+use Text::MicroTemplate   ();
+use Data::Dumper          ();
+use File::Spec::Functions qw( catdir rel2abs );
+use File::Find            ();
+use TAP::Harness::Env     ();
+use Cwd                   qw( cwd );
 
 # This module is EXPERIMENTAL.
 # You can use this. But I may change the behaviour...
 use Moo;
 no Moo;
-use Minilla::Util qw(spew_raw);
+use Minilla::Util qw( spew_raw );
+
 sub generate {
-    my ($self, $project) = @_;
-    local $Data::Dumper::Terse = 1;
-    local $Data::Dumper::Useqq = 1;
-    local $Data::Dumper::Purity = 1;
-    local $Data::Dumper::Indent = 1;
+    my ( $self, $project ) = @_;
+    local $Data::Dumper::Terse    = 1;
+    local $Data::Dumper::Useqq    = 1;
+    local $Data::Dumper::Purity   = 1;
+    local $Data::Dumper::Indent   = 1;
     local $Data::Dumper::Sortkeys = 1;
     my $content = get_data_section('Makefile.PL');
-    my $mt = Text::MicroTemplate->new(template => $content, escape_func => sub { $_[0] });
+    my $mt      = Text::MicroTemplate->new(
+        template    => $content,
+        escape_func => sub { $_[0] }
+    );
     my $src = $mt->build->($project);
-    spew_raw('Makefile.PL', $src);
+    spew_raw( 'Makefile.PL', $src );
 }
+
 sub prereqs {
-    my ($self, $project) = @_;
+    my ( $self, $project ) = @_;
     my %configure_requires = (
-        'Inline::MakeMaker' => '0.86', 
+        'Inline::MakeMaker'   => '0.86',
         'ExtUtils::MakeMaker' => $self->_eumm_minimum_version($project),
     );
     my $prereqs = +{
         configure => {
-            requires => {
-                %configure_requires,
-            }
+            requires => { %configure_requires, }
         }
     };
-    for my $key (qw(tap_harness_args use_xsutil c_source allow_pureperl requires_external_bin)) {
-        if( $project->$key ){
+    for my $key (
+        qw(tap_harness_args use_xsutil c_source allow_pureperl requires_external_bin)
+      )
+    {
+        if ( $project->$key ) {
             die "$key does not supported by " . __PACKAGE__;
         }
     }
     return $prereqs;
 }
+
 sub _eumm_minimum_version {
-    my ($self, $project) = @_;
-    if (@{ $project->unsupported->os }) {
-        return '7.26'; # os_unsupported
+    my ( $self, $project ) = @_;
+    if ( @{ $project->unsupported->os } ) {
+        return '7.26';    # os_unsupported
     }
-    return '6.64'; # TEST_REQUIRES (and MYMETA)
+    return '6.64';        # TEST_REQUIRES (and MYMETA)
 }
+
 sub run_tests {
-    my $harness = TAP::Harness::Env->create({
-        verbosity => 0,
-        lib       => [ map { rel2abs(catdir(qw/blib/, $_), cwd) } qw/arch lib/ ],
-        color     => -t STDOUT
-    });
-    my @tests = sort +_find(qr/\.t$/, 't');
-    if ($ENV{RELEASE_TESTING}) {
-        push @tests, sort +_find(qr/\.t$/, 'xt');
+    my $harness = TAP::Harness::Env->create(
+        {
+            verbosity => 0,
+            lib       =>
+              [ map { rel2abs( catdir( qw/blib/, $_ ), cwd ) } qw/arch lib/ ],
+            color => -t STDOUT
+        }
+    );
+    my @tests = sort +_find( qr/\.t$/, 't' );
+    if ( $ENV{RELEASE_TESTING} ) {
+        push @tests, sort +_find( qr/\.t$/, 'xt' );
     }
     $harness->runtests(@tests)->has_errors and die;
 }
+
 sub _find {
-    my ($pattern, $dir) = @_;
+    my ( $pattern, $dir ) = @_;
     my @ret;
-    File::Find::find(sub { push @ret, $File::Find::name if /$pattern/ && -f }, $dir) if -d $dir;
+    File::Find::find( sub { push @ret, $File::Find::name if /$pattern/ && -f },
+        $dir )
+      if -d $dir;
     return @ret;
 }
 1;

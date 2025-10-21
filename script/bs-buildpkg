@@ -31,7 +31,7 @@ fi
 
 say() {
 	for msg in "$@"; do
-		echo "▶ $msg"
+		echo -e "▶ $msg"
 	done
 }
 
@@ -65,6 +65,17 @@ moveclone() {
 	done
 }
 
+source_pkgbuild () {
+	pkgbuild="$1"
+	
+	[[ "${SOURCE_PKGBUILD:-0}" ]] \
+			&& >&2 echo -e "Sourcing PKGBUILD file instead of .SRCINFO. Be adviced this may very well be dangerous to run outside of a container.\n\nTODO: Ask user (you/me?) if they want to exit." \
+			&& echo -e "eval the following line to finalize importing its environment post-load:\n\n . $pkgbuild" \
+			&& . "$pkgbuild"
+
+	return $?
+}
+
 rebasebuild() {
 	for pkg in "$@"; do
 		cwd="$(basename "$(pwd)")"
@@ -72,6 +83,14 @@ rebasebuild() {
 		if [[ -n "${cwd//$(basename "$pkg")/}" ]]; then
 			cd "$pkg" || continue #continue
 		fi
+
+    [[  ${DEBUG:-0} -eq 1 ]] && set -x
+    
+		pkgbuildeval=$(source_pkgbuild "./PKGBUILD")
+		eval "${pkgbuildeval[*]:${#pkgbuildeval[*]}:1}"
+
+   	[[  ${DEBUG:-0} -eq 1 ]] && set +x
+		[[  ${DEBUG:-0} -ne 0 ]] && printenv
 
 		commit="${source//*commit=/}/}"
 
@@ -106,14 +125,14 @@ rebasebuild() {
 		# 	updpkgsums
 		# fi
 
-		echo "▶ Building '$pkg' in '$chroot/$WKCHROOT'"
+		say "Building '$pkg' in '$chroot/$WKCHROOT'"
 		makechrootpkg -Cun -r"$chroot" ${WKCHROOT:+-l"$WKCHROOT"} - -Lisf
 
-		echo "▶ Signing and adding '$pkg' to '$BS_REPO'"
+		say "Signing and adding '$pkg' to '$BS_REPO'"
 		bs-repoadd \
 			"${pkgdest:?}/"*.pkg.tar.zst # $(srcinfo --fields pkgname --format glob)
 
-		echo "▶ Removing copied artifacts and pacman cache (to avoid duplicate packages from the official repos)"
+		say "Removing copied artifacts and pacman cache (to avoid duplicate packages from the official repos)"
 		paccache -rk0
 
 		[[ ${CLEAN_PKGDEST:-0} -eq 1 ]] &&
