@@ -15,4 +15,4 @@ TODO.md
 ^MYMETA\.json$
 \._.+
 src\/.*$
-*.tar.gz$
+.*.tar.gz$
