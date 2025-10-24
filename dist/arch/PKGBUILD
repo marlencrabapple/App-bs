@@ -8,39 +8,42 @@ pkgrel=1
 pkgdesc="Build system for PKGBUILD based Linux distributions"
 arch=(any)
 license=('Artistic-1.0-Perl' 'GPL-1.0-or-later')
-depends=('perl' 'expac' 'pacutils' 'archlinux-contrib' 'pacman-contrib' 'archiso' 'pacman-mirrorlist' 'shiny-mirrors-git' 'perl-net-ssleay')
-makedepends=('perl-syntax-keyword-try' 'perl-cpanel-json-xs' 'perl-module-build' 'perl-dbi' 'cpanminus' 'perl-inline-c' 'perl-path-tiny' 'perl-net-ssleay')
+depends=('perl' 'expac' 'pacutils' 'archlinux-contrib' 'pacman-contrib'
+'archiso' 'pacman-mirrorlist' 'shiny-mirrors-git' 'perl-net-ssleay')
+makedepends=('perl-syntax-keyword-try' 'perl-cpanel-json-xs' 
+'perl-app-fatpacker' 'perl-module-build' 'perl-dbi' 'cpanminus' 'perl-inline-c'
+'perl-path-tiny' 'perl-net-ssleay')
 options=('!emptydirs' 'staticlibs')
 url="https://github.com/marlencrabapple/App-bs"
-source=("https://cincotuf.lan/pennylinux/BS/snapshot/BS-43aef9f9011d146d53f06004c408b6e4e4c94ab4.tar.zst")
+source=("git+$url.git")
 b2sums=('f0c15c52324b14ffcf264dd4240221f71b31df96bd90cb24040c165900fb6f944615c347bf08b10f169278f93b1d083a9b4aa64f6d8caa4f72551fee2fd6ab72')
 sha512sum=('cd3937afa78831f80a2ad5abab6c51b9e82fca4c31e5856ea208d598db5dc867')
 validpgpkeys=(4D8733704B740FC4B330EF5E8FFAD8B7BA73987)
 
 prepare() {
-  cd "$srcdir/BS-"*/
+  cd "$srcdir/App-bs"
   unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
-  export PERL_CPANM_OPT="-Llocal --verbose --save-dists ." 
   export PERL5LIB="./local/lib/perl5"
-  cpanm Net::SSLeay --notest
-  cpanm --installdeps .
-  perl Build.PL 
+  export PERL_CPANM_OPT="-L$(pwd)local --verbose --save-dists --self-contained"
 }
 
 build() {
-  cd "$srcdir/BS-"*/
+  cd "$srcdir/App-bs"
+  cpanm Net::SSLeay --notest
+  cpanm --installdeps .
+  perl Build.PL 
   ./Build build
 }
 
 check() {
-  cd "$srcdir/BS-"*/
+  cd "$srcdir/App-bs"
   ./Build testall
 }
 
 package() {
-  cd "$srcdir/BS-"*/
+  cd "$srcdir/App-bs"
 
-  $cpanm --verbose -L"$pkgdir/usr"
+  cpanm --verbose -L"$pkgdir/usr"
   PERL5LIB="$HOME/Frame/lib:./local/lib/perl5" \
    INSTALLDIR="$pkgdir" ./Build install INSTALLDIR="$pkgdir"
 
