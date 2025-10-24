@@ -4,32 +4,63 @@ use utf8;
 use v5.40;
 
 use BS::Common;
+use IPC::Run3;
 use Getopt::Long qw( GetOptions );
 
-my $install           = 0;
-my $trial             = 0;
-my $git               = undef;
-my $update            = 1;
-my $preserve_locallib = 1;
+our $install           = 0;
+our $trial             = 0;
+our $git               = undef;
+our $update            = 1;
+our $preserve_locallib = 1;
+our $outh              = [];
+our $errh              = [];
 
-GetOptions( 'install', 'trial', 'update-dependencies', 'git-pull=s' );
-
-my @cmd = qw(clean build dist);
-
-push @cmd, 'install' if $install == 1;
-
-if ($update) {
+sub update() {
     unlink "./local" if -d "./local" && !$preserve_locallib;
-    say `carmel install && carmel update` or die "Dependency error: $! ($?)";
+
+    foreach my $cmd (qw(install update)) {
+        my ( $status, $out, $err, $internalerr ) = cmd( [ 'carmel', $cmd ] );
+        if ($status) {
+            err("$err ($status)");
+            last;
+        }
+    }
+    return 1;
 }
 
-if ($git) {
-    BS::Common::err('-git-pull not yet implemented');
-    ...
+sub git_pull_remote ($argstr) {
+    my @pairstr = split /:/, $argstr;
+    my %opt     = map { split /=/ } @pairstr;
+    my @cmd     = ( qw(git pull), (%opt)[qw*branch remote*] );
 
-    #`git pull
+    BS::Common::dmsg(
+        { cmd => \@cmd, opt => \%opt, argstr => $argstr, pairstr => \@pairstr }
+    );
+
+    push @cmd, '--rebase' if $opt{rebase};
+
+    cmd( \@cmd, undef );
 }
 
-foreach my $cmd (@cmd) {
-    say `carmel exec minil $cmd`;
+sub cmd ( $cmdlist, $in = \undef, $out = $outh, $err = $errh ) {
+    my $run3err = run3( $cmdlist, $in, $out, $err );
+    $?, $out, $err, $run3err;
 }
+
+sub minil (@cmd) {
+    foreach my $cmd (@cmd) {
+        cmd( [ qw(carmel exec minil), $cmd ] );
+    }
+}
+
+sub run {
+    GetOptions( 'install', 'trial', 'update-dependencies', 'git-pull=s' );
+    update()              if $update;
+    git_pull_remote($git) if $git;
+
+    my @minilcmd = qw(clean build dist);
+    push @minilcmd, 'install' if $install;
+    minil( \@minilcmd );
+}
+
+run();
