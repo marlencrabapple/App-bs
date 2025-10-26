@@ -54,22 +54,13 @@ pkgtree() {
 	pkgname_toplvl=()
 
 	for ptn in "${pkgptn[@]}"; do
-     pkgname_toplvl+=($(expac -Ss '%n' "$ptn"))
+		pkgname_toplvl+=($(expac -Ss '%n' "$ptn"))
 	done
 
-	
-# perl -Mv5.40 -MList::Util=uniw -e 'say join " ", uniq map { split /[\s\r\n]/ } map { `expac -S "%e" $_` } map { say STDERR $_; `arch-rebuild-order --no-reverse-depends  $_` } join " ", =uniq map {  say STDERR $_; chomp $_; $_ } map {   say STDERR $_;  `expac -S "%n" $_` } join " ", uniq grep { $_ ne "" && $_ !~ /lib32|-git/ } map { chomp $_; $_ } map { split /[\s\n\r]/, $_ } map { `expac -Ss "%e %n %D" "$_"` } @ARGV'
+	perl -Mv5.40 -MList::Util=uniq -e 'say join " ", map { `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib $_` } join " ", uniq map { chomp $_; $_ } map { `expac -S "%n" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { chomp $_; `pactree -lus "$_"` } map { `expac -Ss "%n" $_` } (@ARGV)' "${pkgptn[@]}"
 
- perl -Mv5.40 -MList::Util=uniq -e 'say join " ", map { `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib $_` } join " ", uniq map { chomp $_; $_ } map { `expac -S "%n" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { chomp $_; `pactree -lus "$_"` } map { `expac -Ss "%n" $_` } (@ARGV)' "${pkgptn[@]}"
+	return $?
 
- return $?
-
-
-
-	# #for pkg in $pkgname_toplvl; do
-	#   DEBUG=1 perl -Mv5.40 -d:Trace -MBS::Common \
-	#    -e 'use List::Util "uniq"; use v5.40; say map { BS::Common::dmsg({"$_" => $_}); chomp $_; `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib $_` } join " ", uniq grep { ! /lib32/ } map { chomp $_; $_; } map { chomp $_; `expac -S "%n" "$_"` }  map { chomp $_; `pactree -lus "$_"` } map { (split /\s+/ $_ )} (@ARGV)' -- 
-	# 	 perl -e 'join " ", map { split [/s\n\r]/+ } (@ARGV)' "${pkgname_toplvl[@]}"
 }
 
 moveclone() {
@@ -88,13 +79,13 @@ moveclone() {
 	done
 }
 
-source_pkgbuild () {
+source_pkgbuild() {
 	pkgbuild="$1"
-	
-	[[ "${SOURCE_PKGBUILD:-0}" ]] \
-			&& >&2 echo -e "Sourcing PKGBUILD file instead of .SRCINFO. Be adviced this may very well be dangerous to run outside of a container.\n\nTODO: Ask user (you/me?) if they want to exit." \
-			&& echo -e "eval the following line to finalize importing its environment post-load:\n\n . $pkgbuild" \
-			&& . "$pkgbuild"
+
+	[[ "${SOURCE_PKGBUILD:-0}" ]] &&
+		>&2 echo -e "Sourcing PKGBUILD file instead of .SRCINFO. Be adviced this may very well be dangerous to run outside of a container.\n\nTODO: Ask user (you/me?) if they want to exit." &&
+		echo -e "eval the following line to finalize importing its environment post-load:\n\n . $pkgbuild" &&
+		. "$pkgbuild"
 
 	return $?
 }
@@ -107,13 +98,13 @@ rebasebuild() {
 			cd "$pkg" || continue #continue
 		fi
 
-    [[  ${DEBUG:-0} -eq 1 ]] && set -x
-    
+		[[ ${DEBUG:-0} -eq 1 ]] && set -x
+
 		pkgbuildeval=$(source_pkgbuild "./PKGBUILD")
 		eval "${pkgbuildeval[*]:${#pkgbuildeval[*]}:1}"
 
-   	[[  ${DEBUG:-0} -eq 1 ]] && set +x
-		[[  ${DEBUG:-0} -ne 0 ]] && printenv
+		[[ ${DEBUG:-0} -eq 1 ]] && set +x
+		[[ ${DEBUG:-0} -ne 0 ]] && printenv
 
 		commit="${source//*commit=/}/}"
 

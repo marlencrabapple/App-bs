@@ -1,4 +1,9 @@
 #!/usr/bin/env perl
+use Object::Pad ':experimental(:all)';
+
+package BS::pkgiden;
+
+class BS::pkgiden : does(BS::Common);
 
 use v5.40;
 
@@ -11,15 +16,23 @@ use BS::Common;
 
 const our %fieldmap  => ( base => 'e', name => 'n' );
 const our %fieldmaph => reverse(%fieldmap);
+const our %fieldsub => (
+    $fieldmap{base} => \&get_pkgbase,
+    $fieldmaph{e}   => \&get_pkgbase,
+    $fieldmap{name} => \&get_pkgname,
+    $fieldmaph{n}   => \&get_pkgname
+);
+
 our $outfield  = 'e';
 our $delimeter = ' ';
+our $filter    = qr/lib32/;
 our @pkgin;
 
 GetOptions(
     'outfield|field=s',
     'delimeter=s',
-    '<>',
-    sub ($barearg) {
+    'filter=s',
+    '<>' => sub ($barearg) {
         push @pkgin, $barearg;
     }
 );
@@ -35,6 +48,106 @@ else {
       (%fieldmap);
 }
 
+my class PacmanConf {
+    field $file : param = '/etc/pacman.conf';
+    field $readbuff  = [];
+    field $_ogcontents = [];
+    field $conf_href = {};
+
+
+    field $repos : reader = [];
+
+    field $rootdir  = '/';
+    field $dbpath   = '';
+    field $cachedir = '';
+    field $logfile  = '';
+
+    BUILD {
+
+        $file = $self->_load_file($file);
+    }
+
+    method parse_val (%option) {
+        split /[\s]+/, $option{(%option)[0]}
+    }
+
+    method parse_line ($line) {
+        state $section;
+        $line =~ s/^\s*(.*)\s*/$1/g;
+        return unless $line;
+
+        # Context switch
+        if ( my $sectkey = ($line =~ /^\s*\[([^\]]+)\]\s*$/ )) {
+            $section = $$conf_href{$sectkey};
+        }elsif (my ($k, $v) = /([^=]+?)=([^=]+)\s*/) 
+        {
+            return undef unless $k && $v;
+            
+            if (my $curr = $$section{$k}) {
+              push @$curr, split /[\s]+/, $v;
+
+            }else {
+                my @vsplit = split /[\s]+/, $v;
+                $section{$k} = $v
+            }
+        }
+
+        $line
+    }
+
+    method _load_file($path) {
+        foreach my $line ( $path->lines_utf8 ) {
+            $_ogcontents .=$line;
+
+            state $section;
+            chomp $line;
+            # ...;
+            # push @$readbuf . $line;...;
+            # my ($$self->parse_line($line, );
+        }
+    }
+};
+
+our $pacmanconf = PacmanConf->new('/etc/pacman.conf');
+
+sub arch_rebuild_order : lvalue ( $pkgnames, $no_reverse_depends= 1,
+  $repos = $pacmanconf->repos ) {
+    dmsg(
+        {
+            pkgnames           => $pkgnames,
+            no_reverse_depends => $no_reverse_depends,
+            repos              => $pacmanconf->repos,
+            pacmanconfg        => $pacmanconf
+        }
+    );
+
+    BS::Common::bsx(
+        [
+            'arch-rebuild-order',
+            grep { $_ } ( $no_reverse_depends ? '--noreverse-depends' : undef ),
+            '--repos',
+            join ',',
+            @$repos,
+            join " ",
+            map { "$_" } @$pkgnames
+        ]
+    );
+}
+
+sub get_pkgfield ( $field, @pkglist ) {
+    $fieldsub{$field}->(@pkglist);
+}
+
+sub get_pkgbase : lvalue ( @pkglist ) {
+    grep { !$filter } map { `expac -S "%e" $_` } join " ",
+      uniq map { chomp $_; qq{"$_"} } @pkglist;
+}
+
+sub get_pkgname : lvalue ( @pkglist ) {
+    grep { !$filter } map { `expac -S "%n" $_` } join " ",
+      uniq map { chomp $_; qq{"$_"} } @pkglist;
+}
+
 sub run () {
     say STDERR "▶ Printing packages as " . (%$outfield)[1] . "(s)...";
 
@@ -42,27 +155,19 @@ sub run () {
       ( '--no-reverse-depends', '--repos', 'universe,core,extra,multilib' );
     my $rebuildorder = join " ", @rebuildorder;
 
-    my @pkgout =
-      map { chomp $_; $_ } uniq
-      map {
-        my $pkgfieldin = $_;
+    my @pkgout = ();
 
-        BS::Common::dmsg(
-            { outfield => $outfield, pkgfield_in => $pkgfieldin } );
-        dynamically $outfield = (%$outfield)[0];
+    my @rebuildin =
+      uniq map        { chomp $_; $_ }
+      get_pkgbase map { chomp $_; `pactree -lus "$_"` }
+      map             { `expac -Ss "%n" $_` } (@pkgin);
 
-        $outfield eq 'n'
-          ? ( split /[\s]+/, $pkgfieldin )
-          : (`expac -S '$outfield' $pkgfieldin`)
-      }
-      map {
-        $rebuildorder .= $_;
-        BS::Common::dmsg( { rebuildorder => $rebuildorder } );
-        `arch-rebuild-order $rebuildorder $_`
-      } join " ", uniq map { chomp $_; $_ }
-      map { `expac -S "%n" $_` } join " ", uniq map { chomp $_; qq{"$_"} }
-      map { chomp $_; `pactree -lus "$_"` }
-      map { `expac -Ss "%n" $_` } (@pkgin);
+    @pkgout = get_pkgfield(
+        (%$outfield)[0],
+        arch_rebuild_order(
+            @rebuildin, 1, "universe,core,extra,multilib", $pacmanconf
+        )
+    );
 
     BS::Common::dmsg( { pkgout => @pkgout } );
 

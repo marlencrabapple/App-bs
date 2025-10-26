@@ -47,7 +47,11 @@ _sign_rel_flow() {
 
     signpkg "$f"
     copy2repo "$f"
-    [[ "${REPOADD_IGNOREERROR:-0}" ]] && repoadd "$f"
+
+    ([[ "${REPOADD_IGNOREERROR:-0}" -ne 0 ]] ||
+      [[ "${REPOADD_PERPKG:-0}" -eq 1 ]]) &&
+      repoadd "$f"
+
     err=$?
 
     echo ""
@@ -75,7 +79,7 @@ signpkg() {
   else
     gpg -u "$gpgpubid" -sb "$f"
     gpgerr=$?
-    [[ $gpgerr -eq 0 ]] &&
+    [[ ${gpgerr:-0} -eq 0 ]] &&
       echo "[●] Signed '$f' with '$gpgpubid'"
   fi
 

@@ -3,7 +3,7 @@
 
 pkgname='perl-app-fatpacker'
 pkgver='0.010008'
-pkgrel='1'
+pkgrel='2'
 pkgdesc="pack your dependencies onto your script file"
 arch=('any')
 license=('PerlArtistic' 'GPL')
