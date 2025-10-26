@@ -83,7 +83,7 @@ signpkg() {
       echo "[●] Signed '$f' with '$gpgpubid'"
   fi
 
-  return "$gpgerr"
+  return "${gpgerr:-0}"
 }
 
 copy2repo() {

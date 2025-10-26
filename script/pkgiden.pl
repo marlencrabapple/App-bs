@@ -50,10 +50,9 @@ else {
 
 my class PacmanConf {
     field $file : param = '/etc/pacman.conf';
-    field $readbuff  = [];
-    field $_ogcontents = [];
-    field $conf_href = {};
-
+    field $readbuff     = [];
+    field $_ogcontents  = [];
+    field $conf_href    = {};
 
     field $repos : reader = [];
 
@@ -68,7 +67,7 @@ my class PacmanConf {
     }
 
     method parse_val (%option) {
-        split /[\s]+/, $option{(%option)[0]}
+        split /[\s]+/, $option{ (%option)[0] };
     }
 
     method parse_line ($line) {
@@ -77,30 +76,32 @@ my class PacmanConf {
         return unless $line;
 
         # Context switch
-        if ( my $sectkey = ($line =~ /^\s*\[([^\]]+)\]\s*$/ )) {
+        if ( my $sectkey = ( $line =~ /^\s*\[([^\]]+)\]\s*$/ ) ) {
             $section = $$conf_href{$sectkey};
-        }elsif (my ($k, $v) = /([^=]+?)=([^=]+)\s*/) 
-        {
+        }
+        elsif ( my ( $k, $v ) = /([^=]+?)=([^=]+)\s*/ ) {
             return undef unless $k && $v;
-            
-            if (my $curr = $$section{$k}) {
-              push @$curr, split /[\s]+/, $v;
 
-            }else {
+            if ( my $curr = $$section{$k} ) {
+                push @$curr, split /[\s]+/, $v;
+
+            }
+            else {
                 my @vsplit = split /[\s]+/, $v;
-                $section{$k} = $v
+                $$section{$k} = [$v];
             }
         }
 
-        $line
+        %$section;
     }
 
     method _load_file($path) {
         foreach my $line ( $path->lines_utf8 ) {
-            $_ogcontents .=$line;
+            $_ogcontents .= $line;
 
             state $section;
             chomp $line;
+
             # ...;
             # push @$readbuf . $line;...;
             # my ($$self->parse_line($line, );

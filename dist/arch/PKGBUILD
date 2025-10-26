@@ -4,7 +4,7 @@ pkgname="$_pkgname-git"
 _perl_namespace=App
 _perl_module=BS
 pkgver=0
-pkgrel=1
+pkgrel=2
 pkgdesc="Build system for PKGBUILD based Linux distributions"
 arch=(any)
 license=('Artistic-1.0-Perl' 'GPL-1.0-or-later')
@@ -49,8 +49,5 @@ check() {
 
 package() {
   cd "$srcdir/App-bs"
-
   INSTALL_BASE=/usr ./Build install --destdir "$pkgdir"
-
-  find "${pkgdir}" -name '.packlist' -delete
 }

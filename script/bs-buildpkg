@@ -57,7 +57,7 @@ pkgtree() {
 		pkgname_toplvl+=($(expac -Ss '%n' "$ptn"))
 	done
 
-	perl -Mv5.40 -MList::Util=uniq -e 'say join " ", map { `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib $_` } join " ", uniq map { chomp $_; $_ } map { `expac -S "%n" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { chomp $_; `pactree -lus "$_"` } map { `expac -Ss "%n" $_` } (@ARGV)' "${pkgptn[@]}"
+	perl -Mv5.40 -MList::Util=uniq -e 'say join " ", map { `expac -S "%e" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib $_` } join " ", uniq map { chomp $_; $_ } map { `expac -S "%n" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { chomp $_; `pactree -lus "$_"` } map { `expac -Ss "%n" $_` } (@ARGV)' "${pkgptn[@]}"
 
 	return $?
 
@@ -65,17 +65,22 @@ pkgtree() {
 
 moveclone() {
 	for pkg in "$@"; do
-		[[ -d "/bs/cgit/pennylinux/pkgbuild/work/$pkg" ]] ||
+		if [[ -d "$BS_BUILDPKG_WKDIR/$pkg" ]]; then 
 			(
-				echo "▶ Copying package from import directory '$IMPORTDIR'."
-				cp -vaf "/bs-old/pkgbuild.1/$pkg" \
-					"/bs/cgit/pennylinux/pkgbuild/work" &&
+				echo "▶ Copying package from import directory '$BS_IMPORTDIR'."
+				cp -vaf "$BS_IMPORTDIR/$pkg" \
+					"$BS_BUILDPKG_WKDIR" &&
 					return 0
 			)
+		else
+		local remotelist=("$(set -x;
+		  for remote in $(git remote); do
+			  echo "$remote::$(git remote get-url $remote;)"
+			done;)")
 
-		[[ -d "/bs/cgit/pennylinux/pkgbuild/work/$pkg" ]] ||
 			(echo "▶ Cloning official repo:" &&
 				pkgctl repo clone --protocol https "$pkg")
+		fi
 	done
 }
 

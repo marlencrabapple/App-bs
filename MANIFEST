@@ -2,10 +2,9 @@
 .gitignore
 .gitmodules
 .perl-version
-.SRCINFO
 .vscode/extensions.json
 .vscode/settings.json
-App-BS-0.tar.gz
+author/carmel-exec-Build.PL.sh
 author/minil-rebuildall.pl
 blib/lib/App/BS.pm
 blib/lib/App/BS/CLI.pm
@@ -28,7 +27,6 @@ blib/lib/BS/Ext/User.pm
 blib/lib/BS/GPG.pm
 blib/lib/BS/Package.pm
 blib/lib/BS/Package/Manifest.pm
-blib/lib/BS/Package/Meta.pm
 blib/lib/BS/Path.pm
 blib/lib/BS/Repo.pm
 blib/lib/BS/Repo/User.pm
@@ -46,6 +44,8 @@ blib/script/bs-sign
 blib/script/bs-srcinfo
 blib/script/filter-installed.pl
 blib/script/newpath.pl
+blib/script/pkgiden.pl
+blib/script/pkgname2perlmod
 Build
 Build.PL
 Changes
@@ -99,5 +99,6 @@ script/bs-sign
 script/bs-srcinfo
 script/filter-installed.pl
 script/newpath.pl
+script/pkgiden.pl
 share/bs-chroot.sh
 t/00_compile.t

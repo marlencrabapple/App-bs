@@ -1,0 +1,80 @@
+#!/usr/bin/env perl
+use Object::Pad ':experimental(:all)';
+
+package BS::Repo;
+role BS::Repo;
+
+use URI;
+use Cwd;
+use File::chdir;
+use IPC::Run3;
+
+method remote_list : common ($name , $path = $CWD) {
+    my @list;
+    run3(
+        [qw(git remote)],
+        \undef,
+        sub ($line) {
+            chomp $line;
+            push @list, $line;
+        }
+    );
+    @list;
+}
+
+method remote_get_url : common ( $name, $path = $CWD ) {
+    my $uri;
+
+    run3(
+        qw(git remote get-url),
+        $name,
+        \undef,
+        sub ($line) {
+            $uri = URI->new($line);
+        }
+    );
+
+    $? == 0 ? $uri : die("$! ($?)");
+}
+
+package BS::Repo::State;
+role BS::Repo::State;
+
+use HTTP::Tinyish;
+use IPC::Run3;
+use Path::Tiny;
+use File::chdir;
+
+use utf8;
+use v5.40;
+
+field $local;
+field $remote;
+field $lastupdated;
+
+method add : common ($remote, $local = undef) {
+
+}
+
+method refresh {
+
+}
+
+package main;
+
+our @repolist = path("$ENV{BS_ROOT}/state")->children;
+
+foreach my $repo (@repolist) {
+    $repo = {
+        local  => { path => $repo },
+        remote => {}
+    };
+
+}
+
+our $staterepo =
+  BS::Repo::State->new( local => path("$ENV{BS_ROOT}/state/archlinux") );
+
+sub run {
+
+}

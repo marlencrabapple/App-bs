@@ -4,7 +4,7 @@ use lib 'lib';
 
 package BS::repoctl;
 
-class BS::repoctl : isa(App::BS::CLI);
+class BS::repoctl;    #: isa(App::BS::CLI);
 
 use utf8;
 use v5.40;
@@ -86,6 +86,9 @@ method copy ( $pkg_aref = $pkgqueue, %opts ) {
 }
 
 method repoadd ( $pkg_aref = $pkgqueue, %opts ) {
+
+    #    ... unless $opts{ignore_error}
+
     $self;
 }
 

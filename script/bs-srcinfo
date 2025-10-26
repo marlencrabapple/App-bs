@@ -12,16 +12,15 @@ use v5.40;
 use parent 'Exporter';
 use vars '@EXPORT';
 
-@EXPORT = qw(srcinfo);
-
-use Cwd              qw( cwd );
-use Getopt::Long     qw( GetOptionsFromArray );
-use Path::Tiny       qw( path );
-use Const::Fast      qw( const );
-use IPC::Run3        ();
-use BS::Src::SRCINFO ();
+use Cwd          qw( cwd );
+use Getopt::Long qw( GetOptionsFromArray );
+use Path::Tiny   qw( path );
+use Const::Fast  qw( const );
+use IPC::Run3    ();
+use BS::Package::SRCINFO;
 
 const our %OUTFMT => (
+
     bash => 'srcinfo::bash'
     , # POSIX will probably be the only other in this category but I think that's basically just a .SRCINFO file without changes
     json => 'JSON::MaybeXS',
@@ -33,15 +32,20 @@ field $clispec : param;
 field $cliopt  : param(clidest) = {};
 field $argv    : param;
 
-field $infile = path( Cwd::abs_path(cwd) );
+field $infile = path( Cwd::abs_path(cwd) . '/.SRCINFO' );
 
 # Is there somewhere we can handle a no clobber flag in the environment
 # more consistently?
 field $outfile { $infile unless %$cliopt{qw(readonly noop no-update)} };
 
 field $field;
-field $format = { %OUTFMT{bash} };
-field $srcinfo;
+field $format       = { %OUTFMT{bash} };
+field $srcinfo_href = {};
+
+# __PACKAGE__->new({ href => 'constructor' })
+# BUILDARGS {
+#
+# }
 
 ADJUSTPARAMS($params) {
     my @getoptspec = ();
@@ -63,15 +67,6 @@ ADJUSTPARAMS($params) {
     }
 
     GetOptionsFromArray( $argv, $cliopt, @getoptspec );
-
-    dmsg(
-        {
-            self       => $self,
-            argv       => $argv,
-            clioptspec => \@getoptspec,
-            caller     => [ [ caller 0 ], [ caller 1 ], [ caller 3 ] ]
-        }
-    );
 }
 
 sub pkgfile_glob ( $srcinfo, $pkgver ) {
@@ -83,7 +78,7 @@ sub pkgfile_glob ( $srcinfo, $pkgver ) {
         if (
             my $pkgver_href =
             ( ( $pkgver && ref $pkgver eq 'HASH' ) ? \%$pkgver : undef ) // (
-                $pkgver eq $PKGVER_CURR
+                $pkgver eq $ENV{PKGVER_CURR}
                 ? { $srcinfo->%{qw'epoch ver rel'} }
                 : undef
             )
@@ -113,19 +108,21 @@ sub pkgfile_glob ( $srcinfo, $pkgver ) {
 
 method fname_wildcard_nover ( $pkgver = undef, $arch = undef )
 {    # pass your own or set to 1 for current
-    pkgfile_glob( $srcinfo, $pkgver );
+    pkgfile_glob( $srcinfo_href, $pkgver );
 }
 
-method run : common ($argv, $clispec, $cliopt = {} ) {
+method run : common ($argv, $clispec, $dest = {}, %opt) {
     $class->new(
         clispec => $clispec,
         argv    => $argv,
-        cliopt  => $cliopt
+        cliopt  => $dest
     );
 }
 
-method load ( $in = undef ) {
-    srcinfo::SRCINFO->new( file => $in );
+method load ($in) {
+    BS::Common::dmsg( { in => $infile, } );
+    $infile = $in;
+    BS::Package::SRCINFO->new( file => $in );
 }
 
 package main;

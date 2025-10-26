@@ -1,7 +1,7 @@
 pkgbase = perl-app-bs-git
 	pkgdesc = Build system for PKGBUILD based Linux distributions
 	pkgver = 0
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/marlencrabapple/App-bs
 	arch = any
 	license = Artistic-1.0-Perl
