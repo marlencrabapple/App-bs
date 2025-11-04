@@ -37,6 +37,8 @@ const our @clispec => (
     }
 );
 
+field $repo;
+field $repo_abspath;
 field $err     : param = [];
 field $out     : param = [];
 field $gpgiden : param = $ENV{BS_GPGFPR} // $ENV{BS_GPGPUBID};
@@ -87,7 +89,11 @@ method copy ( $pkg_aref = $pkgqueue, %opts ) {
 
 method repoadd ( $pkg_aref = $pkgqueue, %opts ) {
 
-    #    ... unless $opts{ignore_error}
+    #... unless $opts{ignore_error};
+
+    foreach my $pkg (@$pkg_aref) {
+
+    }
 
     $self;
 }

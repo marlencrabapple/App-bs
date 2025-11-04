@@ -1,7 +1,7 @@
 pkgbase = perl-app-bs-git
 	pkgdesc = Build system for PKGBUILD based Linux distributions
-	pkgver = 0
-	pkgrel = 2
+	pkgver = r99.7a6195f
+	pkgrel = 1
 	url = https://github.com/marlencrabapple/App-bs
 	arch = any
 	license = Artistic-1.0-Perl
@@ -26,8 +26,8 @@ pkgbase = perl-app-bs-git
 	depends = perl-net-ssleay
 	options = !emptydirs
 	options = staticlibs
-	source = git+https://github.com/marlencrabapple/App-bs.git
+	source = git+https://github.com/marlencrabapple/App-bs.git#commit=7a6195fd3c2af8409349a2f76a4f8e1335555962
 	validpgpkeys = 5D8733704B740FC4B330EF5E8FFAD8B7BA73987
-	b2sums = SKIP
+	b2sums = 0216812848d2a673a4414369797c748226040769c422a589fb97c9cf1eaac28d83ef3f064dc5fbf0331f8c43746d80f4e57fa9701fa11a73f65ebab2caeadf5a
 
 pkgname = perl-app-bs-git

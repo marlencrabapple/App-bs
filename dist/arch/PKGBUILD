@@ -3,22 +3,31 @@ _pkgname=perl-app-bs
 pkgname="$_pkgname-git"
 _perl_namespace=App
 _perl_module=BS
-pkgver=0
-pkgrel=2
+pkgver=r99.7a6195f
+pkgrel=1
 pkgdesc="Build system for PKGBUILD based Linux distributions"
 arch=(any)
 license=('Artistic-1.0-Perl' 'GPL-1.0-or-later')
 depends=('perl' 'expac' 'pacutils' 'archlinux-contrib' 'pacman-contrib'
   'archiso' 'pacman-mirrorlist' 'shiny-mirrors-git' 'perl-net-ssleay')
 makedepends=('perl-syntax-keyword-try' 'perl-cpanel-json-xs'
-  'perl-app-fatpacker' 'perl-module-build' 'perl-dbi' 'cpanminus' 'perl-inline-c'
-  'perl-path-tiny' 'perl-net-ssleay')
+  'perl-app-fatpacker' 'perl-module-build' 'perl-dbi' 'cpanminus'
+  'perl-inline-c' 'perl-path-tiny' 'perl-net-ssleay')
 options=('!emptydirs' 'staticlibs')
 url="https://github.com/marlencrabapple/App-bs"
-source=("git+$url.git")
-b2sums=('SKIP')
+_commit=7a6195fd3c2af8409349a2f76a4f8e1335555962
+source=("git+$url.git#commit=$_commit")
+b2sums=('0216812848d2a673a4414369797c748226040769c422a589fb97c9cf1eaac28d83ef3f064dc5fbf0331f8c43746d80f4e57fa9701fa11a73f65ebab2caeadf5a')
 sha513sum=('cd3937afa78831f80a2ad5abab6c51b9e82fca4c31e5856ea208d598db5dc867')
 validpgpkeys=(5D8733704B740FC4B330EF5E8FFAD8B7BA73987)
+
+pkgver() {
+  cd "$srcdir/App-bs"
+  ( set -o pipefail
+    git describe --long --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+  )
+}
 
 prepare() {
   cd "$srcdir/App-bs"
