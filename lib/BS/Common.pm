@@ -17,6 +17,7 @@ use Syntax::Keyword::Try;
 use Const::Fast::Exporter;
 use Syntax::Keyword::Dynamically;
 use Time::HiRes qw(gettimeofday);
+use FreezeThaw  qw(cmpStr cmpStrHard);
 
 BEGIN {
     use Exporter;
@@ -109,6 +110,14 @@ method callstack : common {
 
 method alldef : common (@items) {
     all { $_ } @items;
+}
+
+sub href_equal_kv : prototype($$) ( $href, $href2 ) {
+    $$href{EXTRA}  = $href2;
+    $$href2{EXTRA} = $href;
+
+    cmpStr( $href, $href2 );
+    cmpStrHard( $href, $href2 );
 }
 
 sub success ( $msg, %opts ) {
@@ -267,3 +276,4 @@ sub issha1 ($str) {
     }
     undef;
 }
+

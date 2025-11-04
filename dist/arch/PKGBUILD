@@ -3,26 +3,26 @@ _pkgname=perl-app-bs
 pkgname="$_pkgname-git"
 _perl_namespace=App
 _perl_module=BS
-pkgver=r100.fd1fc4b
-pkgrel=1
+pkgver=app.bs.0.r1.r0.gbe53a1b
+pkgrel=3
 pkgdesc="Build system for PKGBUILD based Linux distributions"
 arch=(any)
 license=('Artistic-1.0-Perl' 'GPL-1.0-or-later')
 depends=('perl' 'expac' 'pacutils' 'archlinux-contrib' 'pacman-contrib'
-  'archiso' 'pacman-mirrorlist' 'shiny-mirrors-git' 'perl-net-ssleay')
+  'archiso' 'pacman-mirrorlist' 'shiny-mirrors-git' 'perl-net-ssleay'
+  'perl-devel-checkbin')
 makedepends=('perl-syntax-keyword-try' 'perl-cpanel-json-xs'
   'perl-app-fatpacker' 'perl-module-build' 'perl-dbi' 'cpanminus'
-  'perl-inline-c' 'perl-path-tiny' 'perl-net-ssleay')
+  'perl-inline-c' 'perl-path-tiny' 'perl-net-ssleay' 'perl-module-build-xsutil')
 options=('!emptydirs' 'staticlibs')
-url="https://github.com/marlencrabapple/App-bs"
-_commit=fd1fc4b2110df47fc3a76dbe052864943d8908dd
-source=("git+$url.git#commit=$_commit")
-b2sums=('b83af2b1274a963c3c4d174f282a0673c28a3e4ab7c715686c12d87f7d30d8038254be0cee7cf1632c1b4df379284ef30579b9045a2e993a373baac0b090cb97')
-sha513sum=('cd3937afa78831f80a2ad5abab6c51b9e82fca4c31e5856ea208d598db5dc867')
-validpgpkeys=(5D8733704B740FC4B330EF5E8FFAD8B7BA73987)
+url="https://cincotuf.lan/pennylinux/BS"
+_tag=app-bs-0-r1
+source=("$_pkgname::git+$url#tag=$_tag?signed=1")
+sha512sums=('6d25e0e381cb4c3e6cc3983255e104dae22e11de9b0d244d1483687fcb4c6d0242f6fdc6e0ea62413564fcbd24f72656a95cfdb391ce6883f6a0b3c3a3a68322')
+b2sums=('417a73e79b82d803f89a83962af950ccc5f59bbb674e824343268c73dd8154c3d207dbf6ba0437709935d9bbab88ca276c20202a95ee3930a7e2e4474bd20680')
 
 pkgver() {
-  cd "$srcdir/App-bs"
+  cd "$srcdir/$_pkgname"
   (
     set -o pipefail
     git describe --long --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
@@ -31,7 +31,7 @@ pkgver() {
 }
 
 prepare() {
-  cd "$srcdir/App-bs"
+  cd "$srcdir/$_pkgname"
 
   unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
 
@@ -45,7 +45,7 @@ prepare() {
 }
 
 build() {
-  cd "$srcdir/App-bs"
+  cd "$srcdir/$_pkgname"
   cpanm Net::SSLeay --notest
   cpanm --installdeps .
   perl Build.PL
@@ -53,11 +53,11 @@ build() {
 }
 
 check() {
-  cd "$srcdir/App-bs"
+  cd "$srcdir/$_pkgname"
   ./Build testall
 }
 
 package() {
-  cd "$srcdir/App-bs"
+  cd "$srcdir/$_pkgname"
   INSTALL_BASE=/usr ./Build install --destdir "$pkgdir"
 }

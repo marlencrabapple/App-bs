@@ -607,6 +607,12 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  FreezeThaw-0.5001
+    pathname: I/IL/ILYAZ/modules/FreezeThaw-0.5001.tar.gz
+    provides:
+      FreezeThaw 0.5001
+    requirements:
+      ExtUtils::MakeMaker 0
   Future-0.52
     pathname: P/PE/PEVANS/Future-0.52.tar.gz
     provides:

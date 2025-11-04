@@ -7,14 +7,14 @@ class BS::Package::SRCINFO;
 use utf8;
 use v5.40;
 
-use List::Util   qw( any );
-use Const::Fast  qw( const );
-use Scalar::Util qw( blessed );
-use Path::Tiny   qw( path );
-use Tie::File    ();
+use List::Util qw( any );
+use Const::Fast;
+use Scalar::Util;
+use Path::Tiny;
+use Tie::File ();
 use Syntax::Keyword::Defer;
-use Data::Dumper;
 use meta;
+use JSON::MaybeXS;
 
 no warnings 'meta::experimental';
 
@@ -40,21 +40,23 @@ field $options = [];
 
 field $_file : reader(file) : param(file) //=
   Path::Tiny::tempfile('.SRCINFOXXXXXXX');
-field $_srcinfo : reader(srcinfo) : param(str) //= $_file->slurp_utf8;
-
-BUILD {
-    BS::Common::dmsg( { '@_' => \@_ } )
-}
+field $_srcinfo   : reader(srcinfo) : param(str) //= $_file->slurp_utf8;
+field $_hrefcache : reader;
+field $_json      : reader(json);
+ADJUST { };
 
 ADJUSTPARAMS($params) {
+    $_json //= $self->_init_json;
+
     if ($_file) {
+        %$_hrefcache = __PACKAGE__->from_srcinfo($_file)->%*;
         (
             $pkgname,  $pkgbase, $pkgver, $epoch,
             $pkgrel,   $arch,    $source, $conflicts,
             $provides, $depends, $cksum,  $options
-        ) = values __PACKAGE__->from_srcinfo($_file)->%*;
+        ) = values %$_hrefcache;
 
-        BS::Common::dmsg( __PACKAGE__->from_srcinfo($_file) );
+        BS::Common::dmsg( _hrefcache => $_hrefcache );
     }
     else {
         ...;
@@ -89,14 +91,33 @@ method open_srcinfo : common ($file) {
     }
 }
 
+method fields (%opts) {
+    my $Field = class {
+        field $_field   : param(field) : reader(field);
+        field $instance : param;
+        field $name     : reader = $_field->name =~ s/^\$//r;
+        field $value : reader { $_field->value($instance) }
+    };
+
+    my $metaclass = Object::Pad::MOP::Class->for_caller;
+    (
+        map {
+            # my $infield = $_;
+            my $field = $Field->new( field => $_, instance => $self );
+            $field
+        }
+        grep { $_->name !~ /^\$_/ } $metaclass->fields
+    );
+}
+
 method keys : common (%opts) {
     my $metaclass = Object::Pad::MOP::Class->for_caller;
-    grep { /^_/ } map { $_->name } $metaclass->fields;
+    grep { /^$_/ } map { $_->name } $metaclass->fields;
 }
 
 method values (%opts) {
     my $metaclass = Object::Pad::MOP::Class->for_caller;
-    map { $_->value } $metaclass->fields;
+    map { $_->value($self) } $metaclass->fields;
 }
 
 method writeline ( $line, %opts ) {
@@ -104,8 +125,32 @@ method writeline ( $line, %opts ) {
 }
 
 method to_href {
-    my @fields = SRCINFO->keys->@*;
-    map { $_->name, $_->value } @fields;
+    my @fields = ( $self->fields );
+
+    foreach my ( $k, $v ) ( map { $_->name => $_->value } @fields ) {
+
+        if ( my $_v = $$_hrefcache{$k} ) {
+
+            if ( blessed $_v ) {
+                ...;
+            }
+            elsif ( ref $_v ) {
+                push @$_v, $v if $_v isa 'ARRAY';
+
+                # $$vcached{ keys %$v } = values %$v
+                #   if $vcached isa 'HASH';    # no nested refs?
+            }
+            else {
+                $v = [ $_v, $v ];
+            }
+        }
+    }
+
+    $_hrefcache;
+}
+
+method as_href {
+    $self->to_href;
 }
 
 method parse_line : common ( $line, %opts ) {
@@ -145,7 +190,6 @@ method parse_srcinfo : common ( $in, %opts ) {
 method as_SRCINFO (%opts) {
     my @fields = SRCINFO->keys->@*;
     my @lines;
-    BS::Common::dmsg( { opts => [ @opts{qw(write update)} ] } );
 
     defer {
         warn "hihihi";
@@ -153,8 +197,6 @@ method as_SRCINFO (%opts) {
           if any { $_ } @opts{qw(write update)}
           && $_file->exists
     }
-
-    # defer  if ( any { $_ } @opts{qw(write update)} && $_file
 
     const my $PKGBASENAME_RE => qr/^pkg(name|base)$/;
     my $handle = $opts{writeh} ? $opts{writeh} : *STDOUT;
@@ -172,26 +214,36 @@ method as_SRCINFO (%opts) {
         last   if $i == 0;
     }
 
-    BS::Common::dmsg(
-        {
-            handle => $handle,
-            self   => $self,
-            fields => @fields,
-            lines  => \@lines,
-        }
-    );
-
     warn "after defer?";
 
-    $opts{wantarray}
-      ? @lines
-
-      #: $opts{self}      ? $self
-      : join "\n", @lines;
+        $opts{wantarray} ? @lines
+      : $opts{self}      ? $self
+      :                    join "\n", @lines;
 }
 
-method as_json {
+method _init_json (%opts) {
+    const my @JSON_ALLOWEDKEYS => qw(pretty utf8 allow_blessed allow_nonref);
 
+    state %json_constructor = (
+        allow_blessed => 1,
+        utf8          => 1,
+        pretty        => 1,
+        allow_nonref  => 1
+
+        #grep { }  {%opts}->%{@JSON_ALLOWEDKEYS}
+
+    );
+
+    $_json = JSON::MaybeXS->new(%json_constructor);
+
+    $_json;
+}
+
+method as_json (%opts) {
+    $self->_init_json(%opts);
+
+    # Consider ordering keys on demand?
+    $_json->encode( $self->as_href );
 }
 
 method as_toml {

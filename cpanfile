@@ -30,6 +30,7 @@ requires 'IO::Async';
 requires 'IO::Async::SSL';
 requires 'Devel::CheckBin';
 requires 'meta';
+requires 'FreezeThaw';
 
 on 'test' => sub {
     requires 'Test::More',       '0.98';

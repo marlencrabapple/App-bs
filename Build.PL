@@ -40,6 +40,7 @@ my %args = (
         'DBIx::Connector' => '0',
         'Devel::CheckBin' => '0',
         'File::chdir' => '0',
+        'FreezeThaw' => '0',
         'Future::AsyncAwait' => '0',
         'Getopt::Long' => '0',
         'HTTP::Tinyish' => '0',

@@ -12,11 +12,12 @@ use v5.40;
 use parent 'Exporter';
 use vars '@EXPORT';
 
-use Cwd          qw( cwd );
-use Getopt::Long qw( GetOptionsFromArray );
-use Path::Tiny   qw( path );
-use Const::Fast  qw( const );
-use IPC::Run3    ();
+use Cwd qw( cwd );
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case bundling auto_abbrev);
+use Path::Tiny;
+use Const::Fast;
+use IPC::Run3;
 use BS::Package::SRCINFO;
 
 const our %OUTFMT => (
@@ -41,6 +42,8 @@ field $outfile { $infile unless %$cliopt{qw(readonly noop no-update)} };
 field $field;
 field $format       = { %OUTFMT{bash} };
 field $srcinfo_href = {};
+
+field $srcinfo : reader;
 
 # __PACKAGE__->new({ href => 'constructor' })
 # BUILDARGS {
@@ -72,7 +75,7 @@ ADJUSTPARAMS($params) {
 sub pkgfile_glob ( $srcinfo, $pkgver ) {
     my $pkgver_str;
 
-    BS::Common::dmsg( { srcinfo => $srcinfo, pkgver => $pkgver } );
+    # BS::Common::dmsg( { srcinfo => $srcinfo, pkgver => $pkgver } );
 
     if ($pkgver) {
         if (
@@ -112,31 +115,51 @@ method fname_wildcard_nover ( $pkgver = undef, $arch = undef )
 }
 
 method run : common ($argv, $clispec, $dest = {}, %opt) {
-    $class->new(
+    my $self = $class->new(
         clispec => $clispec,
         argv    => $argv,
         cliopt  => $dest
     );
+
+    BS::Common::dmsg(
+        {
+
+            srcinfo => $self->srcinfo,
+
+            # '$self->srcinfo->as_href' => $self->srcinfo->as_href,
+
+            clispec => $clispec,
+            argv    => $argv,
+            cliopt  => $dest
+        }
+    );
+
+    say $self->srcinfo->as_json;
+
+    $self;
 }
 
 method load ($in) {
-    BS::Common::dmsg( { in => $infile, } );
-    $infile = $in;
-    BS::Package::SRCINFO->new( file => $in );
+
+    # BS::Common::dmsg( { in => $infile, } );
+    $infile  = $in;
+    $srcinfo = BS::Package::SRCINFO->new( file => $in );
 }
 
 package main;
 
 use Path::Tiny qw( path );
 
+#         GetOptions( "library=s" => \@libfiles );
+#         @libfiles = split( /,/, join( ',', @libfiles ) );
 our @clispec = (
-    'field'        => 's',
-    'format'       => 's',
-    'pretty-print' => 'f',
-    '<>'           => sub ( $self, $barearg ) {
+    'fields|show-fields|out-fields|outfields|filter-fields|select-fields' =>
+      's',
+    'format'        => 's',
+    'pretty-print!' => 'f',
+    '<>'            => sub ( $self, $barearg ) {
         my $srcinfo =
           $self->load( path($barearg)->assert( sub { $_->exists } ) );
-        BS::Common::dmsg( { srcinfo => $srcinfo, $srcinfo->srcinfo } );
     }
 );
 
