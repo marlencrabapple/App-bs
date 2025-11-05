@@ -43,7 +43,6 @@ field $_file : reader(file) : param(file) //=
 field $_srcinfo   : reader(srcinfo) : param(str) //= $_file->slurp_utf8;
 field $_hrefcache : reader;
 field $_json      : reader(json);
-ADJUST { };
 
 ADJUSTPARAMS($params) {
     $_json //= $self->_init_json;
@@ -262,18 +261,9 @@ method as_yaml {
 
 # method as_it_was_written
 
-method shenv ( $shcompat = 'bash' ) {
-
-}
-
-# method parse_srcinfo : common ($path) {
-
-#     my $srcinfo = srcinfo::SRCINFO->new(%srcinfo);
-#     BS::COmmon::dmsg(
-#         { srcinfo => $srcinfo, srcinfo_constructor => \%srcinfo } );
-
-#     $srcinfo;
-# }
+#method shenv ( $shcompat = 'bash' ) {
+#
+#}
 
 method pkgfile_glob ($pkgver) {
     my $pkgver_str;

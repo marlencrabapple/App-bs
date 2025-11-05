@@ -1,6 +1,6 @@
 pkgbase = perl-app-bs-git
 	pkgdesc = Build system for PKGBUILD based Linux distributions
-	pkgver = app.bs.0.r1.r0.gbe53a1b
+	pkgver = app.bs.0.r1.r1.g6e917a2
 	pkgrel = 2
 	url = https://cincotuf.lan/pennylinux/BS
 	arch = any
@@ -28,8 +28,8 @@ pkgbase = perl-app-bs-git
 	depends = perl-devel-checkbin
 	options = !emptydirs
 	options = staticlibs
-	source = perl-app-bs::git+https://cincotuf.lan/pennylinux/BS#tag=app-bs-0-r1?signed=1
-	sha512sums = 6d25e0e381cb4c3e6cc3983255e104dae22e11de9b0d244d1483687fcb4c6d0242f6fdc6e0ea62413564fcbd24f72656a95cfdb391ce6883f6a0b3c3a3a68322
-	b2sums = 417a73e79b82d803f89a83962af950ccc5f59bbb674e824343268c73dd8154c3d207dbf6ba0437709935d9bbab88ca276c20202a95ee3930a7e2e4474bd20680
+	source = perl-app-bs::git+https://cincotuf.lan/pennylinux/BS#commit=6e917a20522fdf8e28aed1c743b9f23ff592899e
+	sha512sums = c21e1a05aa95487040d781fafc693fe0a5f04d5985a51227428517b615d858d6c8506b7cd237dbefcc79c891479802f6588ea7d576ef2c549669a9f7bb1d8351
+	b2sums = 815af40dce14175cb43579559ae9c81449462e22d8c282a3008038d8f3226e366f845f13d08d21f5d27a8cb5bc01e9dbe83286bcb9e1a7d9b9571b48533c03ba
 
 pkgname = perl-app-bs-git
