@@ -75,7 +75,7 @@ ADJUSTPARAMS($params) {
 sub pkgfile_glob ( $srcinfo, $pkgver ) {
     my $pkgver_str;
 
-    # BS::Common::dmsg( { srcinfo => $srcinfo, pkgver => $pkgver } );
+    BS::Common::dmsg( { srcinfo => $srcinfo, pkgver => $pkgver } );
 
     if ($pkgver) {
         if (
