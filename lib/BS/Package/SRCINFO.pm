@@ -238,11 +238,11 @@ method _init_json (%opts) {
     $_json;
 }
 
-method as_json (%opts) {
+method as_json ( $ashref = $self->as_href, %opts ) {
     $self->_init_json(%opts);
 
     # Consider ordering keys on demand?
-    $_json->encode( $self->as_href );
+    $_json->encode($ashref);
 }
 
 method as_toml {

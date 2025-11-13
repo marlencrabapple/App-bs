@@ -18,11 +18,14 @@ use Getopt::Long
 use Path::Tiny;
 use Const::Fast;
 use IPC::Run3;
+use List::Util 'first';
 use BS::Package::SRCINFO;
+
+const our $ENV_RE => qr/^(.*sh|env(?:vironment)?|export)$/;
 
 const our %OUTFMT => (
 
-    bash => 'srcinfo::bash'
+    $ENV_RE => 'srcinfo::bash'
     , # POSIX will probably be the only other in this category but I think that's basically just a .SRCINFO file without changes
     json => 'JSON::MaybeXS',
     toml => 'TOML::Tiny',
@@ -30,7 +33,7 @@ const our %OUTFMT => (
 );
 
 field $clispec : param;
-field $cliopt  : param(clidest) = {};
+field $cliopt  : param(clidest) : reader;
 field $argv    : param;
 
 field $infile = path( Cwd::abs_path(cwd) . '/.SRCINFO' );
@@ -39,16 +42,29 @@ field $infile = path( Cwd::abs_path(cwd) . '/.SRCINFO' );
 # more consistently?
 field $outfile { $infile unless %$cliopt{qw(readonly noop no-update)} };
 
-field $field;
-field $format       = { %OUTFMT{bash} };
+field $field = $$cliopt{field};
+field $format : reader = $$cliopt{format} // { %OUTFMT{$ENV_RE} };
+
 field $srcinfo_href = {};
 
 field $srcinfo : reader;
 
-# __PACKAGE__->new({ href => 'constructor' })
-# BUILDARGS {
-#
-# }
+ADJUSTPARAMS($params) {
+    if ( $$cliopt{format} ) {
+        if ( $$cliopt{format} =~ $ENV_RE ) {
+            $format = $OUTFMT{$ENV_RE};
+        }
+        elsif ( my $key = first { $format eq $_ } keys %OUTFMT ) {
+            $format = $OUTFMT{$key}
+
+            # Init serializer with settings
+        }
+        else {
+            Bs::Common::warn("Option --format=$$cliopt{format} is not valid");
+            $format = $OUTFMT{$ENV_RE};
+        }
+    }
+}
 
 ADJUSTPARAMS($params) {
     my @getoptspec = ();
@@ -114,27 +130,38 @@ method fname_wildcard_nover ( $pkgver = undef, $arch = undef )
     pkgfile_glob( $srcinfo_href, $pkgver );
 }
 
-method run : common ($argv, $clispec, $dest = {}, %opt) {
+method run : common ($argv, $clispec, $dest //= {}, %opt) {
     my $self = $class->new(
         clispec => $clispec,
         argv    => $argv,
-        cliopt  => $dest
+        clidest => $dest
     );
 
     BS::Common::dmsg(
         {
-
-            srcinfo => $self->srcinfo,
-
-            # '$self->srcinfo->as_href' => $self->srcinfo->as_href,
-
+            self    => $self,
             clispec => $clispec,
             argv    => $argv,
             cliopt  => $dest
         }
     );
 
-    say $self->srcinfo->as_json;
+    my $href = $self->srcinfo->as_href;
+
+    if ( my @field = $$dest{field}->@* ) {
+        %$href = $href->%{@field};
+    }
+
+    say $OUTFMT{ $self->format }->($href);
+
+    # if ( $self->cliopt->{format} eq 'json' ) {
+
+    # }
+    # elsif ( ( keys $self->format->%* )[0] =~ $ENV_RE ) {
+    #     foreach my ( $k, $v ) (%$href) {
+    #         say qq*eval "export $k="$v""*;
+    #     }
+    # }
 
     $self;
 }
@@ -153,18 +180,19 @@ use Path::Tiny qw( path );
 #         GetOptions( "library=s" => \@libfiles );
 #         @libfiles = split( /,/, join( ',', @libfiles ) );
 our @clispec = (
-    'fields|show-fields|out-fields|outfields|filter-fields|select-fields' =>
-      's',
-    'format'        => 's',
-    'pretty-print!' => 'f',
-    '<>'            => sub ( $self, $barearg ) {
+    'field|fields|out-fields|outfields|filter|select' => 's@',
+    'format|out-format|fmt|of|outfmt'                 => 's',
+    'pretty-print!'                                   => 'f',
+    '<>' => sub ( $self, $barearg ) {
         my $srcinfo =
           $self->load( path($barearg)->assert( sub { $_->exists } ) );
     }
 );
 
+our %cliopt = ( field => [] );
+
 sub run {
-    srcinfo::cli->run( \@ARGV, \@clispec );
+    srcinfo::cli->run( \@ARGV, \@clispec, \%cliopt );
 }
 
 run()

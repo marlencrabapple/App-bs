@@ -1,0 +1,2267 @@
+==> Building image from preset: /etc/mkinitcpio.d/linux.preset: 'default'
+==> Using configuration file: '/etc/mkinitcpio.conf'
+  -> -v -k /efi/EFI/arch/vmlinuz-linux -c /etc/mkinitcpio.conf -U /efi/EFI/arch/arch-linux.efi -g /efi/EFI/arch/initramfs-linux.img earlyprint=efi,keep lsm=landlock,lockdown,yama,integrity,apparmor,bpf pci=nommconf cryptdevice=UUID=f7dd1a11-b54e-4fec-a901-52f874cb1a46:root root=/dev/mapper/root rw nvidia_drm.modeset=1 zswap.enabled=0 debug
+==> Starting build: '6.15.7-arch1-2'
+  -> Running build hook: [/usr/lib/initcpio/install/base]
+    adding file: /bin/busybox
+    adding file: /usr/lib/libcrypt.so.2.0.0
+    adding symlink: /usr/lib/libcrypt.so.2 -> libcrypt.so.2.0.0
+    adding file: /usr/lib/libc.so.6
+    adding file: /usr/lib/ld-linux-x86-64.so.2
+    adding symlink: /usr/bin/[ -> busybox
+    adding symlink: /usr/bin/arch -> busybox
+    adding symlink: /usr/bin/ascii -> busybox
+    adding symlink: /usr/bin/ash -> busybox
+    adding symlink: /usr/bin/awk -> busybox
+    adding symlink: /usr/bin/base32 -> busybox
+    adding symlink: /usr/bin/base64 -> busybox
+    adding symlink: /usr/bin/basename -> busybox
+    adding symlink: /usr/bin/bc -> busybox
+    adding symlink: /usr/bin/blkdiscard -> busybox
+    adding symlink: /usr/bin/bzip2 -> busybox
+    adding symlink: /usr/bin/cat -> busybox
+    adding symlink: /usr/bin/chgrp -> busybox
+    adding symlink: /usr/bin/chmod -> busybox
+    adding symlink: /usr/bin/chown -> busybox
+    adding symlink: /usr/bin/chroot -> busybox
+    adding symlink: /usr/bin/clear -> busybox
+    adding symlink: /usr/bin/cp -> busybox
+    adding symlink: /usr/bin/cpio -> busybox
+    adding symlink: /usr/bin/crc32 -> busybox
+    adding symlink: /usr/bin/cttyhack -> busybox
+    adding symlink: /usr/bin/cut -> busybox
+    adding symlink: /usr/bin/dd -> busybox
+    adding symlink: /usr/bin/df -> busybox
+    adding symlink: /usr/bin/dirname -> busybox
+    adding symlink: /usr/bin/dmesg -> busybox
+    adding symlink: /usr/bin/du -> busybox
+    adding symlink: /usr/bin/echo -> busybox
+    adding symlink: /usr/bin/env -> busybox
+    adding symlink: /usr/bin/expr -> busybox
+    adding symlink: /usr/bin/fallocate -> busybox
+    adding symlink: /usr/bin/false -> busybox
+    adding symlink: /usr/bin/fatattr -> busybox
+    adding symlink: /usr/bin/free -> busybox
+    adding symlink: /usr/bin/fsfreeze -> busybox
+    adding symlink: /usr/bin/fstrim -> busybox
+    adding symlink: /usr/bin/fsync -> busybox
+    adding symlink: /usr/bin/getopt -> busybox
+    adding symlink: /usr/bin/grep -> busybox
+    adding symlink: /usr/bin/gzip -> busybox
+    adding symlink: /usr/bin/halt -> busybox
+    adding symlink: /usr/bin/head -> busybox
+    adding symlink: /usr/bin/hexdump -> busybox
+    adding symlink: /usr/bin/hexedit -> busybox
+    adding symlink: /usr/bin/i2ctransfer -> busybox
+    adding symlink: /usr/bin/ifconfig -> busybox
+    adding symlink: /usr/bin/init -> busybox
+    adding symlink: /usr/bin/install -> busybox
+    adding symlink: /usr/bin/ip -> busybox
+    adding symlink: /usr/bin/ipaddr -> busybox
+    adding symlink: /usr/bin/iplink -> busybox
+    adding symlink: /usr/bin/ipneigh -> busybox
+    adding symlink: /usr/bin/iproute -> busybox
+    adding symlink: /usr/bin/iprule -> busybox
+    adding symlink: /usr/bin/iptunnel -> busybox
+    adding symlink: /usr/bin/kbd_mode -> busybox
+    adding symlink: /usr/bin/kill -> busybox
+    adding symlink: /usr/bin/killall -> busybox
+    adding symlink: /usr/bin/less -> busybox
+    adding symlink: /usr/bin/link -> busybox
+    adding symlink: /usr/bin/ln -> busybox
+    adding symlink: /usr/bin/loadfont -> busybox
+    adding symlink: /usr/bin/loadkmap -> busybox
+    adding symlink: /usr/bin/losetup -> busybox
+    adding symlink: /usr/bin/ls -> busybox
+    adding symlink: /usr/bin/lsscsi -> busybox
+    adding symlink: /usr/bin/lzop -> busybox
+    adding symlink: /usr/bin/md5sum -> busybox
+    adding symlink: /usr/bin/mim -> busybox
+    adding symlink: /usr/bin/mkdir -> busybox
+    adding symlink: /usr/bin/mkfifo -> busybox
+    adding symlink: /usr/bin/mknod -> busybox
+    adding symlink: /usr/bin/mkpasswd -> busybox
+    adding symlink: /usr/bin/mktemp -> busybox
+    adding symlink: /usr/bin/mountpoint -> busybox
+    adding symlink: /usr/bin/mv -> busybox
+    adding symlink: /usr/bin/nc -> busybox
+    adding symlink: /usr/bin/netstat -> busybox
+    adding symlink: /usr/bin/nologin -> busybox
+    adding symlink: /usr/bin/nproc -> busybox
+    adding symlink: /usr/bin/nsenter -> busybox
+    adding symlink: /usr/bin/nslookup -> busybox
+    adding symlink: /usr/bin/nuke -> busybox
+    adding symlink: /usr/bin/openvt -> busybox
+    adding symlink: /usr/bin/partprobe -> busybox
+    adding symlink: /usr/bin/paste -> busybox
+    adding symlink: /usr/bin/pgrep -> busybox
+    adding symlink: /usr/bin/pidof -> busybox
+    adding symlink: /usr/bin/ping -> busybox
+    adding symlink: /usr/bin/ping6 -> busybox
+    adding symlink: /usr/bin/poweroff -> busybox
+    adding symlink: /usr/bin/printf -> busybox
+    adding symlink: /usr/bin/ps -> busybox
+    adding symlink: /usr/bin/pwd -> busybox
+    adding symlink: /usr/bin/readlink -> busybox
+    adding symlink: /usr/bin/realpath -> busybox
+    adding symlink: /usr/bin/reboot -> busybox
+    adding symlink: /usr/bin/resume -> busybox
+    adding symlink: /usr/bin/rm -> busybox
+    adding symlink: /usr/bin/rmdir -> busybox
+    adding symlink: /usr/bin/route -> busybox
+    adding symlink: /usr/bin/run-init -> busybox
+    adding symlink: /usr/bin/sed -> busybox
+    adding symlink: /usr/bin/seedrng -> busybox
+    adding symlink: /usr/bin/seq -> busybox
+    adding symlink: /usr/bin/setfattr -> busybox
+    adding symlink: /usr/bin/setfont -> busybox
+    adding symlink: /usr/bin/sh -> busybox
+    adding symlink: /usr/bin/sha1sum -> busybox
+    adding symlink: /usr/bin/sha256sum -> busybox
+    adding symlink: /usr/bin/sha512sum -> busybox
+    adding symlink: /usr/bin/shuf -> busybox
+    adding symlink: /usr/bin/sleep -> busybox
+    adding symlink: /usr/bin/sort -> busybox
+    adding symlink: /usr/bin/stat -> busybox
+    adding symlink: /usr/bin/strings -> busybox
+    adding symlink: /usr/bin/sync -> busybox
+    adding symlink: /usr/bin/tac -> busybox
+    adding symlink: /usr/bin/tail -> busybox
+    adding symlink: /usr/bin/tar -> busybox
+    adding symlink: /usr/bin/tcpsvd -> busybox
+    adding symlink: /usr/bin/tee -> busybox
+    adding symlink: /usr/bin/telnet -> busybox
+    adding symlink: /usr/bin/test -> busybox
+    adding symlink: /usr/bin/tftp -> busybox
+    adding symlink: /usr/bin/touch -> busybox
+    adding symlink: /usr/bin/tree -> busybox
+    adding symlink: /usr/bin/true -> busybox
+    adding symlink: /usr/bin/truncate -> busybox
+    adding symlink: /usr/bin/ts -> busybox
+    adding symlink: /usr/bin/tsort -> busybox
+    adding symlink: /usr/bin/udhcpc -> busybox
+    adding symlink: /usr/bin/udhcpc6 -> busybox
+    adding symlink: /usr/bin/umount -> busybox
+    adding symlink: /usr/bin/uname -> busybox
+    adding symlink: /usr/bin/uniq -> busybox
+    adding symlink: /usr/bin/unlink -> busybox
+    adding symlink: /usr/bin/unshare -> busybox
+    adding symlink: /usr/bin/unzip -> busybox
+    adding symlink: /usr/bin/uptime -> busybox
+    adding symlink: /usr/bin/vi -> busybox
+    adding symlink: /usr/bin/wc -> busybox
+    adding symlink: /usr/bin/wget -> busybox
+    adding symlink: /usr/bin/which -> busybox
+    adding symlink: /usr/bin/xxd -> busybox
+    adding symlink: /usr/bin/xz -> busybox
+    adding symlink: /usr/bin/yes -> busybox
+    adding file: /usr/bin/kmod
+    adding file: /usr/lib/libzstd.so.1.5.7
+    adding symlink: /usr/lib/libzstd.so.1 -> libzstd.so.1.5.7
+    adding file: /usr/lib/liblzma.so.5.8.1
+    adding symlink: /usr/lib/liblzma.so.5 -> liblzma.so.5.8.1
+    adding file: /usr/lib/libz.so.1.3.1
+    adding symlink: /usr/lib/libz.so.1 -> libz.so.1.3.1
+    adding file: /usr/lib/libcrypto.so.3
+    adding file: /usr/lib/libgcc_s.so.1
+    adding symlink: /usr/bin/depmod -> kmod
+    adding symlink: /usr/bin/insmod -> kmod
+    adding symlink: /usr/bin/rmmod -> kmod
+    adding symlink: /usr/bin/lsmod -> kmod
+    adding symlink: /usr/bin/modprobe -> kmod
+    adding symlink: /usr/bin/modinfo -> kmod
+    adding file: /usr/bin/blkid
+    adding file: /usr/lib/libblkid.so.1.1.0
+    adding symlink: /usr/lib/libblkid.so.1 -> libblkid.so.1.1.0
+    adding file: /usr/bin/mount
+    adding file: /usr/lib/libmount.so.1.1.0
+    adding symlink: /usr/lib/libmount.so.1 -> libmount.so.1.1.0
+    overwriting file: /usr/bin/umount
+    adding file: /usr/bin/switch_root
+    adding file: /init_functions
+    adding file: /init
+  -> Running build hook: [/usr/lib/initcpio/install/udev]
+    adding file: /usr/bin/udevadm
+    adding dir: /usr/lib/systemd
+    adding symlink: /usr/lib/systemd/systemd-udevd -> /usr/bin/udevadm
+    adding file: /usr/lib/systemd/libsystemd-shared-257.7-5.so
+    adding file: /usr/lib/libacl.so.1.1.2302
+    adding symlink: /usr/lib/libacl.so.1 -> libacl.so.1.1.2302
+    adding file: /usr/lib/libcap.so.2.76
+    adding symlink: /usr/lib/libcap.so.2 -> libcap.so.2.76
+    adding file: /usr/lib/libpam.so.0.85.1
+    adding symlink: /usr/lib/libpam.so.0 -> libpam.so.0.85.1
+    adding file: /usr/lib/libseccomp.so.2.5.6
+    adding symlink: /usr/lib/libseccomp.so.2 -> libseccomp.so.2.5.6
+    adding file: /usr/lib/libm.so.6
+    adding file: /usr/lib/libaudit.so.1.0.0
+    adding symlink: /usr/lib/libaudit.so.1 -> libaudit.so.1.0.0
+    adding file: /usr/lib/libcap-ng.so.0.0.0
+    adding symlink: /usr/lib/libcap-ng.so.0 -> libcap-ng.so.0.0.0
+    overwriting file: /usr/bin/udevadm
+    adding file: /usr/bin/systemd-tmpfiles
+    adding dir: /usr/lib/udev
+    adding file: /usr/lib/udev/ata_id
+    adding file: /usr/lib/udev/scsi_id
+    adding file: /usr/lib/libkmod.so.2.5.1
+    adding symlink: /usr/lib/libkmod.so.2 -> libkmod.so.2.5.1
+    adding dir: /usr/lib/udev/rules.d
+    adding file: /usr/lib/udev/rules.d/50-udev-default.rules
+    adding file: /usr/lib/udev/rules.d/60-persistent-storage.rules
+    overwriting file: /usr/lib/udev/ata_id
+    overwriting file: /usr/lib/udev/ata_id
+    overwriting file: /usr/lib/udev/ata_id
+    overwriting file: /usr/lib/udev/scsi_id
+    overwriting file: /usr/lib/udev/scsi_id
+    adding file: /usr/lib/udev/rules.d/64-btrfs.rules
+    overwriting file: /usr/bin/udevadm
+    adding file: /usr/lib/udev/rules.d/80-drivers.rules
+    adding file: /hooks/udev
+  -> Running build hook: [/usr/lib/initcpio/install/encrypt]
+    adding module: dm-crypt (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-crypt.ko.zst)
+    adding module: dm-mod (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-mod.ko.zst)
+    adding module: trusted (/lib/modules/6.15.7-arch1-2/kernel/security/keys/trusted-keys/trusted.ko.zst)
+    adding module: tee (/lib/modules/6.15.7-arch1-2/kernel/drivers/tee/tee.ko.zst)
+    adding module: asn1_encoder (/lib/modules/6.15.7-arch1-2/kernel/lib/asn1_encoder.ko.zst)
+    adding module: encrypted-keys (/lib/modules/6.15.7-arch1-2/kernel/security/keys/encrypted-keys/encrypted-keys.ko.zst)
+    adding module: dm-integrity (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-integrity.ko.zst)
+    adding module: dm-bufio (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-bufio.ko.zst)
+    adding module: async_xor (/lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/async_xor.ko.zst)
+    adding module: async_tx (/lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/async_tx.ko.zst)
+    adding module: sm3 (/lib/modules/6.15.7-arch1-2/kernel/crypto/sm3.ko.zst)
+    adding module: des_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/des_generic.ko.zst)
+    adding module: libdes (/lib/modules/6.15.7-arch1-2/kernel/lib/crypto/libdes.ko.zst)
+    adding module: wp512 (/lib/modules/6.15.7-arch1-2/kernel/crypto/wp512.ko.zst)
+    adding module: pkcs8_key_parser (/lib/modules/6.15.7-arch1-2/kernel/crypto/asymmetric_keys/pkcs8_key_parser.ko.zst)
+    adding module: aria_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/aria_generic.ko.zst)
+    adding module: chacha_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/chacha_generic.ko.zst)
+    adding module: md4 (/lib/modules/6.15.7-arch1-2/kernel/crypto/md4.ko.zst)
+    adding module: michael_mic (/lib/modules/6.15.7-arch1-2/kernel/crypto/michael_mic.ko.zst)
+    adding module: krb5 (/lib/modules/6.15.7-arch1-2/kernel/crypto/krb5/krb5.ko.zst)
+    adding module: aegis128 (/lib/modules/6.15.7-arch1-2/kernel/crypto/aegis128.ko.zst)
+    adding module: crypto_simd (/lib/modules/6.15.7-arch1-2/kernel/crypto/crypto_simd.ko.zst)
+    adding module: cryptd (/lib/modules/6.15.7-arch1-2/kernel/crypto/cryptd.ko.zst)
+    adding module: streebog_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/streebog_generic.ko.zst)
+    adding module: sm4_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/sm4_generic.ko.zst)
+    adding module: sm4 (/lib/modules/6.15.7-arch1-2/kernel/crypto/sm4.ko.zst)
+    adding module: poly1305_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/poly1305_generic.ko.zst)
+    adding module: krb5enc (/lib/modules/6.15.7-arch1-2/kernel/crypto/krb5enc.ko.zst)
+    adding module: cast6_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/cast6_generic.ko.zst)
+    adding module: cast_common (/lib/modules/6.15.7-arch1-2/kernel/crypto/cast_common.ko.zst)
+    adding module: serpent_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/serpent_generic.ko.zst)
+    adding module: ecrdsa_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/ecrdsa_generic.ko.zst)
+    adding module: af_alg (/lib/modules/6.15.7-arch1-2/kernel/crypto/af_alg.ko.zst)
+    adding module: cmac (/lib/modules/6.15.7-arch1-2/kernel/crypto/cmac.ko.zst)
+    adding module: curve25519-generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/curve25519-generic.ko.zst)
+    adding module: libcurve25519-generic (/lib/modules/6.15.7-arch1-2/kernel/lib/crypto/libcurve25519-generic.ko.zst)
+    adding module: fcrypt (/lib/modules/6.15.7-arch1-2/kernel/crypto/fcrypt.ko.zst)
+    adding module: xcbc (/lib/modules/6.15.7-arch1-2/kernel/crypto/xcbc.ko.zst)
+    adding module: essiv (/lib/modules/6.15.7-arch1-2/kernel/crypto/essiv.ko.zst)
+    adding module: authenc (/lib/modules/6.15.7-arch1-2/kernel/crypto/authenc.ko.zst)
+    adding module: crypto_null (/lib/modules/6.15.7-arch1-2/kernel/crypto/crypto_null.ko.zst)
+    adding module: sm3_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/sm3_generic.ko.zst)
+    adding module: deflate (/lib/modules/6.15.7-arch1-2/kernel/crypto/deflate.ko.zst)
+    adding module: seqiv (/lib/modules/6.15.7-arch1-2/kernel/crypto/seqiv.ko.zst)
+    adding module: geniv (/lib/modules/6.15.7-arch1-2/kernel/crypto/geniv.ko.zst)
+    adding module: ansi_cprng (/lib/modules/6.15.7-arch1-2/kernel/crypto/ansi_cprng.ko.zst)
+    adding module: chacha20poly1305 (/lib/modules/6.15.7-arch1-2/kernel/crypto/chacha20poly1305.ko.zst)
+    adding module: camellia_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/camellia_generic.ko.zst)
+    adding module: nhpoly1305 (/lib/modules/6.15.7-arch1-2/kernel/crypto/nhpoly1305.ko.zst)
+    adding module: authencesn (/lib/modules/6.15.7-arch1-2/kernel/crypto/authencesn.ko.zst)
+    adding module: blowfish_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/blowfish_generic.ko.zst)
+    adding module: blowfish_common (/lib/modules/6.15.7-arch1-2/kernel/crypto/blowfish_common.ko.zst)
+    adding module: pcbc (/lib/modules/6.15.7-arch1-2/kernel/crypto/pcbc.ko.zst)
+    adding module: hctr2 (/lib/modules/6.15.7-arch1-2/kernel/crypto/hctr2.ko.zst)
+    adding module: twofish_common (/lib/modules/6.15.7-arch1-2/kernel/crypto/twofish_common.ko.zst)
+    adding module: lz4hc (/lib/modules/6.15.7-arch1-2/kernel/crypto/lz4hc.ko.zst)
+    adding module: lz4hc_compress (/lib/modules/6.15.7-arch1-2/kernel/lib/lz4/lz4hc_compress.ko.zst)
+    adding module: async_memcpy (/lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/async_memcpy.ko.zst)
+    adding module: raid6test (/lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/raid6test.ko.zst)
+    adding module: async_pq (/lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/async_pq.ko.zst)
+    adding module: async_raid6_recov (/lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/async_raid6_recov.ko.zst)
+    adding module: lz4 (/lib/modules/6.15.7-arch1-2/kernel/crypto/lz4.ko.zst)
+    adding module: lz4_compress (/lib/modules/6.15.7-arch1-2/kernel/lib/lz4/lz4_compress.ko.zst)
+    adding module: tcrypt (/lib/modules/6.15.7-arch1-2/kernel/crypto/tcrypt.ko.zst)
+    adding module: cast5_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/cast5_generic.ko.zst)
+    adding module: polyval-generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/polyval-generic.ko.zst)
+    adding module: ccm (/lib/modules/6.15.7-arch1-2/kernel/crypto/ccm.ko.zst)
+    adding module: rmd160 (/lib/modules/6.15.7-arch1-2/kernel/crypto/rmd160.ko.zst)
+    adding module: algif_rng (/lib/modules/6.15.7-arch1-2/kernel/crypto/algif_rng.ko.zst)
+    adding module: lrw (/lib/modules/6.15.7-arch1-2/kernel/crypto/lrw.ko.zst)
+    adding module: crypto_user (/lib/modules/6.15.7-arch1-2/kernel/crypto/crypto_user.ko.zst)
+    adding module: algif_skcipher (/lib/modules/6.15.7-arch1-2/kernel/crypto/algif_skcipher.ko.zst)
+    adding module: 842 (/lib/modules/6.15.7-arch1-2/kernel/crypto/842.ko.zst)
+    adding module: 842_decompress (/lib/modules/6.15.7-arch1-2/kernel/lib/842/842_decompress.ko.zst)
+    adding module: 842_compress (/lib/modules/6.15.7-arch1-2/kernel/lib/842/842_compress.ko.zst)
+    adding module: pcrypt (/lib/modules/6.15.7-arch1-2/kernel/crypto/pcrypt.ko.zst)
+    adding module: crypto_engine (/lib/modules/6.15.7-arch1-2/kernel/crypto/crypto_engine.ko.zst)
+    adding module: twofish_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/twofish_generic.ko.zst)
+    adding module: echainiv (/lib/modules/6.15.7-arch1-2/kernel/crypto/echainiv.ko.zst)
+    adding module: xctr (/lib/modules/6.15.7-arch1-2/kernel/crypto/xctr.ko.zst)
+    adding module: aes_ti (/lib/modules/6.15.7-arch1-2/kernel/crypto/aes_ti.ko.zst)
+    adding module: gcm (/lib/modules/6.15.7-arch1-2/kernel/crypto/gcm.ko.zst)
+    adding module: adiantum (/lib/modules/6.15.7-arch1-2/kernel/crypto/adiantum.ko.zst)
+    adding module: crc32_generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/crc32_generic.ko.zst)
+    adding module: ghash-generic (/lib/modules/6.15.7-arch1-2/kernel/crypto/ghash-generic.ko.zst)
+    adding module: algif_aead (/lib/modules/6.15.7-arch1-2/kernel/crypto/algif_aead.ko.zst)
+    adding module: algif_hash (/lib/modules/6.15.7-arch1-2/kernel/crypto/algif_hash.ko.zst)
+    adding module: ccp (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/ccp/ccp.ko.zst)
+    adding dir: /usr/lib/firmware/amd
+    adding file: /usr/lib/firmware/amd/amd_sev_fam19h_model1xh.sbin.zst
+    adding file: /usr/lib/firmware/amd/amd_sev_fam19h_model0xh.sbin.zst
+    adding file: /usr/lib/firmware/amd/amd_sev_fam17h_model3xh.sbin.zst
+    adding file: /usr/lib/firmware/amd/amd_sev_fam17h_model0xh.sbin.zst
+    adding module: ccp-crypto (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/ccp/ccp-crypto.ko.zst)
+    adding module: chcr (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/chelsio/chcr.ko.zst)
+    adding module: cxgb4 (/lib/modules/6.15.7-arch1-2/kernel/drivers/net/ethernet/chelsio/cxgb4/cxgb4.ko.zst)
+    adding module: ptp (/lib/modules/6.15.7-arch1-2/kernel/drivers/ptp/ptp.ko.zst)
+    adding module: pps_core (/lib/modules/6.15.7-arch1-2/kernel/drivers/pps/pps_core.ko.zst)
+    adding module: tls (/lib/modules/6.15.7-arch1-2/kernel/net/tls/tls.ko.zst)
+    adding dir: /usr/lib/firmware/cxgb4
+    adding file: /usr/lib/firmware/cxgb4/t6fw-1.27.5.0.bin.zst
+    adding symlink: /usr/lib/firmware/cxgb4/t6fw.bin.zst -> t6fw-1.27.5.0.bin.zst
+    adding file: /usr/lib/firmware/cxgb4/t5fw-1.27.5.0.bin.zst
+    adding symlink: /usr/lib/firmware/cxgb4/t5fw.bin.zst -> t5fw-1.27.5.0.bin.zst
+    adding file: /usr/lib/firmware/cxgb4/t4fw-1.27.5.0.bin.zst
+    adding symlink: /usr/lib/firmware/cxgb4/t4fw.bin.zst -> t4fw-1.27.5.0.bin.zst
+    adding module: qat_420xx (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_420xx/qat_420xx.ko.zst)
+    adding module: intel_qat (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_common/intel_qat.ko.zst)
+    adding module: crc8 (/lib/modules/6.15.7-arch1-2/kernel/lib/crc8.ko.zst)
+    adding file: /usr/lib/firmware/qat_420xx_mmp.bin.zst
+    adding file: /usr/lib/firmware/qat_420xx.bin.zst
+    adding module: qat_c62x (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c62x/qat_c62x.ko.zst)
+    adding file: /usr/lib/firmware/qat_c62x_mmp.bin.zst
+    adding file: /usr/lib/firmware/qat_c62x.bin.zst
+    adding module: qat_c3xxx (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c3xxx/qat_c3xxx.ko.zst)
+    adding file: /usr/lib/firmware/qat_c3xxx_mmp.bin.zst
+    adding file: /usr/lib/firmware/qat_c3xxx.bin.zst
+    adding module: qat_4xxx (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_4xxx/qat_4xxx.ko.zst)
+    adding module: intel_qat (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_common/intel_qat.ko.zst)
+    adding file: /usr/lib/firmware/qat_402xx_mmp.bin.zst
+    adding file: /usr/lib/firmware/qat_4xxx_mmp.bin.zst
+    adding file: /usr/lib/firmware/qat_402xx.bin.zst
+    adding file: /usr/lib/firmware/qat_4xxx.bin.zst
+    adding module: qat_dh895xccvf (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_dh895xccvf/qat_dh895xccvf.ko.zst)
+    adding module: qat_c62xvf (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c62xvf/qat_c62xvf.ko.zst)
+    adding module: qat_dh895xcc (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_dh895xcc/qat_dh895xcc.ko.zst)
+    adding file: /usr/lib/firmware/qat_895xcc_mmp.bin.zst
+    adding file: /usr/lib/firmware/qat_895xcc.bin.zst
+    adding module: qat_c3xxxvf (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c3xxxvf/qat_c3xxxvf.ko.zst)
+    adding module: iaa_crypto (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/iaa/iaa_crypto.ko.zst)
+    adding module: idxd (/lib/modules/6.15.7-arch1-2/kernel/drivers/dma/idxd/idxd.ko.zst)
+    adding module: idxd_bus (/lib/modules/6.15.7-arch1-2/kernel/drivers/dma/idxd/idxd_bus.ko.zst)
+    adding module: atmel-sha204a (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/atmel-sha204a.ko.zst)
+    adding module: atmel-i2c (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/atmel-i2c.ko.zst)
+    adding module: atmel-ecc (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/atmel-ecc.ko.zst)
+    adding module: virtio_crypto (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/virtio/virtio_crypto.ko.zst)
+    adding module: amlogic-gxl-crypto (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/amlogic/amlogic-gxl-crypto.ko.zst)
+    adding module: n5pf (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/cavium/nitrox/n5pf.ko.zst)
+    adding dir: /usr/lib/firmware/cavium
+    adding file: /usr/lib/firmware/cavium/cnn55xx_se.fw.zst
+    adding module: crypto_safexcel (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/inside-secure/crypto_safexcel.ko.zst)
+    adding dir: /usr/lib/firmware/inside-secure/eip197_minifw
+    adding file: /usr/lib/firmware/inside-secure/eip197_minifw/ipue.bin.zst
+    adding file: /usr/lib/firmware/inside-secure/eip197_minifw/ifpp.bin.zst
+    adding module: padlock-aes (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/padlock-aes.ko.zst)
+    adding module: padlock-sha (/lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/padlock-sha.ko.zst)
+    adding module: libarc4 (/lib/modules/6.15.7-arch1-2/kernel/lib/crypto/libarc4.ko.zst)
+    adding module: libcurve25519 (/lib/modules/6.15.7-arch1-2/kernel/lib/crypto/libcurve25519.ko.zst)
+    adding module: camellia-aesni-avx2 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/camellia-aesni-avx2.ko.zst)
+    adding module: camellia-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/camellia-x86_64.ko.zst)
+    adding module: camellia-aesni-avx-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/camellia-aesni-avx-x86_64.ko.zst)
+    adding module: cast5-avx-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/cast5-avx-x86_64.ko.zst)
+    adding module: sm4-aesni-avx2-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sm4-aesni-avx2-x86_64.ko.zst)
+    adding module: sm4-aesni-avx-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sm4-aesni-avx-x86_64.ko.zst)
+    adding module: nhpoly1305-avx2 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/nhpoly1305-avx2.ko.zst)
+    adding module: aria-gfni-avx512-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/aria-gfni-avx512-x86_64.ko.zst)
+    adding module: aria-aesni-avx2-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/aria-aesni-avx2-x86_64.ko.zst)
+    adding module: aria-aesni-avx-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/aria-aesni-avx-x86_64.ko.zst)
+    adding module: aegis128-aesni (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/aegis128-aesni.ko.zst)
+    adding module: sm3-avx-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sm3-avx-x86_64.ko.zst)
+    adding module: sha1-ssse3 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sha1-ssse3.ko.zst)
+    adding module: sha512-ssse3 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sha512-ssse3.ko.zst)
+    adding module: twofish-x86_64-3way (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/twofish-x86_64-3way.ko.zst)
+    adding module: twofish-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/twofish-x86_64.ko.zst)
+    adding module: aesni-intel (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/aesni-intel.ko.zst)
+    adding module: blowfish-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/blowfish-x86_64.ko.zst)
+    adding module: sha256-ssse3 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sha256-ssse3.ko.zst)
+    adding module: des3_ede-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/des3_ede-x86_64.ko.zst)
+    adding module: nhpoly1305-sse2 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/nhpoly1305-sse2.ko.zst)
+    adding module: twofish-avx-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/twofish-avx-x86_64.ko.zst)
+    adding module: serpent-avx-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/serpent-avx-x86_64.ko.zst)
+    adding module: curve25519-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/curve25519-x86_64.ko.zst)
+    adding module: cast6-avx-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/cast6-avx-x86_64.ko.zst)
+    adding module: serpent-sse2-x86_64 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/serpent-sse2-x86_64.ko.zst)
+    adding module: serpent-avx2 (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/serpent-avx2.ko.zst)
+    adding module: ghash-clmulni-intel (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/ghash-clmulni-intel.ko.zst)
+    adding module: polyval-clmulni (/lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/polyval-clmulni.ko.zst)
+    adding file: /usr/bin/cryptsetup
+    adding file: /usr/lib/libcryptsetup.so.12.11.0
+    adding symlink: /usr/lib/libcryptsetup.so.12 -> libcryptsetup.so.12.11.0
+    adding file: /usr/lib/libpopt.so.0.0.2
+    adding symlink: /usr/lib/libpopt.so.0 -> libpopt.so.0.0.2
+    adding file: /usr/lib/libuuid.so.1.3.0
+    adding symlink: /usr/lib/libuuid.so.1 -> libuuid.so.1.3.0
+    adding file: /usr/lib/libdevmapper.so.1.02
+    adding file: /usr/lib/libjson-c.so.5.4.0
+    adding symlink: /usr/lib/libjson-c.so.5 -> libjson-c.so.5.4.0
+    adding file: /usr/lib/libudev.so.1.7.10
+    adding symlink: /usr/lib/libudev.so.1 -> libudev.so.1.7.10
+    adding file: /usr/lib/udev/rules.d/10-dm.rules
+    adding file: /usr/bin/dmsetup
+    overwriting file: /usr/bin/dmsetup
+    overwriting file: /usr/bin/dmsetup
+    adding file: /usr/lib/udev/rules.d/13-dm-disk.rules
+    adding file: /usr/lib/udev/rules.d/95-dm-notify.rules
+    overwriting file: /usr/bin/dmsetup
+    adding file: /usr/lib/udev/rules.d/11-dm-initramfs.rules
+    overwriting file: /usr/lib/libgcc_s.so.1
+    adding dir: /usr/lib/ossl-modules
+    adding file: /usr/lib/ossl-modules/legacy.so
+    adding file: /hooks/encrypt
+  -> Running build hook: [/usr/lib/initcpio/install/autodetect]
+    caching 64 modules
+  -> Running build hook: [/usr/lib/initcpio/install/modconf]
+    adding dir: /etc/modprobe.d
+    adding file: /etc/modprobe.d/disable-sp5100-watchdog.conf
+    adding file: /etc/modprobe.d/firewalld-sysctls.conf
+    adding file: /etc/modprobe.d/kvm_amd.conf
+    adding file: /etc/modprobe.d/mlx4.conf
+    adding file: /etc/modprobe.d/nowebcam.conf
+    adding file: /etc/modprobe.d/radeon.conf
+    adding file: /etc/modprobe.d/supergfxd.conf
+    adding file: /etc/modprobe.d/truescale.conf
+    adding dir: /usr/lib/modprobe.d
+    adding file: /usr/lib/modprobe.d/bluetooth-usb.conf
+    adding file: /usr/lib/modprobe.d/libmlx4.conf
+    adding file: /usr/lib/modprobe.d/nvdimm-security.conf
+    adding file: /usr/lib/modprobe.d/nvidia-sleep.conf
+    adding file: /usr/lib/modprobe.d/nvidia-utils.conf
+    adding file: /usr/lib/modprobe.d/systemd.conf
+  -> Running build hook: [/usr/lib/initcpio/install/microcode]
+    adding microcode file: '/usr/lib/firmware/amd-ucode/microcode_amd_fam19h.bin'
+    adding file: /kernel/x86/microcode/AuthenticAMD.bin
+  -> Running build hook: [/usr/lib/initcpio/install/keyboard]
+    adding module: hid-multitouch (/lib/modules/6.15.7-arch1-2/kernel/drivers/hid/hid-multitouch.ko.zst)
+    adding module: serio_raw (/lib/modules/6.15.7-arch1-2/kernel/drivers/input/serio/serio_raw.ko.zst)
+  -> Running build hook: [/usr/lib/initcpio/install/keymap]
+    adding file: /keymap.utf8
+    adding file: /keymap.bin
+    adding file: /hooks/keymap
+  -> Running build hook: [/usr/lib/initcpio/install/consolefont]
+    overwriting file: /usr/bin/setfont
+==> WARNING: consolefont: no font found in configuration
+  -> Running build hook: [/usr/lib/initcpio/install/block]
+    adding module: usb-storage (/lib/modules/6.15.7-arch1-2/kernel/drivers/usb/storage/usb-storage.ko.zst)
+    adding module: uas (/lib/modules/6.15.7-arch1-2/kernel/drivers/usb/storage/uas.ko.zst)
+    adding module: mmc_block (/lib/modules/6.15.7-arch1-2/kernel/drivers/mmc/core/mmc_block.ko.zst)
+    adding module: mmc_core (/lib/modules/6.15.7-arch1-2/kernel/drivers/mmc/core/mmc_core.ko.zst)
+    adding module: rpmb-core (/lib/modules/6.15.7-arch1-2/kernel/drivers/misc/rpmb-core.ko.zst)
+    adding module: nvme (/lib/modules/6.15.7-arch1-2/kernel/drivers/nvme/host/nvme.ko.zst)
+    adding module: nvme-core (/lib/modules/6.15.7-arch1-2/kernel/drivers/nvme/host/nvme-core.ko.zst)
+    adding module: nvme-auth (/lib/modules/6.15.7-arch1-2/kernel/drivers/nvme/common/nvme-auth.ko.zst)
+    adding module: nvme-keyring (/lib/modules/6.15.7-arch1-2/kernel/drivers/nvme/common/nvme-keyring.ko.zst)
+    adding module: virtio_scsi (/lib/modules/6.15.7-arch1-2/kernel/drivers/scsi/virtio_scsi.ko.zst)
+  -> Running build hook: [/usr/lib/initcpio/install/mdadm_udev]
+    adding file: /usr/lib/udev/rules.d/63-md-raid-arrays.rules
+    adding file: /usr/bin/mdadm
+    adding file: /usr/lib/udev/rules.d/64-md-raid-assembly.rules
+    overwriting file: /usr/bin/mdadm
+    overwriting file: /usr/bin/mdadm
+    overwriting file: /usr/bin/mdadm
+    adding file: /usr/bin/mdmon
+  -> Running build hook: [/usr/lib/initcpio/install/lvm2]
+    adding module: dm-snapshot (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-snapshot.ko.zst)
+    adding module: dm-mirror (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-mirror.ko.zst)
+    adding module: dm-region-hash (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-region-hash.ko.zst)
+    adding module: dm-log (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-log.ko.zst)
+    adding module: dm-cache (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-cache.ko.zst)
+    adding module: dm-persistent-data (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/persistent-data/dm-persistent-data.ko.zst)
+    adding module: dm-bio-prison (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-bio-prison.ko.zst)
+    adding module: dm-cache-smq (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-cache-smq.ko.zst)
+    adding module: dm-writecache (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-writecache.ko.zst)
+    adding module: dm-thin-pool (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-thin-pool.ko.zst)
+    adding module: dm-raid (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-raid.ko.zst)
+    adding module: md-mod (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/md-mod.ko.zst)
+    adding module: raid456 (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/raid456.ko.zst)
+    adding module: raid0 (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/raid0.ko.zst)
+    adding module: raid1 (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/raid1.ko.zst)
+    adding module: raid10 (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/raid10.ko.zst)
+    adding module: dm-vdo (/lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-vdo/dm-vdo.ko.zst)
+    adding file: /usr/bin/pdata_tools
+    adding symlink: /usr/bin/cache_check -> pdata_tools
+    adding symlink: /usr/bin/cache_dump -> pdata_tools
+    adding symlink: /usr/bin/cache_metadata_size -> pdata_tools
+    adding symlink: /usr/bin/cache_repair -> pdata_tools
+    adding symlink: /usr/bin/cache_restore -> pdata_tools
+    adding symlink: /usr/bin/cache_writeback -> pdata_tools
+    adding symlink: /usr/bin/era_check -> pdata_tools
+    adding symlink: /usr/bin/era_dump -> pdata_tools
+    adding symlink: /usr/bin/era_invalidate -> pdata_tools
+    adding symlink: /usr/bin/era_restore -> pdata_tools
+    adding symlink: /usr/bin/thin_check -> pdata_tools
+    adding symlink: /usr/bin/thin_delta -> pdata_tools
+    adding symlink: /usr/bin/thin_dump -> pdata_tools
+    adding symlink: /usr/bin/thin_ls -> pdata_tools
+    adding symlink: /usr/bin/thin_metadata_pack -> pdata_tools
+    adding symlink: /usr/bin/thin_metadata_size -> pdata_tools
+    adding symlink: /usr/bin/thin_metadata_unpack -> pdata_tools
+    adding symlink: /usr/bin/thin_migrate -> pdata_tools
+    adding symlink: /usr/bin/thin_repair -> pdata_tools
+    adding symlink: /usr/bin/thin_restore -> pdata_tools
+    adding symlink: /usr/bin/thin_rmap -> pdata_tools
+    adding symlink: /usr/bin/thin_trim -> pdata_tools
+    overwriting file: /usr/lib/udev/rules.d/10-dm.rules
+    overwriting file: /usr/bin/dmsetup
+    overwriting file: /usr/bin/dmsetup
+    overwriting file: /usr/bin/dmsetup
+    adding file: /usr/lib/udev/rules.d/11-dm-lvm.rules
+    overwriting file: /usr/bin/dmsetup
+    overwriting file: /usr/lib/udev/rules.d/13-dm-disk.rules
+    overwriting file: /usr/lib/udev/rules.d/95-dm-notify.rules
+    overwriting file: /usr/bin/dmsetup
+    overwriting file: /usr/lib/udev/rules.d/11-dm-initramfs.rules
+    adding file: /usr/lib/udev/rules.d/69-dm-lvm.rules
+    adding file: /usr/bin/lvm
+    adding file: /usr/lib/libdevmapper-event.so.1.02
+    adding file: /usr/lib/libreadline.so.8.3
+    adding symlink: /usr/lib/libreadline.so.8 -> libreadline.so.8.3
+    adding file: /usr/lib/libsystemd.so.0.40.0
+    adding symlink: /usr/lib/libsystemd.so.0 -> libsystemd.so.0.40.0
+    adding file: /usr/lib/libaio.so.1.0.2
+    adding symlink: /usr/lib/libaio.so.1 -> libaio.so.1.0.2
+    adding file: /usr/lib/libncursesw.so.6.5
+    adding symlink: /usr/lib/libncursesw.so.6 -> libncursesw.so.6.5
+    adding file: /etc/lvm/lvm.conf
+  -> Running build hook: [/usr/lib/initcpio/install/filesystems]
+  -> Running build hook: [/usr/lib/initcpio/install/fsck]
+    adding file: /usr/bin/e2fsck
+    adding file: /usr/lib/libext2fs.so.2.4
+    adding symlink: /usr/lib/libext2fs.so.2 -> libext2fs.so.2.4
+    adding file: /usr/lib/libcom_err.so.2.1
+    adding symlink: /usr/lib/libcom_err.so.2 -> libcom_err.so.2.1
+    adding file: /usr/lib/libe2p.so.2.3
+    adding symlink: /usr/lib/libe2p.so.2 -> libe2p.so.2.3
+    adding symlink: /usr/bin/fsck.ext2 -> e2fsck
+    adding symlink: /usr/bin/fsck.ext3 -> e2fsck
+    adding symlink: /usr/bin/fsck.ext4 -> e2fsck
+    adding file: /usr/bin/fsck
+    adding module: amdgpu (/lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko.zst)
+    adding module: gpu-sched (/lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/scheduler/gpu-sched.ko.zst)
+    adding module: ttm (/lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/ttm/ttm.ko.zst)
+    adding module: drm_display_helper (/lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/display/drm_display_helper.ko.zst)
+    adding module: cec (/lib/modules/6.15.7-arch1-2/kernel/drivers/media/cec/core/cec.ko.zst)
+    adding module: drm_buddy (/lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/drm_buddy.ko.zst)
+    adding module: amdxcp (/lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/amd/amdxcp/amdxcp.ko.zst)
+    adding module: drm_suballoc_helper (/lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/drm_suballoc_helper.ko.zst)
+    adding module: drm_exec (/lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/drm_exec.ko.zst)
+    adding module: video (/lib/modules/6.15.7-arch1-2/kernel/drivers/acpi/video.ko.zst)
+    adding module: wmi (/lib/modules/6.15.7-arch1-2/kernel/drivers/platform/x86/wmi.ko.zst)
+    adding module: drm_panel_backlight_quirks (/lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/drm_panel_backlight_quirks.ko.zst)
+    adding module: drm_ttm_helper (/lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/drm_ttm_helper.ko.zst)
+    adding module: i2c-algo-bit (/lib/modules/6.15.7-arch1-2/kernel/drivers/i2c/algos/i2c-algo-bit.ko.zst)
+    adding dir: /usr/lib/firmware/amdgpu
+    adding file: /usr/lib/firmware/amdgpu/navi12_gpu_info.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/arcturus_gpu_info.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven2_gpu_info.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_gpu_info.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/picasso_gpu_info.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven_gpu_info.bin.zst -> picasso_gpu_info.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_gpu_info.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_gpu_info.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/aldebaran_ip_discovery.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/arcturus_ip_discovery.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_ip_discovery.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven2_ip_discovery.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/picasso_ip_discovery.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven_ip_discovery.bin.zst -> picasso_ip_discovery.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_ip_discovery.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_ip_discovery.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_ip_discovery.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/kabini_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/mullins_mec.bin.zst -> kabini_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/mullins_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/kabini_ce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/mullins_ce.bin.zst -> kabini_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/kabini_me.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/mullins_me.bin.zst -> kabini_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/kabini_pfp.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/mullins_pfp.bin.zst -> kabini_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/kabini_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/kaveri_mec2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/kaveri_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/kaveri_rlc.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/kabini_ce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/kaveri_ce.bin.zst -> kabini_ce.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/kabini_me.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/kaveri_me.bin.zst -> kabini_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/kaveri_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hawaii_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hawaii_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hawaii_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hawaii_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hawaii_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_sdma1.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/mullins_sdma1.bin.zst -> bonaire_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_sdma.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/mullins_sdma.bin.zst -> bonaire_sdma.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_sdma1.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/kabini_sdma1.bin.zst -> bonaire_sdma1.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_sdma.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/kabini_sdma.bin.zst -> bonaire_sdma.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_sdma1.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/kaveri_sdma1.bin.zst -> bonaire_sdma1.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_sdma.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/kaveri_sdma.bin.zst -> bonaire_sdma.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_sdma1.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/hawaii_sdma1.bin.zst -> bonaire_sdma1.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_sdma.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/hawaii_sdma.bin.zst -> bonaire_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/si58_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hainan_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/oland_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/verde_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/pitcairn_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tahiti_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hainan_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hainan_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hainan_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hainan_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/oland_rlc.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/hainan_ce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/oland_ce.bin.zst -> hainan_ce.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/hainan_me.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/oland_me.bin.zst -> hainan_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/oland_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/verde_rlc.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/hainan_ce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/verde_ce.bin.zst -> hainan_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/verde_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/verde_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/pitcairn_rlc.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/hainan_ce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/pitcairn_ce.bin.zst -> hainan_ce.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/hainan_me.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/pitcairn_me.bin.zst -> hainan_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/pitcairn_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tahiti_rlc.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/hainan_ce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/tahiti_ce.bin.zst -> hainan_ce.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/hainan_me.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/tahiti_me.bin.zst -> hainan_me.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/pitcairn_pfp.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/tahiti_pfp.bin.zst -> pitcairn_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/topaz_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hawaii_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_k_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_k_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_k_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_32_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_mc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_asd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/vega12_asd.bin.zst -> vega10_asd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven2_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven2_asd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_asd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven_asd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_sos.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/beige_goby_ta.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/dimgrey_cavefish_ta.bin.zst -> beige_goby_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dimgrey_cavefish_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vangogh_toc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vangogh_asd.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/beige_goby_ta.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navy_flounder_ta.bin.zst -> beige_goby_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navy_flounder_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sienna_cichlid_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sienna_cichlid_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/arcturus_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/arcturus_asd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/arcturus_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_ta.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navi12_ta.bin.zst -> navi10_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_asd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navi12_asd.bin.zst -> navi10_asd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi12_sos.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/navi10_ta.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navi14_ta.bin.zst -> navi10_ta.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/navi10_asd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navi14_asd.bin.zst -> navi10_asd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_asd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/green_sardine_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/green_sardine_asd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/renoir_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/renoir_asd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_4_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_4_toc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_0_ta.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/psp_14_0_1_ta.bin.zst -> psp_14_0_0_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_1_toc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_0_toc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_14_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_14_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_12_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_12_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_6_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_6_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_11_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_11_toc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_10_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_10_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_7_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_7_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_0_ta_kicker.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_0_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_0_sos_kicker.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_0_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_5_ta.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/psp_13_0_8_ta.bin.zst -> psp_13_0_5_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_8_toc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_5_toc.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/psp_13_0_5_ta.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/yellow_carp_ta.bin.zst -> psp_13_0_5_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/yellow_carp_toc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/aldebaran_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/aldebaran_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_13_0_4_ta.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/psp_13_0_11_toc.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/psp_13_0_4_toc.bin.zst -> psp_13_0_11_toc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_5_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_5_toc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_3_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_3_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_2_ta.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/psp_14_0_2_sos.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vegam_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vegam_mec2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vegam_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vegam_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vegam_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vegam_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_mec2_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris12_mec2.bin.zst -> polaris12_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_mec_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_me_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_pfp_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_ce_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_mec2_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris11_mec2.bin.zst -> polaris11_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_mec_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_me_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_pfp_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_ce_2.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris11_ce_2.bin.zst -> polaris10_ce_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_ce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris11_ce.bin.zst -> polaris10_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_mec2_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris10_mec2.bin.zst -> polaris10_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_mec_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_me_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_pfp_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/fiji_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/fiji_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/fiji_mec2.bin.zst -> fiji_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/fiji_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/fiji_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/fiji_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/topaz_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/topaz_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/topaz_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/topaz_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/topaz_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/tonga_mec2.bin.zst -> tonga_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/stoney_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/stoney_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/stoney_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/stoney_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/stoney_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/carrizo_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/carrizo_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/carrizo_mec2.bin.zst -> carrizo_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/carrizo_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/carrizo_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/carrizo_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/aldebaran_sjt_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/aldebaran_sjt_mec2.bin.zst -> aldebaran_sjt_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/aldebaran_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/aldebaran_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/aldebaran_mec2.bin.zst -> aldebaran_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/green_sardine_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/green_sardine_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/green_sardine_mec2.bin.zst -> green_sardine_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/green_sardine_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/green_sardine_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/green_sardine_ce.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/green_sardine_rlc.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/renoir_rlc.bin.zst -> green_sardine_rlc.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/green_sardine_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/renoir_mec.bin.zst -> green_sardine_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/renoir_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/renoir_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/renoir_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/arcturus_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/arcturus_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_rlc.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven_kicker_rlc.bin.zst -> picasso_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven2_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven2_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven2_mec2.bin.zst -> raven2_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven2_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven2_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven2_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_rlc_am4.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/picasso_mec2.bin.zst -> picasso_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven_rlc.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/picasso_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven_mec2.bin.zst -> picasso_mec.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/picasso_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven_mec.bin.zst -> picasso_mec.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/picasso_me.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven_me.bin.zst -> picasso_me.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/picasso_pfp.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven_pfp.bin.zst -> picasso_pfp.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/picasso_ce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven_ce.bin.zst -> picasso_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/vega20_mec2.bin.zst -> vega20_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/vega12_mec2.bin.zst -> vega12_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/vega10_mec2.bin.zst -> vega10_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_9_4_4_sjt_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_9_4_3_sjt_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_9_5_0_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_9_4_4_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_9_4_3_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_9_5_0_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_9_4_4_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_9_4_3_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_10_3_7_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_10_3_7_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/gc_10_3_7_mec2.bin.zst -> gc_10_3_7_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_10_3_7_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_10_3_7_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_10_3_7_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_10_3_6_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_10_3_6_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/gc_10_3_6_mec2.bin.zst -> gc_10_3_6_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_10_3_6_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_10_3_6_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_10_3_6_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/cyan_skillfish2_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/cyan_skillfish2_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/cyan_skillfish2_mec2.bin.zst -> cyan_skillfish2_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/cyan_skillfish2_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/cyan_skillfish2_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/cyan_skillfish2_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/yellow_carp_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/yellow_carp_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/yellow_carp_mec2.bin.zst -> yellow_carp_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/yellow_carp_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/yellow_carp_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/yellow_carp_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/beige_goby_mec2.bin.zst -> beige_goby_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dimgrey_cavefish_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dimgrey_cavefish_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/dimgrey_cavefish_mec2.bin.zst -> dimgrey_cavefish_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dimgrey_cavefish_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dimgrey_cavefish_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dimgrey_cavefish_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vangogh_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vangogh_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/vangogh_mec2.bin.zst -> vangogh_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vangogh_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vangogh_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vangogh_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navy_flounder_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navy_flounder_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navy_flounder_mec2.bin.zst -> navy_flounder_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navy_flounder_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navy_flounder_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navy_flounder_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sienna_cichlid_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sienna_cichlid_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/sienna_cichlid_mec2.bin.zst -> sienna_cichlid_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sienna_cichlid_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sienna_cichlid_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sienna_cichlid_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi12_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi12_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navi12_mec2.bin.zst -> navi12_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi12_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi12_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi12_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navi14_mec2.bin.zst -> navi14_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_mec2_wks.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/navi14_mec2_wks.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navi14_mec_wks.bin.zst -> navi14_mec2_wks.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_me_wks.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_pfp_wks.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_ce_wks.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_mec.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navi10_mec2.bin.zst -> navi10_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_ce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_3_imu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_2_imu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_1_imu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_0_imu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_1_imu.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/gc_11_0_4_imu.bin.zst -> gc_11_0_1_imu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_3_imu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_2_imu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_imu_kicker.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_imu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_3_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_3_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_3_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_3_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_2_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_2_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_2_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_2_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_1_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_1_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_1_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_1_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_0_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_0_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_0_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_0_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_4_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_4_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_4_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_4_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_3_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_3_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_3_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_3_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_2_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_2_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_2_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_2_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_1_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_1_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_1_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_1_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_rlc_1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_rlc_kicker.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_0_toc.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/gc_12_0_1_toc.bin.zst -> gc_12_0_0_toc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_1_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_1_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_1_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_1_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_0_rlc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_0_mec.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_0_me.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_0_pfp.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_1_imu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_0_imu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/topaz_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/topaz_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vegam_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vegam_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_sdma1.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris12_sdma1.bin.zst -> polaris10_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_sdma.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris12_sdma.bin.zst -> polaris10_sdma.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/polaris10_sdma1.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris11_sdma1.bin.zst -> polaris10_sdma1.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/polaris10_sdma.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris11_sdma.bin.zst -> polaris10_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/stoney_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/fiji_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/fiji_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/carrizo_sdma.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/carrizo_sdma1.bin.zst -> carrizo_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/aldebaran_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/green_sardine_sdma.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/green_sardine_sdma.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/renoir_sdma.bin.zst -> green_sardine_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/arcturus_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven2_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_sdma.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/picasso_sdma.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven_sdma.bin.zst -> picasso_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_4_4_5.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_4_4_4.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_4_4_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/cyan_skillfish2_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/cyan_skillfish2_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi12_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi12_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_sdma1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_5_2_7.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_5_2_6.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/yellow_carp_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vangogh_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dimgrey_cavefish_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navy_flounder_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sienna_cichlid_sdma.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_6_1_3.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_6_1_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_6_1_1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_6_1_0.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_6_0_3.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_6_0_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_6_0_1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_6_0_0.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_7_0_1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sdma_7_0_0.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_3_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_3_mes_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_2_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_2_mes_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_1_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_1_mes_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_0_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_5_0_mes_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_4_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_4_mes_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_1_mes.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/gc_11_0_4_mes.bin.zst -> gc_11_0_1_mes.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_3_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_3_mes_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_2_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_2_mes_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_2_mes.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_1_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_1_mes_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_mes_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_11_0_0_mes.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_0_uni_mes.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/gc_12_0_1_uni_mes.bin.zst -> gc_12_0_0_uni_mes.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_1_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_1_mes.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_0_mes1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/gc_12_0_0_mes.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_uvd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/vegam_uvd.bin.zst -> polaris10_uvd.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/polaris10_uvd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris12_uvd.bin.zst -> polaris10_uvd.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/polaris10_uvd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris11_uvd.bin.zst -> polaris10_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/stoney_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/fiji_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/carrizo_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_uvd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/mullins_uvd.bin.zst -> bonaire_uvd.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_uvd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/hawaii_uvd.bin.zst -> bonaire_uvd.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_uvd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/kaveri_uvd.bin.zst -> bonaire_uvd.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_uvd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/kabini_uvd.bin.zst -> bonaire_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/oland_uvd.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/oland_uvd.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/pitcairn_uvd.bin.zst -> oland_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/verde_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tahiti_uvd.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_vce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/vega20_vce.bin.zst -> vega10_vce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_vce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vegam_vce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_vce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris12_vce.bin.zst -> polaris10_vce.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/polaris10_vce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/polaris11_vce.bin.zst -> polaris10_vce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/stoney_vce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/fiji_vce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/carrizo_vce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_vce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_vce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/mullins_vce.bin.zst -> bonaire_vce.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_vce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/hawaii_vce.bin.zst -> bonaire_vce.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_vce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/kaveri_vce.bin.zst -> bonaire_vce.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/bonaire_vce.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/kabini_vce.bin.zst -> bonaire_vce.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vcn_5_0_1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vcn_5_0_0.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vcn_4_0_6_1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vcn_4_0_5.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/vcn_4_0_6.bin.zst -> vcn_4_0_5.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vcn_4_0_0.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/vcn_4_0_4.bin.zst -> vcn_4_0_0.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vcn_4_0_3.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/vcn_4_0_0.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/vcn_4_0_2.bin.zst -> vcn_4_0_0.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vcn_3_1_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/yellow_carp_vcn.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_vcn.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/beige_goby_vcn.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/dimgrey_cavefish_vcn.bin.zst -> beige_goby_vcn.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vangogh_vcn.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/beige_goby_vcn.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navy_flounder_vcn.bin.zst -> beige_goby_vcn.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/beige_goby_vcn.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/sienna_cichlid_vcn.bin.zst -> beige_goby_vcn.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_vcn.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navi12_vcn.bin.zst -> navi10_vcn.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/navi10_vcn.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navi14_vcn.bin.zst -> navi10_vcn.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/aldebaran_vcn.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/green_sardine_vcn.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/green_sardine_vcn.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/renoir_vcn.bin.zst -> green_sardine_vcn.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/arcturus_vcn.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/picasso_vcn.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven2_vcn.bin.zst -> picasso_vcn.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/picasso_vcn.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/raven_vcn.bin.zst -> picasso_vcn.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vpe_6_1_3.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vpe_6_1_1.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vpe_6_1_0.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/umsch_mm_4_0_0.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dimgrey_cavefish_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navy_flounder_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/sienna_cichlid_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi12_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi14_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi10_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/arcturus_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/smu_13_0_10.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/smu_13_0_7.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/smu_13_0_0_kicker.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/smu_13_0_0.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/aldebaran_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/smu_13_0_14.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/smu_13_0_6.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/smu_14_0_3.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/smu_14_0_2.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega20_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega12_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_acg_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vega10_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vegam_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris12_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_k2_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_smc_sk.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris11_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_k2_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_smc_sk.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/polaris10_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/fiji_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tonga_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/topaz_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/topaz_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hawaii_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hawaii_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/bonaire_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/banks_k_2_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hainan_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/hainan_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/oland_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/oland_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/verde_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/verde_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/pitcairn_k_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/pitcairn_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/tahiti_smc.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dcn_4_0_1_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dcn_3_6_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dcn_3_5_1_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dcn_3_5_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/navi12_dmcu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/raven_dmcu.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dcn_3_2_1_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dcn_3_2_0_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dcn_3_1_6_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dcn_3_1_5_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/dcn_3_1_4_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/yellow_carp_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/beige_goby_dmcub.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/beige_goby_dmcub.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/dimgrey_cavefish_dmcub.bin.zst -> beige_goby_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/vangogh_dmcub.bin.zst
+    adding file: /usr/lib/firmware/amdgpu/green_sardine_dmcub.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/beige_goby_dmcub.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/navy_flounder_dmcub.bin.zst -> beige_goby_dmcub.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/beige_goby_dmcub.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/sienna_cichlid_dmcub.bin.zst -> beige_goby_dmcub.bin.zst
+    overwriting file: /usr/lib/firmware/amdgpu/green_sardine_dmcub.bin.zst
+    adding symlink: /usr/lib/firmware/amdgpu/renoir_dmcub.bin.zst -> green_sardine_dmcub.bin.zst
+    adding module: nvidia (/lib/modules/6.15.7-arch1-2/updates/dkms/nvidia.ko.zst)
+    adding dir: /usr/lib/firmware/nvidia/575.64.05
+    adding file: /usr/lib/firmware/nvidia/575.64.05/gsp_tu10x.bin
+    adding file: /usr/lib/firmware/nvidia/575.64.05/gsp_ga10x.bin
+    adding module: nvidia-modeset (/lib/modules/6.15.7-arch1-2/updates/dkms/nvidia-modeset.ko.zst)
+    adding module: nvidia-uvm (/lib/modules/6.15.7-arch1-2/updates/dkms/nvidia-uvm.ko.zst)
+    adding module: nvidia-drm (/lib/modules/6.15.7-arch1-2/updates/dkms/nvidia-drm.ko.zst)
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/persistent-data
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/persistent-data/dm-persistent-data.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/crypto
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/aria_generic.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/chelsio
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/chelsio/chcr.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/pps
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/pps/pps_core.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-crypt.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/ccp
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/ccp/ccp.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sha1-ssse3.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/lib/842
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/lib/842/842_compress.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/lib/842/842_decompress.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/amlogic
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/amlogic/amlogic-gxl-crypto.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/authencesn.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/atmel-i2c.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/aesni-intel.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/aegis128.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/lrw.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/krb5enc.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/serpent-sse2-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/padlock-aes.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_common
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_common/intel_qat.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/ghash-generic.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/lib/lz4
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/lib/lz4/lz4_compress.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/misc
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/misc/rpmb-core.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/xcbc.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/crypto/asymmetric_keys
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/asymmetric_keys/pkcs8_key_parser.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/camellia-aesni-avx-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-raid.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c62xvf
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c62xvf/qat_c62xvf.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/nvme/common
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/nvme/common/nvme-auth.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-cache-smq.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/adiantum.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-bio-prison.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/curve25519-generic.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/tee
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/tee/tee.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/sm4.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/polyval-clmulni.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/wp512.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/nvme/host
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/nvme/host/nvme.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/cmac.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/chacha_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/lz4.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/updates/dkms
+    adding file: /lib/modules/6.15.7-arch1-2/updates/dkms/nvidia-uvm.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/twofish-avx-x86_64.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/usb/storage
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/usb/storage/uas.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/ccp/ccp-crypto.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/drm_panel_backlight_quirks.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/hid
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/hid/hid-multitouch.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/i2c/algos
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/i2c/algos/i2c-algo-bit.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-mod.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/algif_aead.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/lib/crc8.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/polyval-generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/crypto_engine.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/aria-gfni-avx512-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/md4.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/sm3_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/hctr2.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/scheduler
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/scheduler/gpu-sched.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/aria-aesni-avx2-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/drm_suballoc_helper.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/nhpoly1305.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/des_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/serpent_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sha512-ssse3.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/crypto_user.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/nhpoly1305-avx2.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-mirror.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-cache.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/mmc/core
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/mmc/core/mmc_core.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/iaa
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/iaa/iaa_crypto.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/platform/x86
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/platform/x86/wmi.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/raid6test.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sm3-avx-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-writecache.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-region-hash.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/async_raid6_recov.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/pcbc.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/cast_common.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/lz4hc.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/security/keys/encrypted-keys
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/security/keys/encrypted-keys/encrypted-keys.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/af_alg.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_dh895xccvf
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_dh895xccvf/qat_dh895xccvf.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/raid0.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/atmel-ecc.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/drm_exec.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/ptp
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/ptp/ptp.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/display
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/display/drm_display_helper.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/net/ethernet/chelsio/cxgb4
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/net/ethernet/chelsio/cxgb4/cxgb4.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/cast5-avx-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/atmel-sha204a.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/crypto/krb5
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/krb5/krb5.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/drm_buddy.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/ccm.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/acpi
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/acpi/video.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-integrity.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/michael_mic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/usb/storage/usb-storage.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-thin-pool.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/ghash-clmulni-intel.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/tcrypt.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/input/serio
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/input/serio/serio_raw.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/chacha20poly1305.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/streebog_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/blowfish_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/algif_hash.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/camellia-aesni-avx2.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/nvme/host/nvme-core.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/twofish-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/deflate.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c3xxxvf
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c3xxxvf/qat_c3xxxvf.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/async_memcpy.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/crypto_simd.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/xctr.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_dh895xcc
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_dh895xcc/qat_dh895xcc.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/gcm.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/842.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/media/cec/core
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/media/cec/core/cec.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/drm_ttm_helper.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/amd/amdxcp
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/amd/amdxcp/amdxcp.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/updates/dkms/nvidia.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/inside-secure
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/inside-secure/crypto_safexcel.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/amd/amdgpu
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/raid1.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/nhpoly1305-sse2.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sm4-aesni-avx-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/des3_ede-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-bufio.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/ansi_cprng.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/camellia_generic.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/lib/crypto
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/lib/crypto/libcurve25519-generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/lib/crypto/libarc4.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/dma/idxd
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/dma/idxd/idxd_bus.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/mmc/core/mmc_block.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/padlock-sha.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_4xxx
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_4xxx/qat_4xxx.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/lib/lz4/lz4hc_compress.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/algif_rng.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/crypto_null.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/authenc.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/lib/crypto/libdes.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/curve25519-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sha256-ssse3.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/crc32_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-log.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/cavium/nitrox
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/cavium/nitrox/n5pf.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/blowfish_common.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c62x
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c62x/qat_c62x.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/aes_ti.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/sm4-aesni-avx2-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/algif_skcipher.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/async_tx.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/fcrypt.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/scsi
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/scsi/virtio_scsi.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/cast5_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/aegis128-aesni.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/cryptd.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/blowfish-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/cast6-avx-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/twofish-x86_64-3way.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c3xxx
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_c3xxx/qat_c3xxx.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/echainiv.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/async_xor.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/twofish_common.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/poly1305_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/raid10.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/cast6_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/essiv.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/ecrdsa_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/raid456.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/net/tls
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/net/tls/tls.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/updates/dkms/nvidia-modeset.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/dma/idxd/idxd.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/pcrypt.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/twofish_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/seqiv.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/nvme/common/nvme-keyring.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/lib/crypto/libcurve25519.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/updates/dkms/nvidia-drm.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/sm4_generic.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/sm3.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/async_tx/async_pq.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/security/keys/trusted-keys
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/security/keys/trusted-keys/trusted.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/serpent-avx2.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/camellia-x86_64.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/aria-aesni-avx-x86_64.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_420xx
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/intel/qat/qat_420xx/qat_420xx.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/virtio
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/crypto/virtio/virtio_crypto.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-vdo
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-vdo/dm-vdo.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/geniv.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/dm-snapshot.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/lib/asn1_encoder.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/arch/x86/crypto/serpent-avx-x86_64.ko.zst
+    adding dir: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/ttm
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/gpu/drm/ttm/ttm.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/crypto/rmd160.ko.zst
+    adding file: /lib/modules/6.15.7-arch1-2/kernel/drivers/md/md-mod.ko.zst
+==> Generating module dependencies
+    adding file: /lib/modules/6.15.7-arch1-2/modules.builtin
+    adding file: /lib/modules/6.15.7-arch1-2/modules.builtin.modinfo
+    adding file: /lib/modules/6.15.7-arch1-2/modules.order
+==> Decompressing zstd-compressed firmware files
+    Decompressing '/usr/lib/firmware/amd/amd_sev_fam17h_model0xh.sbin.zst'
+    Decompressing '/usr/lib/firmware/amd/amd_sev_fam17h_model3xh.sbin.zst'
+    Decompressing '/usr/lib/firmware/amd/amd_sev_fam19h_model0xh.sbin.zst'
+    Decompressing '/usr/lib/firmware/amd/amd_sev_fam19h_model1xh.sbin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/aldebaran_ip_discovery.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/aldebaran_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/aldebaran_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/aldebaran_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/aldebaran_sjt_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/aldebaran_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/aldebaran_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/aldebaran_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/aldebaran_vcn.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/arcturus_asd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/arcturus_gpu_info.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/arcturus_ip_discovery.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/arcturus_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/arcturus_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/arcturus_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/arcturus_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/arcturus_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/arcturus_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/arcturus_vcn.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/banks_k_2_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/beige_goby_vcn.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/bonaire_vce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/carrizo_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/carrizo_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/carrizo_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/carrizo_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/carrizo_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/carrizo_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/carrizo_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/carrizo_vce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/cyan_skillfish2_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/cyan_skillfish2_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/cyan_skillfish2_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/cyan_skillfish2_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/cyan_skillfish2_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/cyan_skillfish2_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/cyan_skillfish2_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dcn_3_1_4_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dcn_3_1_5_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dcn_3_1_6_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dcn_3_2_0_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dcn_3_2_1_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dcn_3_5_1_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dcn_3_5_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dcn_3_6_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dcn_4_0_1_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dimgrey_cavefish_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dimgrey_cavefish_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dimgrey_cavefish_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dimgrey_cavefish_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dimgrey_cavefish_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dimgrey_cavefish_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dimgrey_cavefish_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/dimgrey_cavefish_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/fiji_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/fiji_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/fiji_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/fiji_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/fiji_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/fiji_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/fiji_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/fiji_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/fiji_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/fiji_vce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_10_3_6_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_10_3_6_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_10_3_6_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_10_3_6_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_10_3_6_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_10_3_7_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_10_3_7_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_10_3_7_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_10_3_7_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_10_3_7_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_imu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_imu_kicker.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_mes.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_mes_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_rlc_1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_0_rlc_kicker.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_1_imu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_1_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_1_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_1_mes.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_1_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_1_mes_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_1_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_1_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_2_imu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_2_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_2_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_2_mes.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_2_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_2_mes_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_2_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_2_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_3_imu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_3_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_3_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_3_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_3_mes_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_3_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_3_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_4_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_4_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_4_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_4_mes_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_4_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_0_4_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_0_imu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_0_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_0_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_0_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_0_mes_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_0_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_0_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_1_imu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_1_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_1_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_1_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_1_mes_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_1_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_1_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_2_imu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_2_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_2_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_2_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_2_mes_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_2_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_2_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_3_imu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_3_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_3_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_3_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_3_mes_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_3_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_11_5_3_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_0_imu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_0_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_0_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_0_mes.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_0_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_0_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_0_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_0_toc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_0_uni_mes.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_1_imu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_1_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_1_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_1_mes.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_1_mes1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_1_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_12_0_1_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_9_4_3_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_9_4_3_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_9_4_3_sjt_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_9_4_4_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_9_4_4_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_9_4_4_sjt_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_9_5_0_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/gc_9_5_0_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/green_sardine_asd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/green_sardine_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/green_sardine_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/green_sardine_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/green_sardine_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/green_sardine_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/green_sardine_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/green_sardine_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/green_sardine_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/green_sardine_vcn.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hainan_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hainan_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hainan_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hainan_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hainan_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hainan_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hainan_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hawaii_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hawaii_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hawaii_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hawaii_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hawaii_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hawaii_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hawaii_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/hawaii_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/kabini_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/kabini_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/kabini_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/kabini_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/kabini_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/kaveri_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/kaveri_mec2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/kaveri_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/kaveri_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/mullins_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_asd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi10_vcn.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_dmcu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_gpu_info.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi12_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_ce_wks.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_me_wks.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_mec2_wks.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_pfp_wks.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navi14_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navy_flounder_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navy_flounder_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navy_flounder_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navy_flounder_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navy_flounder_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navy_flounder_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navy_flounder_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/navy_flounder_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/oland_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/oland_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/oland_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/oland_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/oland_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/oland_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_asd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_gpu_info.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_ip_discovery.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_rlc_am4.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/picasso_vcn.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/pitcairn_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/pitcairn_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/pitcairn_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/pitcairn_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/pitcairn_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_ce_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_k2_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_k_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_me_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_mec2_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_mec_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_pfp_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_smc_sk.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris10_vce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_k2_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_k_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_me_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_mec2_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_mec_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_pfp_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris11_smc_sk.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_32_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_ce_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_k_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_me_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_mec2_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_mec_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_pfp_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/polaris12_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_0_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_0_sos_kicker.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_0_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_0_ta_kicker.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_10_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_10_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_11_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_11_toc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_12_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_12_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_14_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_14_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_4_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_5_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_5_toc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_6_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_6_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_7_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_7_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_13_0_8_toc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_0_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_0_toc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_1_toc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_2_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_2_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_3_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_3_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_4_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_4_toc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_5_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/psp_14_0_5_toc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven2_asd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven2_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven2_gpu_info.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven2_ip_discovery.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven2_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven2_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven2_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven2_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven2_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven2_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven_asd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven_dmcu.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/raven_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/renoir_asd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/renoir_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/renoir_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/renoir_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/renoir_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_4_4_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_4_4_4.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_4_4_5.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_5_2_6.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_5_2_7.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_6_0_0.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_6_0_1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_6_0_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_6_0_3.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_6_1_0.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_6_1_1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_6_1_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_6_1_3.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_7_0_0.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sdma_7_0_1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/si58_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sienna_cichlid_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sienna_cichlid_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sienna_cichlid_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sienna_cichlid_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sienna_cichlid_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sienna_cichlid_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sienna_cichlid_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sienna_cichlid_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/sienna_cichlid_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/smu_13_0_0.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/smu_13_0_0_kicker.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/smu_13_0_10.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/smu_13_0_14.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/smu_13_0_6.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/smu_13_0_7.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/smu_14_0_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/smu_14_0_3.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/stoney_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/stoney_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/stoney_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/stoney_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/stoney_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/stoney_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/stoney_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/stoney_vce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tahiti_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tahiti_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tahiti_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tahiti_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/tonga_vce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/topaz_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/topaz_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/topaz_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/topaz_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/topaz_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/topaz_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/topaz_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/topaz_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/topaz_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/topaz_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/umsch_mm_4_0_0.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vangogh_asd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vangogh_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vangogh_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vangogh_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vangogh_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vangogh_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vangogh_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vangogh_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vangogh_toc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vangogh_vcn.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vcn_3_1_2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vcn_4_0_0.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vcn_4_0_3.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vcn_4_0_5.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vcn_4_0_6_1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vcn_5_0_0.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vcn_5_0_1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_acg_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_asd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_gpu_info.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_ip_discovery.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega10_vce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_gpu_info.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_ip_discovery.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega12_vce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_asd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_ip_discovery.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_sos.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_ta.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vega20_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vegam_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vegam_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vegam_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vegam_mec2.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vegam_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vegam_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vegam_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vegam_sdma1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vegam_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vegam_vce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/verde_k_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/verde_mc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/verde_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/verde_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/verde_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/verde_smc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/verde_uvd.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vpe_6_1_0.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vpe_6_1_1.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/vpe_6_1_3.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/yellow_carp_ce.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/yellow_carp_dmcub.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/yellow_carp_me.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/yellow_carp_mec.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/yellow_carp_pfp.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/yellow_carp_rlc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/yellow_carp_sdma.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/yellow_carp_toc.bin.zst'
+    Decompressing '/usr/lib/firmware/amdgpu/yellow_carp_vcn.bin.zst'
+    Decompressing '/usr/lib/firmware/cavium/cnn55xx_se.fw.zst'
+    Decompressing '/usr/lib/firmware/cxgb4/t4fw-1.27.5.0.bin.zst'
+    Decompressing '/usr/lib/firmware/cxgb4/t5fw-1.27.5.0.bin.zst'
+    Decompressing '/usr/lib/firmware/cxgb4/t6fw-1.27.5.0.bin.zst'
+    Decompressing '/usr/lib/firmware/inside-secure/eip197_minifw/ifpp.bin.zst'
+    Decompressing '/usr/lib/firmware/inside-secure/eip197_minifw/ipue.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_402xx.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_402xx_mmp.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_420xx.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_420xx_mmp.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_4xxx.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_4xxx_mmp.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_895xcc.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_895xcc_mmp.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_c3xxx.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_c3xxx_mmp.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_c62x.bin.zst'
+    Decompressing '/usr/lib/firmware/qat_c62x_mmp.bin.zst'
+  -> Fixing firmware file symlinks
+    Rewriting '/usr/lib/firmware/amdgpu/aldebaran_mec2.bin.zst -> aldebaran_mec.bin.zst' to '/usr/lib/firmware/amdgpu/aldebaran_mec2.bin -> aldebaran_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/aldebaran_sjt_mec2.bin.zst -> aldebaran_sjt_mec.bin.zst' to '/usr/lib/firmware/amdgpu/aldebaran_sjt_mec2.bin -> aldebaran_sjt_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/beige_goby_mec2.bin.zst -> beige_goby_mec.bin.zst' to '/usr/lib/firmware/amdgpu/beige_goby_mec2.bin -> beige_goby_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/carrizo_mec2.bin.zst -> carrizo_mec.bin.zst' to '/usr/lib/firmware/amdgpu/carrizo_mec2.bin -> carrizo_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/carrizo_sdma1.bin.zst -> carrizo_sdma.bin.zst' to '/usr/lib/firmware/amdgpu/carrizo_sdma1.bin -> carrizo_sdma.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/cyan_skillfish2_mec2.bin.zst -> cyan_skillfish2_mec.bin.zst' to '/usr/lib/firmware/amdgpu/cyan_skillfish2_mec2.bin -> cyan_skillfish2_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/dimgrey_cavefish_dmcub.bin.zst -> beige_goby_dmcub.bin.zst' to '/usr/lib/firmware/amdgpu/dimgrey_cavefish_dmcub.bin -> beige_goby_dmcub.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/dimgrey_cavefish_mec2.bin.zst -> dimgrey_cavefish_mec.bin.zst' to '/usr/lib/firmware/amdgpu/dimgrey_cavefish_mec2.bin -> dimgrey_cavefish_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/dimgrey_cavefish_ta.bin.zst -> beige_goby_ta.bin.zst' to '/usr/lib/firmware/amdgpu/dimgrey_cavefish_ta.bin -> beige_goby_ta.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/dimgrey_cavefish_vcn.bin.zst -> beige_goby_vcn.bin.zst' to '/usr/lib/firmware/amdgpu/dimgrey_cavefish_vcn.bin -> beige_goby_vcn.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/fiji_mec2.bin.zst -> fiji_mec.bin.zst' to '/usr/lib/firmware/amdgpu/fiji_mec2.bin -> fiji_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/gc_10_3_6_mec2.bin.zst -> gc_10_3_6_mec.bin.zst' to '/usr/lib/firmware/amdgpu/gc_10_3_6_mec2.bin -> gc_10_3_6_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/gc_10_3_7_mec2.bin.zst -> gc_10_3_7_mec.bin.zst' to '/usr/lib/firmware/amdgpu/gc_10_3_7_mec2.bin -> gc_10_3_7_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/gc_11_0_4_imu.bin.zst -> gc_11_0_1_imu.bin.zst' to '/usr/lib/firmware/amdgpu/gc_11_0_4_imu.bin -> gc_11_0_1_imu.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/gc_11_0_4_mes.bin.zst -> gc_11_0_1_mes.bin.zst' to '/usr/lib/firmware/amdgpu/gc_11_0_4_mes.bin -> gc_11_0_1_mes.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/gc_12_0_1_toc.bin.zst -> gc_12_0_0_toc.bin.zst' to '/usr/lib/firmware/amdgpu/gc_12_0_1_toc.bin -> gc_12_0_0_toc.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/gc_12_0_1_uni_mes.bin.zst -> gc_12_0_0_uni_mes.bin.zst' to '/usr/lib/firmware/amdgpu/gc_12_0_1_uni_mes.bin -> gc_12_0_0_uni_mes.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/green_sardine_mec2.bin.zst -> green_sardine_mec.bin.zst' to '/usr/lib/firmware/amdgpu/green_sardine_mec2.bin -> green_sardine_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/hawaii_sdma.bin.zst -> bonaire_sdma.bin.zst' to '/usr/lib/firmware/amdgpu/hawaii_sdma.bin -> bonaire_sdma.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/hawaii_sdma1.bin.zst -> bonaire_sdma1.bin.zst' to '/usr/lib/firmware/amdgpu/hawaii_sdma1.bin -> bonaire_sdma1.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/hawaii_uvd.bin.zst -> bonaire_uvd.bin.zst' to '/usr/lib/firmware/amdgpu/hawaii_uvd.bin -> bonaire_uvd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/hawaii_vce.bin.zst -> bonaire_vce.bin.zst' to '/usr/lib/firmware/amdgpu/hawaii_vce.bin -> bonaire_vce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/kabini_sdma.bin.zst -> bonaire_sdma.bin.zst' to '/usr/lib/firmware/amdgpu/kabini_sdma.bin -> bonaire_sdma.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/kabini_sdma1.bin.zst -> bonaire_sdma1.bin.zst' to '/usr/lib/firmware/amdgpu/kabini_sdma1.bin -> bonaire_sdma1.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/kabini_uvd.bin.zst -> bonaire_uvd.bin.zst' to '/usr/lib/firmware/amdgpu/kabini_uvd.bin -> bonaire_uvd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/kabini_vce.bin.zst -> bonaire_vce.bin.zst' to '/usr/lib/firmware/amdgpu/kabini_vce.bin -> bonaire_vce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/kaveri_ce.bin.zst -> kabini_ce.bin.zst' to '/usr/lib/firmware/amdgpu/kaveri_ce.bin -> kabini_ce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/kaveri_me.bin.zst -> kabini_me.bin.zst' to '/usr/lib/firmware/amdgpu/kaveri_me.bin -> kabini_me.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/kaveri_sdma.bin.zst -> bonaire_sdma.bin.zst' to '/usr/lib/firmware/amdgpu/kaveri_sdma.bin -> bonaire_sdma.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/kaveri_sdma1.bin.zst -> bonaire_sdma1.bin.zst' to '/usr/lib/firmware/amdgpu/kaveri_sdma1.bin -> bonaire_sdma1.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/kaveri_uvd.bin.zst -> bonaire_uvd.bin.zst' to '/usr/lib/firmware/amdgpu/kaveri_uvd.bin -> bonaire_uvd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/kaveri_vce.bin.zst -> bonaire_vce.bin.zst' to '/usr/lib/firmware/amdgpu/kaveri_vce.bin -> bonaire_vce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/mullins_ce.bin.zst -> kabini_ce.bin.zst' to '/usr/lib/firmware/amdgpu/mullins_ce.bin -> kabini_ce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/mullins_me.bin.zst -> kabini_me.bin.zst' to '/usr/lib/firmware/amdgpu/mullins_me.bin -> kabini_me.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/mullins_mec.bin.zst -> kabini_mec.bin.zst' to '/usr/lib/firmware/amdgpu/mullins_mec.bin -> kabini_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/mullins_pfp.bin.zst -> kabini_pfp.bin.zst' to '/usr/lib/firmware/amdgpu/mullins_pfp.bin -> kabini_pfp.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/mullins_sdma.bin.zst -> bonaire_sdma.bin.zst' to '/usr/lib/firmware/amdgpu/mullins_sdma.bin -> bonaire_sdma.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/mullins_sdma1.bin.zst -> bonaire_sdma1.bin.zst' to '/usr/lib/firmware/amdgpu/mullins_sdma1.bin -> bonaire_sdma1.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/mullins_uvd.bin.zst -> bonaire_uvd.bin.zst' to '/usr/lib/firmware/amdgpu/mullins_uvd.bin -> bonaire_uvd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/mullins_vce.bin.zst -> bonaire_vce.bin.zst' to '/usr/lib/firmware/amdgpu/mullins_vce.bin -> bonaire_vce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navi10_mec2.bin.zst -> navi10_mec.bin.zst' to '/usr/lib/firmware/amdgpu/navi10_mec2.bin -> navi10_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navi12_asd.bin.zst -> navi10_asd.bin.zst' to '/usr/lib/firmware/amdgpu/navi12_asd.bin -> navi10_asd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navi12_mec2.bin.zst -> navi12_mec.bin.zst' to '/usr/lib/firmware/amdgpu/navi12_mec2.bin -> navi12_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navi12_ta.bin.zst -> navi10_ta.bin.zst' to '/usr/lib/firmware/amdgpu/navi12_ta.bin -> navi10_ta.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navi12_vcn.bin.zst -> navi10_vcn.bin.zst' to '/usr/lib/firmware/amdgpu/navi12_vcn.bin -> navi10_vcn.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navi14_asd.bin.zst -> navi10_asd.bin.zst' to '/usr/lib/firmware/amdgpu/navi14_asd.bin -> navi10_asd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navi14_mec2.bin.zst -> navi14_mec.bin.zst' to '/usr/lib/firmware/amdgpu/navi14_mec2.bin -> navi14_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navi14_mec_wks.bin.zst -> navi14_mec2_wks.bin.zst' to '/usr/lib/firmware/amdgpu/navi14_mec_wks.bin -> navi14_mec2_wks.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navi14_ta.bin.zst -> navi10_ta.bin.zst' to '/usr/lib/firmware/amdgpu/navi14_ta.bin -> navi10_ta.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navi14_vcn.bin.zst -> navi10_vcn.bin.zst' to '/usr/lib/firmware/amdgpu/navi14_vcn.bin -> navi10_vcn.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navy_flounder_dmcub.bin.zst -> beige_goby_dmcub.bin.zst' to '/usr/lib/firmware/amdgpu/navy_flounder_dmcub.bin -> beige_goby_dmcub.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navy_flounder_mec2.bin.zst -> navy_flounder_mec.bin.zst' to '/usr/lib/firmware/amdgpu/navy_flounder_mec2.bin -> navy_flounder_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navy_flounder_ta.bin.zst -> beige_goby_ta.bin.zst' to '/usr/lib/firmware/amdgpu/navy_flounder_ta.bin -> beige_goby_ta.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/navy_flounder_vcn.bin.zst -> beige_goby_vcn.bin.zst' to '/usr/lib/firmware/amdgpu/navy_flounder_vcn.bin -> beige_goby_vcn.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/oland_ce.bin.zst -> hainan_ce.bin.zst' to '/usr/lib/firmware/amdgpu/oland_ce.bin -> hainan_ce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/oland_me.bin.zst -> hainan_me.bin.zst' to '/usr/lib/firmware/amdgpu/oland_me.bin -> hainan_me.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/picasso_mec2.bin.zst -> picasso_mec.bin.zst' to '/usr/lib/firmware/amdgpu/picasso_mec2.bin -> picasso_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/pitcairn_ce.bin.zst -> hainan_ce.bin.zst' to '/usr/lib/firmware/amdgpu/pitcairn_ce.bin -> hainan_ce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/pitcairn_me.bin.zst -> hainan_me.bin.zst' to '/usr/lib/firmware/amdgpu/pitcairn_me.bin -> hainan_me.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/pitcairn_uvd.bin.zst -> oland_uvd.bin.zst' to '/usr/lib/firmware/amdgpu/pitcairn_uvd.bin -> oland_uvd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris10_mec2.bin.zst -> polaris10_mec.bin.zst' to '/usr/lib/firmware/amdgpu/polaris10_mec2.bin -> polaris10_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris11_ce.bin.zst -> polaris10_ce.bin.zst' to '/usr/lib/firmware/amdgpu/polaris11_ce.bin -> polaris10_ce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris11_ce_2.bin.zst -> polaris10_ce_2.bin.zst' to '/usr/lib/firmware/amdgpu/polaris11_ce_2.bin -> polaris10_ce_2.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris11_mec2.bin.zst -> polaris11_mec.bin.zst' to '/usr/lib/firmware/amdgpu/polaris11_mec2.bin -> polaris11_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris11_sdma.bin.zst -> polaris10_sdma.bin.zst' to '/usr/lib/firmware/amdgpu/polaris11_sdma.bin -> polaris10_sdma.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris11_sdma1.bin.zst -> polaris10_sdma1.bin.zst' to '/usr/lib/firmware/amdgpu/polaris11_sdma1.bin -> polaris10_sdma1.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris11_uvd.bin.zst -> polaris10_uvd.bin.zst' to '/usr/lib/firmware/amdgpu/polaris11_uvd.bin -> polaris10_uvd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris11_vce.bin.zst -> polaris10_vce.bin.zst' to '/usr/lib/firmware/amdgpu/polaris11_vce.bin -> polaris10_vce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris12_mec2.bin.zst -> polaris12_mec.bin.zst' to '/usr/lib/firmware/amdgpu/polaris12_mec2.bin -> polaris12_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris12_sdma.bin.zst -> polaris10_sdma.bin.zst' to '/usr/lib/firmware/amdgpu/polaris12_sdma.bin -> polaris10_sdma.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris12_sdma1.bin.zst -> polaris10_sdma1.bin.zst' to '/usr/lib/firmware/amdgpu/polaris12_sdma1.bin -> polaris10_sdma1.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris12_uvd.bin.zst -> polaris10_uvd.bin.zst' to '/usr/lib/firmware/amdgpu/polaris12_uvd.bin -> polaris10_uvd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/polaris12_vce.bin.zst -> polaris10_vce.bin.zst' to '/usr/lib/firmware/amdgpu/polaris12_vce.bin -> polaris10_vce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/psp_13_0_4_toc.bin.zst -> psp_13_0_11_toc.bin.zst' to '/usr/lib/firmware/amdgpu/psp_13_0_4_toc.bin -> psp_13_0_11_toc.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/psp_13_0_8_ta.bin.zst -> psp_13_0_5_ta.bin.zst' to '/usr/lib/firmware/amdgpu/psp_13_0_8_ta.bin -> psp_13_0_5_ta.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/psp_14_0_1_ta.bin.zst -> psp_14_0_0_ta.bin.zst' to '/usr/lib/firmware/amdgpu/psp_14_0_1_ta.bin -> psp_14_0_0_ta.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven2_mec2.bin.zst -> raven2_mec.bin.zst' to '/usr/lib/firmware/amdgpu/raven2_mec2.bin -> raven2_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven2_vcn.bin.zst -> picasso_vcn.bin.zst' to '/usr/lib/firmware/amdgpu/raven2_vcn.bin -> picasso_vcn.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven_ce.bin.zst -> picasso_ce.bin.zst' to '/usr/lib/firmware/amdgpu/raven_ce.bin -> picasso_ce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven_gpu_info.bin.zst -> picasso_gpu_info.bin.zst' to '/usr/lib/firmware/amdgpu/raven_gpu_info.bin -> picasso_gpu_info.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven_ip_discovery.bin.zst -> picasso_ip_discovery.bin.zst' to '/usr/lib/firmware/amdgpu/raven_ip_discovery.bin -> picasso_ip_discovery.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven_kicker_rlc.bin.zst -> picasso_rlc.bin.zst' to '/usr/lib/firmware/amdgpu/raven_kicker_rlc.bin -> picasso_rlc.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven_me.bin.zst -> picasso_me.bin.zst' to '/usr/lib/firmware/amdgpu/raven_me.bin -> picasso_me.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven_mec.bin.zst -> picasso_mec.bin.zst' to '/usr/lib/firmware/amdgpu/raven_mec.bin -> picasso_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven_mec2.bin.zst -> picasso_mec.bin.zst' to '/usr/lib/firmware/amdgpu/raven_mec2.bin -> picasso_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven_pfp.bin.zst -> picasso_pfp.bin.zst' to '/usr/lib/firmware/amdgpu/raven_pfp.bin -> picasso_pfp.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven_sdma.bin.zst -> picasso_sdma.bin.zst' to '/usr/lib/firmware/amdgpu/raven_sdma.bin -> picasso_sdma.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/raven_vcn.bin.zst -> picasso_vcn.bin.zst' to '/usr/lib/firmware/amdgpu/raven_vcn.bin -> picasso_vcn.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/renoir_dmcub.bin.zst -> green_sardine_dmcub.bin.zst' to '/usr/lib/firmware/amdgpu/renoir_dmcub.bin -> green_sardine_dmcub.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/renoir_mec.bin.zst -> green_sardine_mec.bin.zst' to '/usr/lib/firmware/amdgpu/renoir_mec.bin -> green_sardine_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/renoir_rlc.bin.zst -> green_sardine_rlc.bin.zst' to '/usr/lib/firmware/amdgpu/renoir_rlc.bin -> green_sardine_rlc.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/renoir_sdma.bin.zst -> green_sardine_sdma.bin.zst' to '/usr/lib/firmware/amdgpu/renoir_sdma.bin -> green_sardine_sdma.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/renoir_vcn.bin.zst -> green_sardine_vcn.bin.zst' to '/usr/lib/firmware/amdgpu/renoir_vcn.bin -> green_sardine_vcn.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/sienna_cichlid_dmcub.bin.zst -> beige_goby_dmcub.bin.zst' to '/usr/lib/firmware/amdgpu/sienna_cichlid_dmcub.bin -> beige_goby_dmcub.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/sienna_cichlid_mec2.bin.zst -> sienna_cichlid_mec.bin.zst' to '/usr/lib/firmware/amdgpu/sienna_cichlid_mec2.bin -> sienna_cichlid_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/sienna_cichlid_vcn.bin.zst -> beige_goby_vcn.bin.zst' to '/usr/lib/firmware/amdgpu/sienna_cichlid_vcn.bin -> beige_goby_vcn.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/tahiti_ce.bin.zst -> hainan_ce.bin.zst' to '/usr/lib/firmware/amdgpu/tahiti_ce.bin -> hainan_ce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/tahiti_me.bin.zst -> hainan_me.bin.zst' to '/usr/lib/firmware/amdgpu/tahiti_me.bin -> hainan_me.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/tahiti_pfp.bin.zst -> pitcairn_pfp.bin.zst' to '/usr/lib/firmware/amdgpu/tahiti_pfp.bin -> pitcairn_pfp.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/tonga_mec2.bin.zst -> tonga_mec.bin.zst' to '/usr/lib/firmware/amdgpu/tonga_mec2.bin -> tonga_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/vangogh_mec2.bin.zst -> vangogh_mec.bin.zst' to '/usr/lib/firmware/amdgpu/vangogh_mec2.bin -> vangogh_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/vcn_4_0_2.bin.zst -> vcn_4_0_0.bin.zst' to '/usr/lib/firmware/amdgpu/vcn_4_0_2.bin -> vcn_4_0_0.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/vcn_4_0_4.bin.zst -> vcn_4_0_0.bin.zst' to '/usr/lib/firmware/amdgpu/vcn_4_0_4.bin -> vcn_4_0_0.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/vcn_4_0_6.bin.zst -> vcn_4_0_5.bin.zst' to '/usr/lib/firmware/amdgpu/vcn_4_0_6.bin -> vcn_4_0_5.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/vega10_mec2.bin.zst -> vega10_mec.bin.zst' to '/usr/lib/firmware/amdgpu/vega10_mec2.bin -> vega10_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/vega12_asd.bin.zst -> vega10_asd.bin.zst' to '/usr/lib/firmware/amdgpu/vega12_asd.bin -> vega10_asd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/vega12_mec2.bin.zst -> vega12_mec.bin.zst' to '/usr/lib/firmware/amdgpu/vega12_mec2.bin -> vega12_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/vega20_mec2.bin.zst -> vega20_mec.bin.zst' to '/usr/lib/firmware/amdgpu/vega20_mec2.bin -> vega20_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/vega20_vce.bin.zst -> vega10_vce.bin.zst' to '/usr/lib/firmware/amdgpu/vega20_vce.bin -> vega10_vce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/vegam_uvd.bin.zst -> polaris10_uvd.bin.zst' to '/usr/lib/firmware/amdgpu/vegam_uvd.bin -> polaris10_uvd.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/verde_ce.bin.zst -> hainan_ce.bin.zst' to '/usr/lib/firmware/amdgpu/verde_ce.bin -> hainan_ce.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/yellow_carp_mec2.bin.zst -> yellow_carp_mec.bin.zst' to '/usr/lib/firmware/amdgpu/yellow_carp_mec2.bin -> yellow_carp_mec.bin'
+    Rewriting '/usr/lib/firmware/amdgpu/yellow_carp_ta.bin.zst -> psp_13_0_5_ta.bin.zst' to '/usr/lib/firmware/amdgpu/yellow_carp_ta.bin -> psp_13_0_5_ta.bin'
+    Rewriting '/usr/lib/firmware/cxgb4/t4fw.bin.zst -> t4fw-1.27.5.0.bin.zst' to '/usr/lib/firmware/cxgb4/t4fw.bin -> t4fw-1.27.5.0.bin'
+    Rewriting '/usr/lib/firmware/cxgb4/t5fw.bin.zst -> t5fw-1.27.5.0.bin.zst' to '/usr/lib/firmware/cxgb4/t5fw.bin -> t5fw-1.27.5.0.bin'
+    Rewriting '/usr/lib/firmware/cxgb4/t6fw.bin.zst -> t6fw-1.27.5.0.bin.zst' to '/usr/lib/firmware/cxgb4/t6fw.bin -> t6fw-1.27.5.0.bin'
+==> Creating zstd-compressed initcpio image: '/efi/EFI/arch/initramfs-linux.img'
+  -> Early uncompressed CPIO image generation successful
+==> Initcpio image generation successful
+==> Creating unified kernel image: '/efi/EFI/arch/arch-linux.efi'
+    Using objcopy to build UKI
+    Using UEFI stub: '/usr/lib/systemd/boot/efi/linuxx64.efi.stub'
+    Using os-release file: '/etc/os-release'
+  -> Using cmdline file: '/etc/kernel/cmdline'
+    Using kernel image: '/efi/EFI/arch/vmlinuz-linux'
+    Assembling UKI: objcopy /usr/lib/systemd/boot/efi/linuxx64.efi.stub -p --add-section .uname=/tmp/mkinitcpio.pJeJOD --change-section-vma .uname=0x14dfaf000 --add-section .osrel=/tmp/mkinitcpio.PxELAI --change-section-vma .osrel=0x14dfb0000 --add-section .cmdline=/tmp/mkinitcpio.rcKLpG --change-section-vma .cmdline=0x14dfb1000 --add-section .linux=/efi/EFI/arch/vmlinuz-linux --change-section-vma .linux=0x14dfb2000 --add-section .initrd=/efi/EFI/arch/initramfs-linux.img --change-section-vma .initrd=0x14eec6000 /efi/EFI/arch/arch-linux.efi
+==> Unified kernel image generation successful
+==> Running post hooks
+  -> Running post hook: [sbcred]
++ sbcred_store=/etc/sbcred/priv
++ [[ -n '' ]]
++ [[ -n '' ]]
++ [[ -n 1 ]]
++ uki=/efi/EFI/arch/arch-linux.efi
++ [[ ! -f /efi/EFI/arch/vmlinuz-linux ]]
++ kernel=/efi/EFI/arch/vmlinuz-linux
++ keypairs=("$sbcred_store/db.key" "$sbcred_store/db.crt")
++ (( i=0 ))
++ (( i<2 ))
++ key=/etc/sbcred/priv/db.key
++ cert=/etc/sbcred/priv/db.crt
++ for _in in "$kernel" "$cpio" "$uki"
++ [[ -z /efi/EFI/arch/vmlinuz-linux ]]
++ out=/efi/EFI/arch/vmlinuz-linux
++ sbverify --cert /etc/sbcred/priv/db.crt /efi/EFI/arch/vmlinuz-linux
+Signature verification OK
++ err=0
++ [[ 0 -ne 0 ]]
++ continue
++ for _in in "$kernel" "$cpio" "$uki"
++ [[ -z '' ]]
++ continue
++ for _in in "$kernel" "$cpio" "$uki"
++ [[ -z /efi/EFI/arch/arch-linux.efi ]]
++ out=/efi/EFI/arch/arch-linux.efi
++ sbverify --cert /etc/sbcred/priv/db.crt /efi/EFI/arch/arch-linux.efi
+No signature table present
+Signature verification failed
++ err=1
++ [[ 1 -ne 0 ]]
++ sbsign --key /etc/sbcred/priv/db.key --cert /etc/sbcred/priv/db.crt --output /efi/EFI/arch/arch-linux.efi.signed /efi/EFI/arch/arch-linux.efi
+Signing Unsigned original image
++ mv /efi/EFI/arch/arch-linux.efi.signed /efi/EFI/arch/arch-linux.efi
++ (( i+=2  ))
++ (( i<2 ))
+==> Post processing done
