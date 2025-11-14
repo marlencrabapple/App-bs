@@ -129,7 +129,7 @@
          "web" : "https://github.com/marlencrabapple/App-bs"
       }
    },
-   "version" : "0",
+   "version" : "0.0.1",
    "x_authority" : "cpan:CRABAPP",
    "x_serialization_backend" : "JSON::PP version 4.16",
    "x_static_install" : 0

@@ -2,7 +2,8 @@ use Object::Pad qw(:experimental(:all));
 
 package App::BS;
 
-use constant VERSION => "0.01";
+use Const::Fast;
+$VERSION = '0.0.1';
 
 class App::BS;    #: does(App::BS::Common);
 
@@ -13,8 +14,6 @@ use TOML::Tiny 'from_toml';
 use Const::Fast;
 use Const::Fast::Exporter;
 use Syntax::Keyword::Try;
-
-our $VERSION = VERSION;
 
 method $import : common (@args) {
     use utf8;
