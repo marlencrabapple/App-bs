@@ -15,6 +15,9 @@ use Tie::File ();
 use Syntax::Keyword::Defer;
 use meta;
 use JSON::MaybeXS;
+use TOML::Tiny qw'to_toml from_toml';
+
+const our $SHENV_RE => qr/^(.*sh(?:env)?|env(?:vironment)?|export|eval)$/;
 
 no warnings 'meta::experimental';
 
@@ -57,27 +60,31 @@ ADJUSTPARAMS($params) {
 
         BS::Common::dmsg( _hrefcache => $_hrefcache );
     }
-    else {
-        ...;
-    }
+
+    # else {
+    #     values %$params;
+    # }
 }
 
-method from_srcinfo : common ($in) {
-    my $lines = [];    #=  "";
+method from_srcinfo : common ($in, %opts) {
+    my @lines = ();    #=  "";
     my $str;
+
     if ( blessed $in && $in->DOES('lines_utf8') || ref $in eq 'Path::Tiny' ) {
-        push @$lines, $in->lines_utf8;
+        push @lines, $in->lines_utf8;
     }
-    elsif ( $lines = $class->open_srcinfo($in) ) {
+    elsif ( @lines = $class->open_srcinfo($in)->lines_utf8 ) {
 
         # DONO
     }
-    else {
-        # split in $class->parse_srcinfo
-        $lines = $in;
+    else {             # multiline string probably
+                       # TODO: check for above
+                       # split in $class->parse_srcinfo
+        @lines = $in =~ /(.*?)[\n\r]+/mg;
     }
 
-    $class->parse_srcinfo($lines);
+    my $srcinfo = $class->new( $class->parse_srcinfo( \@lines )->%* );
+    $opts{as_href} ? $srcinfo->as_href : $srcinfo;
 }
 
 method open_srcinfo : common ($file) {
@@ -90,12 +97,16 @@ method open_srcinfo : common ($file) {
     }
 }
 
+# method $fields_as ($type) {
+#   $type eq 'ARRAY' ? { $field->name => $field }
+# }
+
 method fields (%opts) {
     my $Field = class {
         field $_field   : param(field) : reader(field);
         field $instance : param;
         field $name     : reader = $_field->name =~ s/^\$//r;
-        field $value : reader { $_field->value($instance) }
+        field $value : mutator { $_field->value($instance) }
     };
 
     my $metaclass = Object::Pad::MOP::Class->for_caller;
@@ -103,9 +114,16 @@ method fields (%opts) {
         map {
             # my $infield = $_;
             my $field = $Field->new( field => $_, instance => $self );
+
             $field
-        }
-        grep { $_->name !~ /^\$_/ } $metaclass->fields
+
+# return ($opts{as} eq 'ARRAY' ? { $field->name => $field } : $opts{as} eq 'HASH' ? ($field->name => $field)
+
+            # TODO: $field->name => "$field"
+            #  - where stringification is overloaded to $field->value
+            #  - should we allow accessing fields (read-only) through
+            #    hash interface or just provide accessors?
+        } grep { $_->name !~ /^\$_/ } $metaclass->fields
     );
 }
 
@@ -245,25 +263,58 @@ method as_json ( $ashref = $self->as_href, %opts ) {
     $_json->encode($ashref);
 }
 
-method as_toml {
-
+method as_toml ( $ashref = $self->as_href ) {
+    to_toml($ashref);
 }
 
 method as_yaml {
 
 }
 
-# method as_written {
+method $kvpair2str ( $k, $v, $sep = '=' ) {
+    join $sep, map { $_ =~ s/$sep/\\$sep/rg } ( $k, $v );
+}
 
-# }
+method as_shenv ( $ashref = $self->as_href, %opts ) {
+    my @out;
 
-# method was_written_
+    foreach my ( $k, $v ) (%$ashref) {
+        if ( my $type = ref $v ) {
+            if ( $type eq 'ARRAY' ) {
+                if ( $opts{noarray} ) {
+                    $v = join ",", map { s/,/\\,/rg } @$v;
+                    $v = qq{"$v"};
+                }
+                else {
+                    $v = join " ", map { qq{ "$_" } } @$v;
+                    $v = "($v)";
+                }
+            }
+            elsif ( $type eq 'HASH' ) {
+                if ( $opts{assoc} ) {
+                    ...;
+                }
+                else {
+                    $v = join ':',
+                      map { $self->$kvpair2str( $_, $$v{$_} ) } keys %$v;
+                }
+            }
+            else {
+                ...;
+            }
+        }
+        else {
+            $v =~ s/"/\\"/g;
+            $v = qq{"$_"};
+        }
 
-# method as_it_was_written
+        push @out, qq{export $k=$v};
+    }
 
-#method shenv ( $shcompat = 'bash' ) {
-#
-#}
+    my $outstr = join "; ", @out;
+
+    $opts{wrapeval} ? qq{eval '$outstr'} : $outstr;
+}
 
 method pkgfile_glob ($pkgver) {
     my $pkgver_str;
@@ -300,4 +351,14 @@ method pkgfile_glob ($pkgver) {
       ) . ".pkg.tar.zst";
 
     $glob;
+}
+
+method as ( $format, $select, %opt ) {
+    const our %srcinfo_as => (
+        json      => sub { $self->as_json },
+        toml      => sub { $self->as_toml },
+        hashref   => sub { $self->as_href },
+        $SHENV_RE => sub { $self->as_shenv },
+
+    );
 }

@@ -9,11 +9,11 @@ use v5.40;
 
 {
     no warnings 'experimental';
-    use re 'strict'; 
+    use re 'strict';
 }
 
 use Carp;
-use List::Util qw'any uniq'; 
+use List::Util qw'any uniq';
 use File::chdir;
 use File::Temp;
 use Const::Fast::Exporter;
@@ -138,3 +138,46 @@ method fetch : common ($pkgstr, %args) {
     carp $res->out;
 }
 
+method pkgfile_glob : common ( $srcinfo, $pkgver ) {
+    my $pkgver_str;
+
+    if ( $srcinfo isa 'BS::SRCINFO' ) {
+
+    }
+    else {
+        # BS::Package::SRCINFO->
+    }
+
+    BS::Common::dmsg( { srcinfo => $srcinfo, pkgver => $pkgver } );
+
+    if ($pkgver) {
+        if (
+            my $pkgver_href =
+            ( ( $pkgver && ref $pkgver eq 'HASH' ) ? \%$pkgver : undef ) // (
+                $pkgver eq $ENV{PKGVER_CURR}
+                ? { $srcinfo->%{qw'epoch ver rel'} }
+                : undef
+            )
+          )
+        {
+            $pkgver_str .= "$$pkgver_href{epoch}:" if $$pkgver_href{epoch};
+            $pkgver_str .= $$pkgver_href{ver};
+            $pkgver_str .= "-$$pkgver_href{rel}" if $$pkgver_href{rel};
+        }
+        elsif ($pkgver) {
+            $pkgver_str = $pkgver;
+        }
+    }
+    my $glob =
+      $$srcinfo{pkgname} eq 'ARRAY'
+      ? '{' . ( join ',', $$srcinfo{pkgname}->@* ) . '}-'
+      : "$$srcinfo{pkgname}"
+      . (
+        ref $$srcinfo{arch} eq 'ARRAY'
+        ? ( $pkgver_str ? " -$pkgver_str-" : "-*" ) . "-{"
+          . ( join ',', $$srcinfo{arch}->@* ) . '}'
+        : "-$$srcinfo{arch}"
+      ) . ".pkg.tar.zst";
+
+    $glob;
+}

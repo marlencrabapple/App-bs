@@ -18,7 +18,7 @@ use Getopt::Long
 use Path::Tiny;
 use Const::Fast;
 use IPC::Run3;
-use List::Util 'first';
+use List::Util qw'uniq first';
 use BS::Package::SRCINFO;
 
 const our $ENV_RE => qr/^(.*sh|env(?:vironment)?|export)$/;
@@ -27,9 +27,13 @@ const our %OUTFMT => (
 
     $ENV_RE => 'srcinfo::bash'
     , # POSIX will probably be the only other in this category but I think that's basically just a .SRCINFO file without changes
-    json => 'JSON::MaybeXS',
-    toml => 'TOML::Tiny',
-    yaml => 'YAML::Tiny'
+    json => sub ( $srcinfo, $inref, %opt ) {
+        $srcinfo->as_json;
+    },
+    toml          => 'TOML::Tiny',
+    yaml          => 'YAML::Tiny',
+    storable      => '',
+    'data-dumper' => ''
 );
 
 field $clispec : param;
@@ -66,10 +70,10 @@ ADJUSTPARAMS($params) {
     }
 }
 
-ADJUSTPARAMS($params) {
+method get_options ( $argv, $optspec, $optdest, %optss ) {
     my @getoptspec = ();
 
-    foreach my ( $k, $v ) (@$clispec) {
+    foreach my ( $k, $v ) (@$optspec) {
         if ( $k eq '<>' && ref $v eq 'CODE' ) {
             my $ogsub = $v;
             $v = sub ($barearg) {
@@ -85,7 +89,7 @@ ADJUSTPARAMS($params) {
         }
     }
 
-    GetOptionsFromArray( $argv, $cliopt, @getoptspec );
+    GetOptionsFromArray( $argv // \@ARGV, $optdest, @getoptspec );
 }
 
 sub pkgfile_glob ( $srcinfo, $pkgver ) {
@@ -137,38 +141,13 @@ method run : common ($argv, $clispec, $dest //= {}, %opt) {
         clidest => $dest
     );
 
-    BS::Common::dmsg(
-        {
-            self    => $self,
-            clispec => $clispec,
-            argv    => $argv,
-            cliopt  => $dest
-        }
-    );
+    BS::Common::dmsg( { self => $self } );
 
-    my $href = $self->srcinfo->as_href;
-
-    if ( my @field = $$dest{field}->@* ) {
-        %$href = $href->%{@field};
-    }
-
-    say $OUTFMT{ $self->format }->($href);
-
-    # if ( $self->cliopt->{format} eq 'json' ) {
-
-    # }
-    # elsif ( ( keys $self->format->%* )[0] =~ $ENV_RE ) {
-    #     foreach my ( $k, $v ) (%$href) {
-    #         say qq*eval "export $k="$v""*;
-    #     }
-    # }
-
+    say $self->srcinfo->as( $self->format, $$dest{field} );
     $self;
 }
 
 method load ($in) {
-
-    # BS::Common::dmsg( { in => $infile, } );
     $infile  = $in;
     $srcinfo = BS::Package::SRCINFO->new( file => $in );
 }
