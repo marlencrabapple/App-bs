@@ -54,6 +54,7 @@ use constant DEV_PREREQS => sub {
     requires 'ExtUtils::MakeMaker';
     requires 'Devel::StackTrace::WithLexicals', '2.01';
     requires 'Module::Build::XSUtil';
+    requires 'App::FatPacker';
 };
 
 on 'build' => DEV_PREREQS;

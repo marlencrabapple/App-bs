@@ -29,8 +29,8 @@ pkgbase = perl-app-bs-git
 	depends = arch-rebuild-order
 	options = !emptydirs
 	options = staticlibs
-	source = perl-app-bs::git+https://cincotuf.lan/pennylinux/BS#commit=69d0938468d1432c6ed513081fb87178210abc90
-	sha512sums = da9d0a455bdf0cacd8e5a747552d92696ebe9199a0800da15a58ebf2dd242ffadbb10c388e44dd31720186590d71895d4640ba0f48f790e35d3e112f2bcb158d
-	b2sums = d2c00013242f1e9ae73720d4245b788b746941466a58466a0c64bf7e48bb2722fba23aacb4e2f64b00b10e762396c3cf8d7d31c7b8950b86a93410f566f75784
+	source = perl-app-bs::git+https://cincotuf.lan/pennylinux/BS#commit=c874288b9222771bd063a52b697b0f5119a59720
+	sha512sums = 5cb3084bce576c5885ecfc1308916b1d321c2fbfaa3314a421302498c87946dfbe62b2628108177ce14c4354614ff5644cbd19c09e2954beebbd7333f12146d5
+	b2sums = ff8e87a2a12743d7ea1b9425ac9854fab0c2ddbc5499e5aa5ca6e02d491928259c9e6a688773955bf6a8550a7616f31d75a811da4ac29b198f5d41d707c9706b
 
 pkgname = perl-app-bs-git

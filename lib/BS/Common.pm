@@ -37,7 +37,7 @@ eval {
     use Module::Metadata;
 } if $DEBUG;
 
-my class BsxRes {
+my class BsxResult {
     use utf8;
     use v5.40;
 

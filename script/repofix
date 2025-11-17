@@ -1,0 +1,16 @@
+#!/usr/bin/env perl
+
+package App::BS::repofix;
+use v5.40;
+
+use BS::Common;
+use IPC::Run3;
+
+our @outbuff;
+our @errbuff;
+
+sub outh ($line) {
+    push @outbuff, $line;
+    chomp $line;
+    say "▶ $line";
+}
