@@ -92,42 +92,42 @@ method get_options ( $argv, $optspec, $optdest, %optss ) {
     GetOptionsFromArray( $argv // \@ARGV, $optdest, @getoptspec );
 }
 
-sub pkgfile_glob ( $srcinfo, $pkgver ) {
-    my $pkgver_str;
+# sub pkgfile_glob ( $srcinfo, $pkgver ) {
+#     my $pkgver_str;
 
-    BS::Common::dmsg( { srcinfo => $srcinfo, pkgver => $pkgver } );
+#     BS::Common::dmsg( { srcinfo => $srcinfo, pkgver => $pkgver } );
 
-    if ($pkgver) {
-        if (
-            my $pkgver_href =
-            ( ( $pkgver && ref $pkgver eq 'HASH' ) ? \%$pkgver : undef ) // (
-                $pkgver eq $ENV{PKGVER_CURR}
-                ? { $srcinfo->%{qw'epoch ver rel'} }
-                : undef
-            )
-          )
-        {
-            $pkgver_str .= "$$pkgver_href{epoch}:" if $$pkgver_href{epoch};
-            $pkgver_str .= $$pkgver_href{ver};
-            $pkgver_str .= "-$$pkgver_href{rel}" if $$pkgver_href{rel};
-        }
-        elsif ($pkgver) {
-            $pkgver_str = $pkgver;
-        }
-    }
-    my $glob =
-      $$srcinfo{pkgname} eq 'ARRAY'
-      ? '{' . ( join ',', $$srcinfo{pkgname}->@* ) . '}-'
-      : "$$srcinfo{pkgname}"
-      . (
-        ref $$srcinfo{arch} eq 'ARRAY'
-        ? ( $pkgver_str ? " -$pkgver_str-" : "-*" ) . "-{"
-          . ( join ',', $$srcinfo{arch}->@* ) . '}'
-        : "-$$srcinfo{arch}"
-      ) . ".pkg.tar.zst";
+#     if ($pkgver) {
+#         if (
+#             my $pkgver_href =
+#             ( ( $pkgver && ref $pkgver eq 'HASH' ) ? \%$pkgver : undef ) // (
+#                 $pkgver eq $ENV{PKGVER_CURR}
+#                 ? { $srcinfo->%{qw'epoch ver rel'} }
+#                 : undef
+#             )
+#           )
+#         {
+#             $pkgver_str .= "$$pkgver_href{epoch}:" if $$pkgver_href{epoch};
+#             $pkgver_str .= $$pkgver_href{ver};
+#             $pkgver_str .= "-$$pkgver_href{rel}" if $$pkgver_href{rel};
+#         }
+#         elsif ($pkgver) {
+#             $pkgver_str = $pkgver;
+#         }
+#     }
+#     my $glob =
+#       $$srcinfo{pkgname} eq 'ARRAY'
+#       ? '{' . ( join ',', $$srcinfo{pkgname}->@* ) . '}-'
+#       : "$$srcinfo{pkgname}"
+#       . (
+#         ref $$srcinfo{arch} eq 'ARRAY'
+#         ? ( $pkgver_str ? " -$pkgver_str-" : "-*" ) . "-{"
+#           . ( join ',', $$srcinfo{arch}->@* ) . '}'
+#         : "-$$srcinfo{arch}"
+#       ) . ".pkg.tar.zst";
 
-    $glob;
-}
+#     $glob;
+# }
 
 method fname_wildcard_nover ( $pkgver = undef, $arch = undef )
 {    # pass your own or set to 1 for current

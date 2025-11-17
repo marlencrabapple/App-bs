@@ -4,20 +4,20 @@ LATEST_PERL=${LATEST_PERL:-5.40.2}
 
 setup() {
     install_plenv
-    install_userperl
+    install_userperl "$LATEST_PERL"
 }
 
-install_plenv() {
+# install_plenv() {
 
-}
+# }
 
-install_pyenv() {
+# install_pyenv() {
 
-}
+# }
 
-install_userpython() {
+# install_userpython() {
 
-}
+# }
 
 install_userperl() {
     ver="$1"
@@ -29,7 +29,7 @@ install_userperl() {
     cpanm --notest Net::SSLeay
 
     cpanm Minilla Dist::Milla App::cpm Image::ExifTool Carmel Carton \
-     Perl::Critic Perl::Tidy
+        Perl::Critic Perl::Tidy
 }
 
 restart_shell() {

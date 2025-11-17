@@ -1,7 +1,7 @@
 pkgbase = perl-app-bs-git
 	pkgdesc = Build system for PKGBUILD based Linux distributions
 	pkgver = 0.0.1.r0.g69d0938
-	pkgrel = 1
+	pkgrel = 2
 	url = https://cincotuf.lan/pennylinux/BS
 	arch = any
 	license = Artistic-1.0-Perl

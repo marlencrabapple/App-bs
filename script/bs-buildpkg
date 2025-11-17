@@ -67,11 +67,16 @@ moveclone() {
 	for pkg in "$@"; do
 		if [[ -d "$BS_BUILDPKG_WKDIR/$pkg" ]]; then 
 			(
-				echo "▶ Copying package from import directory '$BS_IMPORTDIR'."
+				echo "▶ '$pkg' found in working directory ($BS_BUILDPKG_WKDIR)" \
+				  && continue
+
+
+			)
+		elif [[ -d ${BS_IMPORTDIR} ]]; then
+						echo "▶ Copying '$pkg' from import directory '$BS_IMPORTDIR'..."
 				cp -vaf "$BS_IMPORTDIR/$pkg" \
 					"$BS_BUILDPKG_WKDIR" &&
 					return 0
-			)
 		else
 		local remotelist=("$(set -x;
 		  for remote in $(git remote); do
