@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+use Object::Pad ':experimental(:all)';
+use Object::Pad::FieldAttr::Trigger;
 
 use utf8;
 use v5.40;
@@ -14,6 +16,20 @@ our $update            = 1;
 our $preserve_locallib = 1;
 our $outh              = [];
 our $errh              = [];
+
+my class Console : does(BS::Common) {
+
+  use Stream::Buffered;
+#   field $in;
+  field $out;
+
+
+  ADJUST :params (:$in, :$out) {
+for ($in, $out) {
+  
+}
+#$_ = IO::Handle->new() for $out, $err;
+};
 
 sub update() {
     unlink "./local" if -d "./local" && !$preserve_locallib;

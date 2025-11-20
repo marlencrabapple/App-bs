@@ -31,6 +31,8 @@ requires 'IO::Async::SSL';
 requires 'Devel::CheckBin';
 requires 'meta';
 requires 'FreezeThaw';
+requires 'Stream::Buffered';
+requires 'Object::Pad::FieldAttr::Trigger';
 
 on 'test' => sub {
     requires 'Test::More',       '0.98';

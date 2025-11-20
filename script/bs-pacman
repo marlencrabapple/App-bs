@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 use Object::Pad ':experimental(:all)';
+use Object::Pad::FieldAttr::Trigger;
 
 package App::BS::CLI::pacman;
 
@@ -14,12 +15,16 @@ use IPC::Run3;
 use Const::Fast;
 use Syntax::Keyword::Try;
 use Syntax::Keyword::Dynamically;
+use Stream::Buffered;
 use IO::Handle;
 
 use BS::Common 'dmsg';
 
-const our $S_IPCRUN3_FATAL =>
-"!! ERROR: $0 ran into An unknown fatal error has while attempting to execute your system's pacman binary. Your system may be experiencing instability at the moment. Consider booting from a live image and clearing up the issue before running $0 again.";
+const our $S_IPCRUN3_FATAL => sub (%opt) {
+    use Data::Dumper;
+    "❌️ Unrecoverable error while spawning external command!\n"
+      . Dumper( $opt{e} );
+};
 
 field $cliopts : param(dest) = { verbose => 1 };
 field $env : param : reader = { %ENV{qw'as_needed debug verbose'} };
@@ -53,20 +58,11 @@ method $run (%opts) {
         my $outh = IO::Handle->new_from_fd( fileno(STDOUT), "w" );
         my $errh = IO::Handle->new_from_fd( fileno(STDERR), "w" );
 
-        my $ret = run3(
-            [ 'pacman', @overwrite, '--verbose', @ARGV ],
-            $inh,
-            sub ($line) {
-                $outh->printflush($line);
-                chomp $line;
-                push @$out_aref, $line;
-            },
-            sub ($line) {
-                $errh->printflush($line);
-                chomp $line;
-                push @$err_aref, $line;
-            }
-        );
+        tie @$out_aref, 'Tie::File', $outh;
+        tie @$errh,     'Tie::File', $errh;
+
+        my $ret = run3( [ 'pacman', @overwrite, '--verbose', @ARGV ],
+            $inh, $out_aref, $err_aref );
 
         ( $status, $errmsg ) =
           $? != 0 ? ( $?, $! ) : ( 0, '', $$err_aref[ scalar @$err_aref ] );
@@ -82,7 +78,7 @@ method $run (%opts) {
         )
     }
     catch ($e) {
-        die $S_IPCRUN3_FATAL;
+        die $S_IPCRUN3_FATAL->( e => $e );
     }
     finally {
         chomp $errmsg;

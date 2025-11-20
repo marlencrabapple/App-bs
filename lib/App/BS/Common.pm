@@ -2,7 +2,7 @@ use Object::Pad;
 
 package App::BS::Common;
 
-class App::BS::Common : does(BS::Common);
+role App::BS::Common : does(BS::Common);
 use utf8;
 use v5.40;
 
