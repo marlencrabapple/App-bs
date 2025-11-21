@@ -30,7 +30,7 @@ for package in ${packagelist[*]}; do
   #[[ -f "$pkgname"* ]] || cpan2aur "$pkgname";
   cpan2aur "$package" || continue
   
-  srcdist=./"$pkgname-"*src.tar.gz
+  srcdist=(./"$pkgname-"*src.tar.gz)
   [[ ! -f "$srcdist" ]] \
 	  && err "Could not find source distribution in '$(pwd)'" \
 	  && continue
