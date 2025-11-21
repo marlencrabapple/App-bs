@@ -52,15 +52,14 @@ success() {
 pkgtree() {
 	pkgptn=("$@")
 	pkgname_toplvl=()
-
+	
 	for ptn in "${pkgptn[@]}"; do
-		pkgname_toplvl+=($(expac -Ss '%n' "$ptn"))
+	  pkgname_toplvl+=($(expac -Ss '%n' "$ptn"))
 	done
-
-	perl -Mv5.40 -MList::Util=uniq -e 'say join " ", map { `expac -S "%e" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib $_` } join " ", uniq map { chomp $_; $_ } map { `expac -S "%n" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { chomp $_; `pactree -lus "$_"` } map { `expac -Ss "%n" $_` } (@ARGV)' "${pkgptn[@]}"
-
+	
+	perl -Mv5.40 -MList::Util=uniq -e 'say join " ", map { chomp $_; $ENV{EXPAC_FIELD} ? `expac -S '$EXPAC_FIELD' $_` : $_ } map { `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib,universe-resolvedeps $_` } join " ", grep  { my $in = $_; $ENV{FILTER} ? $in =~ /$ENV{FILTER}/ : 1 } uniq map { chomp $_; $_ } map { `expac -S "%n" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { chomp $_; `pactree -lus "$_"` } map { `expac -Ss "%n" $_` } (@ARGV)' "${pkgptn[@]}"
+	
 	return $?
-
 }
 
 moveclone() {
@@ -166,5 +165,5 @@ rebasebuild() {
 	done
 }
 
-moveclone "${pkgs[@]}"
+[[ "${SKIP_MOVECLONE:-0}" -eq 1 ]] || moveclone "${pkgs[@]}"
 rebasebuild "${pkgs[@]}"
