@@ -44,7 +44,7 @@ field $out     : param = [];
 field $gpgiden : param = $ENV{BS_GPGFPR} // $ENV{BS_GPGPUBID};
 
 field $pkgqueue : param(packages) =
-  path( %ENV{ first { -d $_ } qw'BS_PKGDEST PKGDEST' } )
+  path( %ENV{ first { $ENV{$_} && -d $ENV{$_} } qw'BS_PKGDEST PKGDEST' } )
   ->children(qr/.+-(any|x86_64_v3)\.pkg.tar.zst/);
 
 ADJUSTPARAMS($params) {
@@ -103,26 +103,25 @@ method $run (%opts) {
 }
 
 method run : common ($argv = \@ARGV, $dest = {}, %opts) {
-    $opts{constuctor} //= {};
+    $opts{constructor} = {} unless $opts{constuctor} && ref isa 'HASH';
 
-    die "\$opts{constructor} ("
-      . ( Dumper( $opts{constructor} ) =~ s/\$VAR1 = ([^;]+);?[\n\r]+$/= $1/r )
-      . ') must be a hashref.'
-      unless $opts{constructor} isa 'HASH';
+   # die "\$opts{constructor} ("
+   #   . ( Dumper( $opts{constructor} ) =~ s/\$VAR1 = ([^;]+);?[\n\r]+$/= $1/r )
+   #   . ') must be a hashref.'
 
-    my $app = $class->new(
+    my $self = $class->new(
         argv    => $argv,
         dest    => $dest,
         clispec => \@clispec,
-        ( delete $opts{constructor} )->%*
+        $opts{constructor}
     );
 
     BS::Common::dmsg(
-        { app => $app, argv => $argv, dest => $dest, opts => \%opts } );
+        { self => $self, argv => $argv, dest => $dest, opts => \%opts } );
 
-    my $res = $app->$run(%opts);
+    my $res = $self->$run(%opts);
 
-    ( $app, $res );
+    ( $self, $res );
 }
 
 #
