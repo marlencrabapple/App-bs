@@ -57,6 +57,7 @@ use constant DEV_PREREQS => sub {
     requires 'Devel::StackTrace::WithLexicals', '2.01';
     requires 'Module::Build::XSUtil';
     requires 'App::FatPacker';
+    requires 'Carmel';
 };
 
 on 'build' => DEV_PREREQS;

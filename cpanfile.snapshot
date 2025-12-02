@@ -1269,16 +1269,16 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
-  Object-Pad-0.821
-    pathname: P/PE/PEVANS/Object-Pad-0.821.tar.gz
+  Object-Pad-0.822
+    pathname: P/PE/PEVANS/Object-Pad-0.822.tar.gz
     provides:
-      Object::Pad 0.821
-      Object::Pad::ExtensionBuilder 0.821
-      Object::Pad::MOP::Class 0.821
-      Object::Pad::MOP::Field 0.821
-      Object::Pad::MOP::FieldAttr 0.821
-      Object::Pad::MOP::Method 0.821
-      Object::Pad::MetaFunctions 0.821
+      Object::Pad 0.822
+      Object::Pad::ExtensionBuilder 0.822
+      Object::Pad::MOP::Class 0.822
+      Object::Pad::MOP::Field 0.822
+      Object::Pad::MOP::FieldAttr 0.822
+      Object::Pad::MOP::Method 0.822
+      Object::Pad::MetaFunctions 0.822
     requirements:
       ExtUtils::CBuilder 0
       File::ShareDir 1.00
@@ -2943,10 +2943,10 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
-  meta-0.014
-    pathname: P/PE/PEVANS/meta-0.014.tar.gz
+  meta-0.015
+    pathname: P/PE/PEVANS/meta-0.015.tar.gz
     provides:
-      meta 0.014
+      meta 0.015
     requirements:
       ExtUtils::CBuilder 0
       Module::Build 0.4004

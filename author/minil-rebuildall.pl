@@ -18,17 +18,18 @@ our $outh              = [];
 our $errh              = [];
 
 my class Console : does(BS::Common) {
+    use IPC::Run3;
+    use Stream::Buffered;
 
-  use Stream::Buffered;
-#   field $in;
-  field $out;
+    field $inh;
+    field $outh;
+    field $errh;
 
+    ADJUST : params (:$in, :$out) {
+        for ( $in, $out ) {
 
-  ADJUST :params (:$in, :$out) {
-for ($in, $out) {
-  
-}
-#$_ = IO::Handle->new() for $out, $err;
+        }
+    }    #$_ = IO::Handle->new() for $out, $err;
 };
 
 sub update() {

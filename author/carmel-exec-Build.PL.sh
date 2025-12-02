@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 (
-  set x
+  set -x
   logdir="${LOGPATH:-./}"
   logfile="$logdir/carmel-exec-perl-Build.PL-$(date +%s).log"
   carmel exec perl Build.PL 2>&1 | tee -a $logfile
