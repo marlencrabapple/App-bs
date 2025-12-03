@@ -89,7 +89,7 @@ method get_options ( $argv, $optspec, $optdest, %optss ) {
         }
     }
 
-    GetOptionsFromArray( $argv // \@ARGV, $optdest, @getoptspec );
+    GetOptionsFromArray( ( $argv // \@ARGV ), $optdest, @getoptspec );
 }
 
 # sub pkgfile_glob ( $srcinfo, $pkgver ) {

@@ -12,7 +12,7 @@ use IPC::Run3;
 use Data::Dumper;
 
 our $modroot  = path('./')->absolute;
-our $indir    = path("$modroot/script");
+our $input    = path("$modroot/script");
 our $outdir   = path( "$modroot/fatpackout." . time );
 our $outfn    = "%s.fat";
 our $locallib = path("$modroot/local");
@@ -32,6 +32,41 @@ GetOptions(
     'debug'
 );
 
+sub writeh ( $line, $handle, %opt ) {
+    binmode $handle, ":encoding(UTF-8)";
+    if ( $line isa 'ARRAY' ) {
+        say $handle $line for $handle->@*;
+    }
+    elsif ( !ref $line ) {
+        say $handle $line;
+    }
+}
+
+sub outh ($line) {
+    writeh( $line, *STDOUT );
+}
+
+sub errh ($line) {
+    writeh( $line, *STDERR );
+}
+
+sub info ($line) {
+    outh("▶ $line");
+}
+
+sub err ($line) {
+    errh("❌️ $line");
+}
+
+sub fatal ( $line, $status = $? // 255, %opt ) {
+    err($line);
+    exit $status;
+}
+
+sub success ($line) {
+    outh("⭕️ $line");
+}
+
 sub fatpack {
     $CWD = $modroot;
     run3( [qw(carmel install)] );
@@ -42,14 +77,23 @@ sub fatpack {
 
     $outdir->mkdir unless -d $outdir;
 
-    foreach my $in ( $indir->children ) {
+    foreach my $in (
+          $input->is_dir     ? $input->children
+        : $input isa 'ARRAY' ? @$input
+        :                      $input
+      )
+    {
+        #fatpack($in->children) if $in->is_dir;
+
         my $fatstr = "";
         my @cmd    = ( qw(fatpack pack), $in );
-        say STDERR "▶ Running " . join " ", @cmd;
+
+        binmode STDERR, ":encoding(UTF-8)";
+        info( "Running " . join " ", @cmd );
 
         run3( \@cmd, \undef, \$fatstr );
 
-        my $fatout = sprintf( $outfn // "%s.fat" ), $in->basename;
+        my $fatout = sprintf( ( $outfn || '%s.fat' ), $in->basename );
 
         if ( my $ext = $in->basename =~ /\.(pl)$/i ) {
             $fatout .= ".$ext";
@@ -60,7 +104,7 @@ sub fatpack {
 
         path("$outdir/$fatout")->spew_utf8($fatstr);
 
-        say STDERR "⭕️ Written to $fatout";
+        success("Written to $fatout");
     }
 }
 

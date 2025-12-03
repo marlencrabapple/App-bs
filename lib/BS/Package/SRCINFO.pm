@@ -16,6 +16,7 @@ use Syntax::Keyword::Defer;
 use meta;
 use JSON::MaybeXS;
 use TOML::Tiny qw'to_toml from_toml';
+use YAML;
 
 const our $SHENV_RE => qr/^(.*sh(?:env)?|env(?:vironment)?|export|eval)$/;
 
@@ -238,7 +239,7 @@ method as_SRCINFO (%opts) {
       :                    join "\n", @lines;
 }
 
-method _init_json (%opts) {
+method $init_json (%opts) {
     const my @JSON_ALLOWEDKEYS => qw(pretty utf8 allow_blessed allow_nonref);
 
     state %json_constructor = (
@@ -257,7 +258,7 @@ method _init_json (%opts) {
 }
 
 method as_json ( $ashref = $self->as_href, %opts ) {
-    $self->_init_json(%opts);
+    $self->$init_json(%opts);
 
     # Consider ordering keys on demand?
     $_json->encode($ashref);

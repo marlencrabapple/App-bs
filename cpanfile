@@ -33,6 +33,8 @@ requires 'meta';
 requires 'FreezeThaw';
 requires 'Stream::Buffered';
 requires 'Object::Pad::FieldAttr::Trigger';
+requires 'YAML';
+requires 'YAML::Tiny';
 
 on 'test' => sub {
     requires 'Test::More',       '0.98';

@@ -78,6 +78,7 @@ my %args = (
     build_requires => {
         'App::FatPacker' => '0',
         'CPAN::Uploader' => '0',
+        'Carmel' => '0',
         'Devel::StackTrace::WithLexicals' => '2.01',
         'ExtUtils::MakeMaker' => '0',
         'Inline' => '0',
