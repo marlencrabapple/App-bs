@@ -65,6 +65,8 @@ my %args = (
         'Syntax::Keyword::Dynamically' => '0',
         'Syntax::Keyword::Try' => '0',
         'TOML::Tiny' => '0',
+        'YAML' => '0',
+        'YAML::Tiny' => '0',
         'meta' => '0',
         'perl' => 'v5.40.0',
     },
