@@ -159,7 +159,7 @@ use Path::Tiny qw( path );
 #         GetOptions( "library=s" => \@libfiles );
 #         @libfiles = split( /,/, join( ',', @libfiles ) );
 our @clispec = (
-    'field|fields|out-fields|outfields|filter|select' => 's@',
+    'field|fields|out-fields|outfields|filter|select' => 's{1,}',
     'format|out-format|fmt|of|outfmt'                 => 's',
     'pretty-print!'                                   => 'f',
     '<>' => sub ( $self, $barearg ) {

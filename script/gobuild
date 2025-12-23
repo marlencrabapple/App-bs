@@ -1,0 +1,92 @@
+#!/usr/bin/env perl
+package BS::gobuild;
+
+use utf8;
+use v5.40;
+
+use Data::Dumper;
+use IPC::Run3;
+use Const::Fast;
+use Getopt::Long qw'GetOptionsFromArray :config bundling auto_abbrev';
+
+our @out = ();
+our @err = ();
+
+const our $writeh => sub ( $line, $status = $? // 0, %opt ) {
+    state $defaulth //= IO::Handle->new_from_fd( fileno(STDOUT), "w" );
+    my $h = $opt{handle} // $defaulth;
+    $h->printflush($line);
+    $status;
+};
+
+const our $outh => sub ( $line, %opt ) {
+    state $h //= IO::Handle->new_from_fd( fileno(STDOUT), "w" );
+    $writeh->( $line, $opt{status} // $? // 0, ( handle => $h, %opt ) );
+};
+
+const our $errh => sub ( $line, $status = $?, %opt ) {
+    state $h //= IO::Handle->new_from_fd( fileno(STDERR), "w" );
+    $writeh->( $line, $status, ( handle => $h, %opt ) );
+};
+
+my $argv = \@ARGV;
+
+const our %goenvironment => (
+    goos       => lc( `uname -s` =~ s/[\n\r]+//rg ),
+    goarch     => lc( `uname -m` =~ s/[\n\r]+//rg ),
+    gohostos   => lc( `uname -s` =~ s/[\n\r]+//rg ),
+    gohostarch => lc( `uname -m` =~ s/[\n\r]+//rg ),
+    goarm64    => undef,
+    goarm      => undef,
+    goamd64    => undef
+);
+
+const our %goarg_def => (
+    x          => 1,
+    ldflags    => '-compressdwarf=false',
+    buildmode  => 'pie',
+    mod        => 'readonly',
+    modcacherw => 1
+);
+
+our %cliopts = ( %goenvironment, %goarg_def );
+
+GetOptionsFromArray(
+    $argv,
+    \%cliopts,
+    ( map { "$_=s" } keys %goenvironment ),
+    (
+        map { ( $goarg_def{$_} !~ /^(1|0)$/ || !$goarg_def{$_} ) ? "$_=s" : $_ }
+          keys %goarg_def
+    )
+);
+
+my $debug = $cliopts{debug} || $ENV{DEBUG};
+
+foreach my ( $key, $val ) ( %cliopts{ map { lc $_ } keys %goenvironment } ) {
+    warn Dumper( $key, $val ) if $debug;
+    $ENV{ uc $key } = $val    if $val;
+}
+
+my @goarg;
+
+foreach my ( $k, $v ) ( %cliopts{ keys %goarg_def } ) {
+    if ( $v =~ /^(1|0)$/ && $v == 1 ) {
+        push @goarg, "-$k";
+    }
+    elsif ($v) {
+        push @goarg, "-$k", $v;
+    }
+}
+
+say STDERR Dumper(
+    {
+        argv          => $argv,
+        cliopts       => \%cliopts,
+        goarg         => \@goarg,
+        goenvironment => \%goenvironment,
+        ENV           => { %ENV{ keys %goenvironment } }
+    }
+);
+
+run3( [ qw(go install), @goarg ], \undef, $outh, $errh );
