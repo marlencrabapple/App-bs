@@ -38,6 +38,7 @@ my %args = (
         'DBD::SQLite' => '0',
         'DBI' => '0',
         'DBIx::Connector' => '0',
+        'Data::Dumper::Names' => '0',
         'Devel::CheckBin' => '0',
         'File::chdir' => '0',
         'FreezeThaw' => '0',

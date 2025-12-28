@@ -1,5 +1,6 @@
 requires 'perl', 'v5.40';
 
+requires 'Data::Dumper::Names';
 requires 'DBI';
 requires 'Const::Fast::Exporter';
 requires 'DBD::SQLite';

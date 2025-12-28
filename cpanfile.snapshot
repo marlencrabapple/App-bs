@@ -449,6 +449,14 @@ DISTRIBUTIONS
     requirements:
       DBI 1.605
       perl 5.008001
+  Data-Dumper-Names-0.03
+    pathname: O/OV/OVID/Data-Dumper-Names-0.03.tar.gz
+    provides:
+      Data::Dumper::Names 0.03
+    requirements:
+      PadWalker 0.13
+      Scalar::Util 0
+      Test::More 0
   Data-OptList-0.114
     pathname: R/RJ/RJBS/Data-OptList-0.114.tar.gz
     provides:

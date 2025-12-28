@@ -6,8 +6,6 @@ role BS::Common;
 use utf8;
 use v5.40;
 
-use lib 'lib';
-
 use Carp;
 use IPC::Run3;
 use Tie::File;
@@ -157,6 +155,7 @@ sub info ($line) {
 }
 
 sub dmsg  {
+    return undef unless $DEBUG;
     my @caller = caller 0;
     local $Data::Dumper::Names::UpLevel = 2;
 
@@ -164,12 +163,12 @@ sub dmsg  {
     $out .= Dumper(@_);
     $out .=
       $DEBUG && $DEBUG == 2
-      ? join "\n", map { ( my $line = $_ ) =~ s/^\t/  /; "  $line" } split /\R/,
+      ?  join "\n", map { ( my $line = $_ ) =~ s/^\t/  /; "  $line" } split /\R/,
       Devel::StackTrace::WithLexicals->new(
         indent      => 1,
         skip_frames => 1
       )->as_string
-      : "at $caller[1]:$caller[2]\n";
+: "at $caller[1]:$caller[2]\n";
 
     errh($out);
     $out;
