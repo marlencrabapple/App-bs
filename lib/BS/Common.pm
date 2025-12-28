@@ -6,6 +6,8 @@ role BS::Common;
 use utf8;
 use v5.40;
 
+use lib 'lib';
+
 use Carp;
 use IPC::Run3;
 use Tie::File;
@@ -18,6 +20,7 @@ use Const::Fast::Exporter;
 use Syntax::Keyword::Dynamically;
 use Time::HiRes qw(gettimeofday);
 use FreezeThaw  qw(cmpStr cmpStrHard);
+use Data::Dumper::Names;
 
 BEGIN {
     use Exporter;
@@ -120,62 +123,69 @@ sub href_equal_kv : prototype($$) ( $href, $href2 ) {
     cmpStrHard( $href, $href2 );
 }
 
-sub success ( $msg, %opts ) {
-    say "⭕️ $msg";
-}
+# field %fhcache : reader(handle) = ();
 
-sub warn ( $msg, %opts ) {
-    say STDERR "‼️ $msg";
-}
+sub writeh( $line, $handle, %opt ) {
+    state %fhcache = ();
 
-sub info ( $msg, %opts ) {
-    say "▶ $msg";
-}
-
-sub err ( $msg, %opts ) {
-    say STDERR "❌️ Error: $msg";
-}
-
-sub fatal ( $msg, %opts ) {
-    $msg = err( $msg, %opts, silent => 1 );
-    die $msg;
-}
-
-sub dmsg (@msgs) {
-    my $self =    # Maybe there's a reason to make an anon class here?
-      blessed $msgs[0] && $msgs[0]->DOES('BS::Common') ? shift @msgs : undef;
-
-    if ( state $debug = ( $DEBUG || $ENV{DEBUG} // undef ) ) {
-
-        my @caller = caller 0;
-
-        my $out = "*** " . localtime->datetime . " - DEBUG MESSAGE ***\n\n";
-
-        {
-            local $Data::Dumper::Pad    = "  ";
-            local $Data::Dumper::Indent = 1;
-
-            $out .=
-                scalar @msgs > 1 ? Dumper(@msgs)
-              : ref $msgs[0]     ? Dumper(@msgs)
-              :   eval { my $s = $msgs[0] // 'undef'; "  $s\n" };
-
-            $out .= "\n"
-        }
-
-        $out .=
-          $ENV{DEBUG} && $ENV{DEBUG} == 2
-          ? join "\n",
-          map { ( my $line = $_ ) =~ s/^\t/  /; "  $line" } split /\R/,
-          Devel::StackTrace::WithLexicals->new(
-            indent      => 1,
-            skip_frames => 1
-          )->as_string
-          : "at $caller[1]:$caller[2]";
-
-        say STDERR "$out\n";
-        $out;
+    if ( my $prev = $fhcache{$handle} ) {
+        $handle = $prev unless $opt{newh};
     }
+    else {
+        $handle = $fhcache{$handle} = IO::Handle->new_from_fd( $handle, 'w' );
+        binmode $handle, ":encoding(UTF-8)";
+    }
+
+    if ( $line isa 'ARRAY' ) {
+        $handle->print("$_\n") for $line->@*;
+    }
+    elsif ( !ref $line ) {
+        $handle->print("$line\n");
+    }
+}
+
+sub outh ($line) {
+    writeh( $line, *STDOUT );
+}
+
+sub errh ($line) {
+    writeh( $line, *STDERR );
+}
+
+sub info ($line) {
+    outh("▶ $line");
+}
+
+sub dmsg  {
+    my @caller = caller 0;
+    local $Data::Dumper::Names::UpLevel = 2;
+
+    my $out;
+    $out .= Dumper(@_);
+    $out .=
+      $DEBUG && $DEBUG == 2
+      ? join "\n", map { ( my $line = $_ ) =~ s/^\t/  /; "  $line" } split /\R/,
+      Devel::StackTrace::WithLexicals->new(
+        indent      => 1,
+        skip_frames => 1
+      )->as_string
+      : "at $caller[1]:$caller[2]\n";
+
+    errh($out);
+    $out;
+}
+
+sub err ($line) {
+    errh("❌️ $line");
+}
+
+sub fatal ( $line, $status = $? // 255, %opt ) {
+    err($line);
+    exit $status;
+}
+
+sub success ($line) {
+    outh("⭕️ $line");
 }
 
 method ts : common ($sep = '') {
