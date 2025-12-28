@@ -180,4 +180,7 @@ method cli : common ($argv = \@ARGV, %opt) {
 
 package main;
 
+use utf8;
+use v5.40;
+
 pkgtree->cli( \@ARGV )
