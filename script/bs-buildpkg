@@ -83,7 +83,7 @@ moveclone() {
 			done;)")
 
 			(echo STDERR "▶ Cloning official repo:" &&
-				git clone "${remote[*]:0:1}$pkg")
+				git clone "${remote[*]:0:1}/$pkg")
 		fi
 	done
 }
