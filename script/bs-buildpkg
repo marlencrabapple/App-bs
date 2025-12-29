@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 [[ "${DEBUG:-0}" -ne 0 ]] && set -x
 
+remote=("https://gitlab.archlinux.org/archlinux/packaging/packages")
+
 scriptdir="${0//\/$(basename "$0")/}"
 . "$scriptdir/bs-common.sh"
 
@@ -31,7 +33,7 @@ fi
 
 say() {
 	for msg in "$@"; do
-		echo -e "▶ $msg"
+		>&2 echo -e "▶ $msg"
 	done
 }
 
@@ -57,7 +59,7 @@ pkgtree() {
 	  pkgname_toplvl+=($(expac -Ss '%n' "$ptn"))
 	done
 	
-	perl -Mv5.40 -MList::Util=uniq -e 'say join " ", map { chomp $_; $ENV{EXPAC_FIELD} ? `expac -S '$EXPAC_FIELD' $_` : $_ } map { `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib,universe-resolvedeps $_` } join " ", grep  { my $in = $_; $ENV{FILTER} ? $in =~ /$ENV{FILTER}/ : 1 } uniq map { chomp $_; $_ } map { `expac -S "%n" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { chomp $_; `pactree -lus "$_"` } map { `expac -Ss "%n" $_` } (@ARGV)' "${pkgptn[@]}"
+	perl -Mv5.40 -MList::Util=uniq -e 'say join " ", map { chomp $_; $ENV{EXPAC_FIELD} ? `expac -S '$EXPAC_FIELD' pkgname_toplvl$_` : $_ } map { `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib,universe-resolvedeps $_` } join " ", grep  { my $in = $_; $ENV{FILTER} ? $in =~ /$ENV{FILTER}/ : 1 } uniq map { chomp $_; $_ } map { `expac -S "%n" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { chomp $_; `pactree -lus "$_"` } map { `expac -Ss "%n" $_` } (@ARGV)' "${pkgptn[@]}"
 	
 	return $?
 }
@@ -66,24 +68,22 @@ moveclone() {
 	for pkg in "$@"; do
 		if [[ -d "$BS_BUILDPKG_WKDIR/$pkg" ]]; then 
 			(
-				echo "▶ '$pkg' found in working directory ($BS_BUILDPKG_WKDIR)" \
+				say "'$pkg' found in working directory ($BS_BUILDPKG_WKDIR)" \
 				  && continue
-
-
 			)
 		elif [[ -d ${BS_IMPORTDIR} ]]; then
-						echo "▶ Copying '$pkg' from import directory '$BS_IMPORTDIR'..."
+				say "Copying '$pkg' from import directory '$BS_IMPORTDIR'..."
 				cp -vaf "$BS_IMPORTDIR/$pkg" \
 					"$BS_BUILDPKG_WKDIR" &&
 					return 0
 		else
-		local remotelist=("$(set -x;
-		  for remote in $(git remote); do
-			  echo "$remote::$(git remote get-url $remote;)"
+	  	local remotelist=("$(set -x
+		  for _remote in $(git remote); do
+			  echo "$_remote::$(git remote get-url "$_remote")"
 			done;)")
 
-			(echo "▶ Cloning official repo:" &&
-				pkgctl repo clone --protocol https "$pkg")
+			(echo STDERR "▶ Cloning official repo:" &&
+				git clone "${remote[*]:0:1}$pkg")
 		fi
 	done
 }
@@ -91,10 +91,14 @@ moveclone() {
 source_pkgbuild() {
 	pkgbuild="$1"
 
-	[[ "${SOURCE_PKGBUILD:-0}" ]] &&
-		>&2 echo -e "Sourcing PKGBUILD file instead of .SRCINFO. Be adviced this may very well be dangerous to run outside of a container.\n\nTODO: Ask user (you/me?) if they want to exit." &&
-		echo -e "eval the following line to finalize importing its environment post-load:\n\n . $pkgbuild" &&
-		. "$pkgbuild"
+	if [[ "${SOURCE_PKGBUILD:-0}" ]]; then
+		  warn "Sourcing PKGBUILD file instead of .SRCINFO. Be adviced this may very well be dangerous to run outside of a container.\n\nTODO: Ask user (you/me?) if they want to exit."
+
+		  warn "eval the following line to finalize importing its environment post-load:\n\n . $pkgbuild"
+
+		  . "$pkgbuild"
+		
+		fi
 
 	return $?
 }

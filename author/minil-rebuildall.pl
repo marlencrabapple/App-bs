@@ -5,10 +5,17 @@ use Object::Pad::FieldAttr::Trigger;
 use utf8;
 use v5.40;
 
+use lib 'lib';
+
 use BS::Common;
 use IPC::Run3;
-use Getopt::Long qw( GetOptions );
 
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev long_prefix_pattern=--?);
+
+our $clean = 0;
+our $build = 1;
+our $dist  = 1;
 our $install           = 0;
 our $trial             = 0;
 our $git               = undef;
@@ -64,19 +71,33 @@ sub cmd ( $cmdlist, $in = \undef, $out = $outh, $err = $errh ) {
     $?, $out, $err, $run3err;
 }
 
-sub minil (@cmd) {
-    foreach my $cmd (@cmd) {
-        cmd( [ qw(carmel exec minil), $cmd ] );
+sub minil (@cmd_ahref) {
+    foreach my $cmd (@cmd_ahref) {
+        cmd( [ qw(carmel exec minil), $$cmd{cmd}, $$cmd{args}->@* ] );
     }
 }
 
 sub run {
-    GetOptions( 'install', 'trial', 'update-dependencies', 'git-pull=s' );
+    GetOptions( 'clean+', 'dist', 'build', 'install',
+        'trial', 'updatedeps|update-dependencies',
+        'update|git-pull-remote=s' );
+
     update()              if $update;
     git_pull_remote($git) if $git;
 
-    my @minilcmd = qw(clean build dist);
+    my @minilcmd;
+
+    foreach my $cmd (qw(clean build dist install clean>1)) {
+        my ( $cmd, $req ) = $cmd =~ /[a-z]+[=<>]/;
+        push @minilcmd, { $cmd => [ $trial ? '--trial' : () ] };
+    }
+
+    push @minilcmd, 'clean' if $clean;
+    push @minilcmd, 'build' if $build;
+    push @minilcmd, 'dist'  if $dist;
     push @minilcmd, 'install' if $install;
+    push @minilcmd, 'install' if $install;
+    push @minilcmd, 'clean',  if $clean > 1;
     minil( \@minilcmd );
 }
 
