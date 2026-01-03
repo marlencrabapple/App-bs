@@ -15,6 +15,7 @@ requires 'Syntax::Keyword::Dynamically';
 requires 'Getopt::Long';
 requires 'Pod::Usage';
 requires 'Path::Tiny';
+requires 'Class::Exporter';
 requires 'File::chdir';
 requires 'IPC::Run3';
 requires 'IO::Socket::SSL';

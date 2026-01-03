@@ -53,13 +53,8 @@ success() {
 
 pkgtree() {
 	pkgptn=("$@")
-	pkgname_toplvl=()
 	
-	for ptn in "${pkgptn[@]}"; do
-	  pkgname_toplvl+=($(expac -Ss '%n' "$ptn"))
-	done
-	
-	perl -Mv5.40 -MList::Util=uniq -e 'say join " ", map { chomp $_; $ENV{EXPAC_FIELD} ? `expac -S '$EXPAC_FIELD' pkgname_toplvl$_` : $_ } map { `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib,universe-resolvedeps $_` } join " ", grep  { my $in = $_; $ENV{FILTER} ? $in =~ /$ENV{FILTER}/ : 1 } uniq map { chomp $_; $_ } map { `expac -S "%n" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { chomp $_; `pactree -lus "$_"` } map { `expac -Ss "%n" $_` } (@ARGV)' "${pkgptn[@]}"
+	perl -Mv5.40 -MList::Util=uniq -e 'say join " ", uniq map { s/[\n\r]+/ /rg } map { chomp $_; $ENV{EXPAC_FIELD} ? `expac -S "$ENV{EXPAC_FIELD}" $_` : $_ } map { `arch-rebuild-order --no-reverse-depends --repos=universe,core,extra,multilib,universe-resolvedeps $_` } join " ", grep  { my $in = $_; $ENV{FILTER} ? $in =~ /$ENV{FILTER}/ : 1 } uniq map { chomp $_; $_ } map { `expac -S "%n" $_` } join " ", uniq  map { chomp $_; qq{"$_"} } map { chomp $_; `pactree -lus "$_"` } map { `expac -Ss "%n" "$_"` } (@ARGV)' "${pkgptn[@]}"
 	
 	return $?
 }
@@ -124,7 +119,7 @@ rebasebuild() {
 		[[ -n "${MERGETOOL}" ]] && git config merge.tool "$MERGETOOL"
 
 		say "Updating .SRCINFO and committing changes since last pull..."
-		makepkg --printsrcinfo >.SRCINFO
+		makepkg --printsrcinfo > .SRCINFO
 		git add PKGBUILD .SRCINFO
 		git commit -S -m '...'
 

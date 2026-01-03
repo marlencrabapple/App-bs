@@ -34,6 +34,7 @@ my %args = (
     },
 
     requires => {
+        'Class::Exporter' => '0',
         'Const::Fast::Exporter' => '0',
         'DBD::SQLite' => '0',
         'DBI' => '0',

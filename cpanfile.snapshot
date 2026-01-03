@@ -201,6 +201,12 @@ DISTRIBUTIONS
       Class::Data::Inheritable 0.10
     requirements:
       ExtUtils::MakeMaker 0
+  Class-Exporter-0.03
+    pathname: S/SP/SPLICE/Class-Exporter-0.03.tar.gz
+    provides:
+      Class::Exporter 0.03
+    requirements:
+      ExtUtils::MakeMaker 0
   Class-Inspector-1.36
     pathname: P/PL/PLICEASE/Class-Inspector-1.36.tar.gz
     provides:

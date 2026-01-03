@@ -88,16 +88,20 @@ sub run {
     my @minilcmd;
 
     foreach my $cmd (qw(clean build dist install clean>1)) {
-        my ( $cmd, $req ) = $cmd =~ /[a-z]+[=<>]/;
+        my ( $cmd, $cond ) = $cmd =~ /^([a-z]+)
+                                      ([=<>]{1}(?:=)?
+                                      ([0-9]+))?$
+                                    /x;
         push @minilcmd, { $cmd => [ $trial ? '--trial' : () ] };
     }
 
-    push @minilcmd, 'clean' if $clean;
-    push @minilcmd, 'build' if $build;
-    push @minilcmd, 'dist'  if $dist;
-    push @minilcmd, 'install' if $install;
-    push @minilcmd, 'install' if $install;
-    push @minilcmd, 'clean',  if $clean > 1;
+    # push @minilcmd, 'clean' if $clean;
+    # push @minilcmd, 'build' if $build;
+    # push @minilcmd, 'dist'  if $dist;
+    # push @minilcmd, 'install' if $install;
+    # push @minilcmd, 'clean',  if $clean > 1;
+    # push @minilcmd, '--trial' if $trial
+
     minil( \@minilcmd );
 }
 
