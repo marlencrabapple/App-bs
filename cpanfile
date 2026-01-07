@@ -38,6 +38,8 @@ requires 'Object::Pad::FieldAttr::Trigger';
 requires 'YAML';
 requires 'YAML::Tiny';
 
+requires 'IPC::Nosh';
+
 on 'test' => sub {
     requires 'Test::More',       '0.98';
     requires 'Test::CPAN::Meta', '0.25';

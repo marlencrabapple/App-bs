@@ -16,3 +16,5 @@ TODO.md
 \._.+
 src\/.*$
 .*.tar.gz$
+.*.log
+^blib

@@ -15,11 +15,10 @@ use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev long_prefix_pattern=--?);
 use Const::Fast;
 use List::Util qw'first uniq';
-use IPC::Run3;
 
 use BS::Common;
 use BS::Package;
-use BS::Run;
+use IPC::Nosh;
 
 const our @REPO_DEFAULT => qw(
   universe
@@ -81,18 +80,20 @@ ADJUST {
     )
 }
 
-method outh ( $dest, %opt ) {
-    $dest //= delete $opt{dest};
-    sub ($line) { $self->run3out( $line, %opt, dest => $dest ) }
-}
+# method outh ( $dest, %opt ) {
+#     $dest //= delete $opt{dest};
+#     sub ($line) { $self->run3out( $line, %opt, dest => $dest ) }
+# }
 
-method run3out ( $line, %opt ) {
-    chomp $line;
-    my @line = $opt{split} ? split /$opt{split}/, $line : ($line);
-    push $opt{dest}->@*, @line if $opt{dest} && ref $opt{dest} eq 'ARRAY';
-    BS::Common::dmsg( \@line );
-    @line
-}
+# method run3out ( $line, %opt ) {
+#     chomp $line;
+#     my @line = $opt{split} ? split /$opt{split}/, $line : ($line);
+#     push $opt{dest}->@*, @line if $opt{dest} && ref $opt{dest} eq 'ARRAY';
+#     BS::Common::dmsg( \@line );
+#     @line
+# }
+
+# method
 
 method pkgfield ( $pkglist, $field, %opt ) {
     my $op = '-S';

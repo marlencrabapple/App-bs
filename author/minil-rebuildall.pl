@@ -8,7 +8,7 @@ use v5.40;
 use lib 'lib';
 
 use BS::Common;
-use IPC::Run3;
+use IPC::Nosh;
 
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev long_prefix_pattern=--?);
@@ -24,21 +24,6 @@ our $preserve_locallib = 1;
 our $outh              = [];
 our $errh              = [];
 
-my class Console : does(BS::Common) {
-    use IPC::Run3;
-    use Stream::Buffered;
-
-    field $inh;
-    field $outh;
-    field $errh;
-
-    ADJUST : params (:$in, :$out) {
-        for ( $in, $out ) {
-
-        }
-    }    #$_ = IO::Handle->new() for $out, $err;
-};
-
 sub update() {
     unlink "./local" if -d "./local" && !$preserve_locallib;
 
@@ -49,7 +34,8 @@ sub update() {
             last;
         }
     }
-    return 1;
+
+    1
 }
 
 sub git_pull_remote ($argstr) {
@@ -57,27 +43,25 @@ sub git_pull_remote ($argstr) {
     my %opt     = map { split /=/ } @pairstr;
     my @cmd     = ( qw(git pull), (%opt)[qw*branch remote*] );
 
-    BS::Common::dmsg(
-        { cmd => \@cmd, opt => \%opt, argstr => $argstr, pairstr => \@pairstr }
-    );
+    dmsg( \@cmd, \%opt, $argstr, \@pairstr );
 
     push @cmd, '--rebase' if $opt{rebase};
 
-    cmd( \@cmd, undef );
+    run( \@cmd, undef );
 }
 
 sub cmd ( $cmdlist, $in = \undef, $out = $outh, $err = $errh ) {
-    my $run3err = run3( $cmdlist, $in, $out, $err );
+    my $run3err = run( $cmdlist, $in, $out, $err );
     $?, $out, $err, $run3err;
 }
 
 sub minil (@cmd_ahref) {
     foreach my $cmd (@cmd_ahref) {
-        cmd( [ qw(carmel exec minil), $$cmd{cmd}, $$cmd{args}->@* ] );
+        run( [ qw(carmel exec minil), $$cmd{cmd}, $$cmd{args}->@* ] );
     }
 }
 
-sub run {
+sub cli {
     GetOptions( 'clean+', 'dist', 'build', 'install',
         'trial', 'updatedeps|update-dependencies',
         'update|git-pull-remote=s' );
@@ -105,4 +89,4 @@ sub run {
     minil( \@minilcmd );
 }
 
-run();
+cli();

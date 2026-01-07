@@ -316,14 +316,14 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
-  DBD-SQLite-1.76
-    pathname: I/IS/ISHIGAKI/DBD-SQLite-1.76.tar.gz
+  DBD-SQLite-1.78
+    pathname: I/IS/ISHIGAKI/DBD-SQLite-1.78.tar.gz
     provides:
-      DBD::SQLite 1.76
+      DBD::SQLite 1.78
       DBD::SQLite::Constants undef
       DBD::SQLite::GetInfo undef
-      DBD::SQLite::VirtualTable 1.76
-      DBD::SQLite::VirtualTable::Cursor 1.76
+      DBD::SQLite::VirtualTable 1.78
+      DBD::SQLite::VirtualTable::Cursor 1.78
       DBD::SQLite::VirtualTable::FileContent undef
       DBD::SQLite::VirtualTable::FileContent::Cursor undef
       DBD::SQLite::VirtualTable::PerlData undef

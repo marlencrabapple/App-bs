@@ -49,6 +49,7 @@ my %args = (
         'IO::Async' => '0',
         'IO::Async::SSL' => '0',
         'IO::Socket::SSL' => '0',
+        'IPC::Nosh' => '0',
         'IPC::Run3' => '0',
         'Inline' => '0',
         'Inline::C' => '0',
