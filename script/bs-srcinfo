@@ -17,9 +17,11 @@ use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case bundling auto_abbrev);
 use Path::Tiny;
 use Const::Fast;
-use IPC::Run3;
 use List::Util qw'uniq first';
 use BS::Package::SRCINFO;
+
+use IPC::Nosh;
+use IPC::Nosh::IO;
 
 const our $ENV_RE => qr/^(.*sh|env(?:vironment)?|export)$/;
 
@@ -64,7 +66,7 @@ ADJUSTPARAMS($params) {
             # Init serializer with settings
         }
         else {
-            Bs::Common::warn("Option --format=$$cliopt{format} is not valid");
+            danger("Option --format=$$cliopt{format} is not valid");
             $format = $OUTFMT{$ENV_RE};
         }
     }
@@ -134,7 +136,7 @@ method fname_wildcard_nover ( $pkgver = undef, $arch = undef )
     pkgfile_glob( $srcinfo_href, $pkgver );
 }
 
-method run : common ($argv, $clispec, $dest //= {}, %opt) {
+method cli : common ($argv, $clispec, $dest //= {}, %opt) {
     my $self = $class->new(
         clispec => $clispec,
         argv    => $argv,
@@ -143,7 +145,7 @@ method run : common ($argv, $clispec, $dest //= {}, %opt) {
 
     BS::Common::dmsg( { self => $self } );
 
-    say $self->srcinfo->as( $self->format, $$dest{field} );
+    say $self->as( $self->format, $$dest{field} );
     $self;
 }
 
@@ -171,7 +173,7 @@ our @clispec = (
 our %cliopt = ( field => [] );
 
 sub run {
-    srcinfo::cli->run( \@ARGV, \@clispec, \%cliopt );
+    srcinfo::cli->cli( \@ARGV, \@clispec, \%cliopt );
 }
 
 run()

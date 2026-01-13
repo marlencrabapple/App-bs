@@ -7,16 +7,19 @@ class BS::Package::SRCINFO;
 use utf8;
 use v5.40;
 
-use List::Util qw( any );
+use List::Util qw(any);
 use Const::Fast;
 use Scalar::Util;
 use Path::Tiny;
-use Tie::File ();
+use Tie::File;
 use Syntax::Keyword::Defer;
 use meta;
 use JSON::MaybeXS;
 use TOML::Tiny qw'to_toml from_toml';
 use YAML;
+
+use IPC::Nosh;
+use IPC::Nosh::IO;
 
 const our $SHENV_RE => qr/^(.*sh(?:env)?|env(?:vironment)?|export|eval)$/;
 
