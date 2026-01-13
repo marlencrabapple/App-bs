@@ -3,13 +3,16 @@
 use utf8;
 use v5.40;
 
+use lib 'lib';
+
 use Cwd;
 use File::chdir;
 use Path::Tiny;
 use Getopt::Long
-  qw(GetOptionsFromArray :config no_ignore_case bundling auto_abbrev);
-use IPC::Run3;
-use Data::Dumper;
+qw(GetOptionsFromArray :config no_ignore_case bundling auto_abbrev);
+
+use IPC::Nosh 'run';
+use IPC::Nosh::IO;
 
 our $modroot  = path('./')->absolute;
 our $input    = path("$modroot/script");
@@ -19,8 +22,7 @@ our $locallib = path("$modroot/local");
 our $verbose  = 1;
 our $debug    = $verbose;
 
-say STDERR Dumper( { '$ENV{PERL5LIB}' => $ENV{PERL5LIB} } )
-  if $ENV{DEBUG} || $verbose || $debug;
+dmsg( $ENV{PERL5LIB} );
 
 GetOptions(
     'input|file|script|=s',
@@ -32,46 +34,12 @@ GetOptions(
     'debug'
 );
 
-sub writeh ( $line, $handle, %opt ) {
-    binmode $handle, ":encoding(UTF-8)";
-    if ( $line isa 'ARRAY' ) {
-        say $handle $line for $handle->@*;
-    }
-    elsif ( !ref $line ) {
-        say $handle $line;
-    }
-}
-
-sub outh ($line) {
-    writeh( $line, *STDOUT );
-}
-
-sub errh ($line) {
-    writeh( $line, *STDERR );
-}
-
-sub info ($line) {
-    outh("▶ $line");
-}
-
-sub err ($line) {
-    errh("❌️ $line");
-}
-
-sub fatal ( $line, $status = $? // 255, %opt ) {
-    err($line);
-    exit $status;
-}
-
-sub success ($line) {
-    outh("⭕️ $line");
-}
-
 sub fatpack {
     $CWD = $modroot;
-    run3( [qw(carmel install)] );
-    run3( [qw(carmel package)] );
-    run3( [qw(carmel rollout)] );
+    run( [qw(carton install)], out => [] );
+
+    #run( [qw(carton vendor)] );
+    #run( [qw(carmel)] );
 
     $ENV{PERL5LIB} = "$locallib:$modroot/lib";
 
@@ -84,14 +52,16 @@ sub fatpack {
       )
     {
         #fatpack($in->children) if $in->is_dir;
-
+        my @fatlines;
         my $fatstr = "";
         my @cmd    = ( qw(fatpack pack), $in );
 
         binmode STDERR, ":encoding(UTF-8)";
         info( "Running " . join " ", @cmd );
 
-        run3( \@cmd, \undef, \$fatstr );
+        run( \@cmd, out => \@fatlines, autoflush => 1, autochomp => 1 );
+        
+        $fatstr = join "\n", @fatlines;
 
         my $fatout = sprintf( ( $outfn || '%s.fat' ), $in->basename );
 

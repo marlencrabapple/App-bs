@@ -9,7 +9,7 @@ use lib 'lib';
 
 use BS::Common;
 use IPC::Nosh;
-
+use IPC::Nosh::IO;
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev long_prefix_pattern=--?);
 

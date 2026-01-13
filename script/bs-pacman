@@ -11,7 +11,8 @@ use v5.40;
 
 use lib 'lib';
 
-use IPC::Run3;
+use IPC::Nosh;
+use IPC::Nosh::IO;
 use Const::Fast;
 use Syntax::Keyword::Try;
 use Syntax::Keyword::Dynamically;
@@ -46,28 +47,15 @@ method $run (%opts) {
     push @overwrite, '--needed' if $$env{as_needed};
 
     try {
-        # Avoid delays in relaying output
-        # my $stdout = select(STDOUT);
-        # $|++;
-        # select(STDERR);
-        # $!++;
-        # select($stdout);
+        my $ret = run(
+            [ 'pacman', @overwrite, '--verbose', @ARGV ],
+            autochomp => 1,
+            autoflush => 1,
+            out       => $out_aref,
+            err       => $err_aref
+        );
 
-        my $inh = IO::Handle->new_from_fd( fileno(STDIN), "r" );
-        $inh->autoflush(1);
-        my $outh = IO::Handle->new_from_fd( fileno(STDOUT), "w" );
-        my $errh = IO::Handle->new_from_fd( fileno(STDERR), "w" );
-
-        tie @$out_aref, 'Tie::File', $outh;
-        tie @$errh,     'Tie::File', $errh;
-
-        my $ret = run3( [ 'pacman', @overwrite, '--verbose', @ARGV ],
-            $inh, $out_aref, $err_aref );
-
-        ( $status, $errmsg ) =
-          $? != 0 ? ( $?, $! ) : ( 0, '', $$err_aref[ scalar @$err_aref ] );
-
-        BS::Common::dmsg(
+        dmsg(
             {
                 overwrite => \@overwrite,
                 ret       => $ret,
@@ -84,14 +72,14 @@ method $run (%opts) {
         chomp $errmsg;
         $errmsg =~ s/^(.+)[\s\r\n]*/$1/g;
 
-        BS::Common::dmsg(
+       dmsg(
             { errmsg => $errmsg, status => $status, opts => \%opts } )
     };
 
     $status ? 0 : 1;
 }
 
-method run : common ($argv, %opts) {
+method cli : common ($argv, %opts) {
     my $app  = $class->new( argv => $argv, %opts{qw''} );
     my $exit = $app->$run;
     $app;
@@ -104,7 +92,7 @@ use v5.40;
 use BS::Common 'dmsg';
 
 sub run {
-    our $app = App::BS::CLI::pacman->run( \@ARGV );
+    our $app = App::BS::CLI::pacman->cli( \@ARGV );
     BS::Common::dmsg( { app => $app } );
 }
 
