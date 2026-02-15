@@ -17,6 +17,7 @@ use List::Util qw'any uniq';
 use File::chdir;
 use File::Temp;
 use Const::Fast::Exporter;
+use IPC::Nosh::IO;
 
 const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?';
 
@@ -72,7 +73,7 @@ method parse_pkgstr : common ($pkgstr) {
     my ( $prefix, $_pkgidenstr, $isfile, $sep, $attr, @extra ) =
       $pkgstr =~ $pkgstr_re;
 
-    BS::Common::dmsg( { $prefix, $_pkgidenstr, $isfile, $sep, $attr, @extra } );
+    dmsg( $prefix, $_pkgidenstr, $isfile, $sep, $attr, @extra );
 }
 
 method lookup : common ($field_href, %opts) {

@@ -72,28 +72,15 @@ ADJUST {
         'fmtstr=s',
         'buildorder!',
         'sort=s{1,}',
+        'seperator=s',
         'asc', 'desc', 'exact!', 'debug',
-        'repo=s{1,}', 'reversedeps!',
+        'repo=s{1,}',
+        'reversedeps!',
         '<>' => sub ($barearg) {
             push @in, $barearg;
         }
     )
 }
-
-# method outh ( $dest, %opt ) {
-#     $dest //= delete $opt{dest};
-#     sub ($line) { $self->run3out( $line, %opt, dest => $dest ) }
-# }
-
-# method run3out ( $line, %opt ) {
-#     chomp $line;
-#     my @line = $opt{split} ? split /$opt{split}/, $line : ($line);
-#     push $opt{dest}->@*, @line if $opt{dest} && ref $opt{dest} eq 'ARRAY';
-#     BS::Common::dmsg( \@line );
-#     @line
-# }
-
-# method
 
 method pkgfield ( $pkglist, $field, %opt ) {
     my $op = '-S';
@@ -132,11 +119,15 @@ method pkgname ( $pkglist, %opt ) {
 }
 
 method pactree ( $pkglist, %opt ) {
+    my @res = ();
     $opt{dest} //= [];
-    $pkglist = [$pkglist] unless ref $pkglist eq 'ARRAY';
+    $pkglist = [ split /[\s,]+/, $pkglist ] unless ref $pkglist eq 'ARRAY';
+
     foreach my $pkgstr (@$pkglist) {
-        run( [ qw(pactree -lus), $pkgstr ], \undef, $self->outh( $opt{dest} ) );
+        push @res,           run( [ qw(pactree -lus), $pkgstr ] );
+        push $opt{dest}->@*, $res[ scalar $opt{dest}->@* ]->out;
     }
+
     $opt{dest};
 }
 
@@ -162,11 +153,10 @@ method pkgtree ( $pkglist, %opt ) {
     my $out;
     my @pkgtree = scalar @ordered ? @ordered : @pactree;
     $out = $base ? $self->pkgbase( \@pkgtree, dest => $out ) : \@pkgtree;
-    @$out
+    @$out;
 }
 
 method $run (%opt) {
-
     $self->pkgtree( \@in, %opt );
 }
 
@@ -176,7 +166,7 @@ method cli : common ($argv = \@ARGV, %opt) {
 
     BS::Common::dmsg( \@pkgtree );
 
-    say "safsfd"
+    say join $self->{seperator}, @pkgtree;
 }
 
 package main;
