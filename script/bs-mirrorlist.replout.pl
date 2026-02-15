@@ -19,7 +19,7 @@ $out =~ s/^[\n\r\s]*$//mg
 $out
 $out =~ s/^#.+$//mg
 $out
-$out =~ s/^#.+$//g
+$out =~ s/^#.+$//g    
 $out
 my $mirrorlist_in = path("/etc/pacman.d/mirrorlist")
 my $out = $mirrorlist_in->slurp_utf8

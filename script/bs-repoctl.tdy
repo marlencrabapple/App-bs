@@ -43,7 +43,7 @@ field $repo_abspath;
 field $gpgiden : param(gpgid) = $ENV{BS_GPGFPR} // $ENV{BS_GPGPUBID};
 
 field $pkgqueue : param(packages) =
-path( $ENV{ first { $ENV{$_} && -d $ENV{$_} } qw'BS_PKGDEST PKGDEST' } )
+  path( %ENV{ first { $ENV{$_} && -d $ENV{$_} } qw'BS_PKGDEST PKGDEST' } )
   ->children(qr/.+-(any|x86_64_v3)\.pkg.tar.zst/);
 
 ADJUSTPARAMS($params) {
@@ -131,7 +131,7 @@ method cli : common ($argv = \@ARGV,%opt) {    #, %opts = ()) {
         argv    => $argv,
         dest    => $dest,
         clispec => \@clispec,
-        $opt{constructor}->%*
+        $opt{constructor}
     );
 
     my $res = $self->$run(%opt);
