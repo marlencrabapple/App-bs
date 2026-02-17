@@ -4,38 +4,26 @@ package BS::gobuild;
 use utf8;
 use v5.40;
 
+use File::chdir;
+use Path::Tiny;
 use Data::Dumper;
 use IPC::Run3;
 use Const::Fast;
-use Getopt::Long qw'GetOptionsFromArray :config bundling auto_abbrev';
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=-(?:-)?);
+use IPC::Nosh;
+use IPC::Nosh::IO;
 
 our @out = ();
 our @err = ();
-
-const our $writeh => sub ( $line, $status = $? // 0, %opt ) {
-    state $defaulth //= IO::Handle->new_from_fd( fileno(STDOUT), "w" );
-    my $h = $opt{handle} // $defaulth;
-    $h->printflush($line);
-    $status;
-};
-
-const our $outh => sub ( $line, %opt ) {
-    state $h //= IO::Handle->new_from_fd( fileno(STDOUT), "w" );
-    $writeh->( $line, $opt{status} // $? // 0, ( handle => $h, %opt ) );
-};
-
-const our $errh => sub ( $line, $status = $?, %opt ) {
-    state $h //= IO::Handle->new_from_fd( fileno(STDERR), "w" );
-    $writeh->( $line, $status, ( handle => $h, %opt ) );
-};
 
 my $argv = \@ARGV;
 
 const our %goenvironment => (
     goos       => lc( `uname -s` =~ s/[\n\r]+//rg ),
-    goarch     => lc( `uname -m` =~ s/[\n\r]+//rg ),
+    goarch     => lc( `uname -m` =~ s/[\n\r]+//rg =~ s/x86_64/amd64/rg ),
     gohostos   => lc( `uname -s` =~ s/[\n\r]+//rg ),
-    gohostarch => lc( `uname -m` =~ s/[\n\r]+//rg ),
+    gohostarch => lc( `uname -m` =~ s/[\n\r]+//rg =~ s/x86_64/amd64/rg ),
     goarm64    => undef,
     goarm      => undef,
     goamd64    => undef
@@ -49,7 +37,17 @@ const our %goarg_def => (
     modcacherw => 1
 );
 
-our %cliopts = ( %goenvironment, %goarg_def );
+const our $CLEAN_PREBUILD => qr'pre|prior|before|start|each|once'xxi;
+const our $CLEAN_FREQ     => qr'(?::(once|every|each))?';
+
+const our $CLEAN_POSTBUILD => qr'^(
+  (?:post|after|success|fail
+     $CLEAN_FREQ)
+   |(?:each|every)
+   |exit
+  )$'xxi;
+
+our %cliopts = ( %goenvironment, %goarg_def, clean => ['pre'] );
 
 GetOptionsFromArray(
     $argv,
@@ -58,8 +56,18 @@ GetOptionsFromArray(
     (
         map { ( $goarg_def{$_} !~ /^(1|0)$/ || !$goarg_def{$_} ) ? "$_=s" : $_ }
           keys %goarg_def
-    )
+    ),
+    "clean=s@",
+    '<>' => sub ($barearg) {
+        $cliopts{srcdir} = path($barearg)->assert(
+            sub {
+                $_->is_dir;
+            }
+        );
+    }
 );
+
+push $cliopts{clean}->@*, map { split /,/, $_ } $cliopts{clean}->@*;
 
 my $debug = $cliopts{debug} || $ENV{DEBUG};
 
@@ -79,14 +87,42 @@ foreach my ( $k, $v ) ( %cliopts{ keys %goarg_def } ) {
     }
 }
 
-say STDERR Dumper(
-    {
-        argv          => $argv,
-        cliopts       => \%cliopts,
-        goarg         => \@goarg,
-        goenvironment => \%goenvironment,
-        ENV           => { %ENV{ keys %goenvironment } }
-    }
-);
+# say STDERR Dumper(
+our $dbg_state_prebuild = {
+    argv          => $argv,
+    cliopts       => \%cliopts,
+    goarg         => \@goarg,
+    goenvironment => \%goenvironment,
+    ENV           => { %ENV{ keys %goenvironment } }
+};
 
-run3( [ qw(go install), @goarg ], \undef, $outh, $errh );
+# );
+
+dmsg($dbg_state_prebuild);
+
+sub clean ($aref) {
+    ...;
+
+    foreach my $val (@$aref) {
+        if ( $val =~ $CLEAN_PREBUILD ) {
+
+        }
+        elsif ( my @when = ( $val =~ $CLEAN_POSTBUILD ) ) {
+            if ( scalar @when == 2 ) {
+                if ( $when[0] =~ $CLEAN_FREQ ) {
+
+                }
+            }
+        }
+    }
+}
+
+sub build {
+    $CWD = $cliopts{srcdir};
+    our $run = run( [ qw(go install), @goarg ] );
+    dmsg($run);
+    $run;
+}
+
+our $run = build();
+exit $run->status;

@@ -2,33 +2,28 @@ use Object::Pad qw(:experimental(:all));
 
 package BS::Package;
 
-role BS::Package : does(BS::Common);    #: does(BS::Package::Meta);
+role BS::Package;
 
 use utf8;
 use v5.40;
 
-{
-    no warnings 'experimental';
-    use re 'strict';
-}
+no warnings 'experimental';
+use re 'strict';
 
-use Carp;
 use List::Util qw'any uniq';
-use File::chdir;
-use File::Temp;
-use Const::Fast::Exporter;
+use Const::Fast;
 use IPC::Nosh::IO;
 
-const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?';
+const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?'xi;
 
 const our $pkgprefix_re => qr/(?:(lib)\:)?/;
 
-const our $pkgstr_re => qr/^$pkgprefix_re
+const our $pkgstr_re => qr/$pkgprefix_re
           		           ($pkgname_common_re(\.so(?:\.[0-9]+)?)
 			              | $pkgname_common_re )
                           /xxi;
 
-const our $epoch_re  => qr'([0-9]+?):'xi;
+const our $epoch_re  => qr'([0-9]+?)'xi;
 const our $pkgver_re => qr'([^\s:/\-]+?)'xi;
 const our $pkgrel_re => qr'([0-9]+?)'xi;
 const our $arch_re   => qr'(any|aarch64|i368|i638|(?:x86_64(?:_v3)?))'xi;
@@ -41,39 +36,31 @@ const our $pkgfile_re => qr'$pkgstr_re
 			                .$pkgext_re
 			               'xxi;
 
-const our $pkgspec_re => qr'';
+const our $pkgspec_re => qr'$pkgstr_re
+                            -(?:$epoch_re:)?
+                            $pkgver_re-$pkgrel_re
+	               		    -$arch_re
+			                (.$pkgext_re)?
+			               'xxi;
 
-role BS::Package::Stub : does(BS::Package::Meta) {
-    field $search : inheritable : param : accessor = "";
+method parse_pkg_fname : common ($pkgfile) {
+    $pkgfile = path($pkgfile);
 
-    method upgrade ( $field_href, %opts ) {
-        ...;
-    }
-};
+    my $basename = $pkgfile->basename;
+    my @match    = ( $pkgfile =~ /^$pkgfile_re$/g );
 
-ADJUSTPARAMS($params) {
+    dmsg( $pkgfile, $basename, @match );
 
-    # if ( $search && none( @$name, $base ) ) {
-    #     ( $base, $name ) = $self->$search()->@[qw(name base)];
-    # }
-}
-
-# method $search ( $pkgstr = $search, %opts ) {
-
-# }
-
-method search : common ($search) {
-    my $self = BS::Package->new( search => $search );
-    $self->$search();
-
-    #$self->p
+    @match;
 }
 
 method parse_pkgstr : common ($pkgstr) {
-    my ( $prefix, $_pkgidenstr, $isfile, $sep, $attr, @extra ) =
-      $pkgstr =~ $pkgstr_re;
+    my @match = ( $pkgstr =~ $pkgstr_re );
+    my ( $_pkgidenstr, $isfile, $sep, $attr, @extra ) = @match;
 
-    dmsg( $prefix, $_pkgidenstr, $isfile, $sep, $attr, @extra );
+    dmsg( $pkgstr, $_pkgidenstr, $isfile, $sep, $attr, @extra );
+
+    @match;
 }
 
 method lookup : common ($field_href, %opts) {
@@ -127,7 +114,7 @@ method fetch : common ($pkgstr, %args) {
             [ qw(pkgctl repo clone --protocol=https), $$pkgres{base} ] );
     }
 
-    carp $res->out;
+    dmsg( $res->out );
 
     $class->bsx(
         [
@@ -136,7 +123,7 @@ method fetch : common ($pkgstr, %args) {
         ]
     );
 
-    carp $res->out;
+    dmsg( $res->out );
 }
 
 method pkgfile_glob : common ( $srcinfo, $pkgver ) {
