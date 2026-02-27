@@ -12,12 +12,11 @@ use v5.40;
 use parent 'Exporter';
 use vars '@EXPORT';
 
-use Cwd qw( cwd );
-use Getopt::Long
-  qw(GetOptionsFromArray :config no_ignore_case bundling auto_abbrev);
+use Cwd          qw( cwd );
+use Getopt::Long qw(GetOptionsFromArray :config no_ignore_case auto_abbrev);
 use Path::Tiny;
 use Const::Fast;
-use List::Util qw'uniq first';
+use List::Util qw'uniq first any';
 use BS::Package::SRCINFO;
 
 use IPC::Nosh;
@@ -37,16 +36,17 @@ const our %OUTFMT => (
     storable      => '',
     'data-dumper' => ''
 );
+const our $execdir => path(cwd);
 
-field $clispec : param;
+field $clispec : param          : reader;
 field $cliopt  : param(clidest) : reader;
-field $argv    : param;
+field $argv    : param          : reader;
 
-field $infile = path( Cwd::abs_path(cwd) . '/.SRCINFO' );
+field $infile //= path( $execdir->absolute . '/.SRCINFO' );
 
-# Is there somewhere we can handle a no clobber flag in the environment
-# more consistently?
-field $outfile { $infile unless %$cliopt{qw(readonly noop no-update)} };
+field $outfile {
+    $infile unless any { $_ } @$cliopt{qw(readonly noop no-update)}
+};
 
 field $field = $$cliopt{field};
 field $format : reader = $$cliopt{format} // { %OUTFMT{$ENV_RE} };
@@ -56,6 +56,8 @@ field $srcinfo_href = {};
 field $srcinfo : reader;
 
 ADJUSTPARAMS($params) {
+    $self->getopt;
+    $self->load;
     if ( $$cliopt{format} ) {
         if ( $$cliopt{format} =~ $ENV_RE ) {
             $format = $OUTFMT{$ENV_RE};
@@ -72,7 +74,12 @@ ADJUSTPARAMS($params) {
     }
 }
 
-method get_options ( $argv, $optspec, $optdest, %optss ) {
+method getopt (
+    $argv    = $self->argv,
+    $optspec = $self->clispec,
+    $optdest = $self->cliopt, %opt
+  )
+{
     my @getoptspec = ();
 
     foreach my ( $k, $v ) (@$optspec) {
@@ -94,10 +101,10 @@ method get_options ( $argv, $optspec, $optdest, %optss ) {
     GetOptionsFromArray( ( $argv // \@ARGV ), $optdest, @getoptspec );
 }
 
-# sub pkgfile_glob ( $srcinfo, $pkgver ) {
+# method pkgfile_glob ( $srcinfo, $pkgver, $arch ) {
 #     my $pkgver_str;
 
-#     BS::Common::dmsg( { srcinfo => $srcinfo, pkgver => $pkgver } );
+#     dmsg $srcinfo, $pkgver;
 
 #     if ($pkgver) {
 #         if (
@@ -131,9 +138,13 @@ method get_options ( $argv, $optspec, $optdest, %optss ) {
 #     $glob;
 # }
 
-method fname_wildcard_nover ( $pkgver = undef, $arch = undef )
-{    # pass your own or set to 1 for current
-    pkgfile_glob( $srcinfo_href, $pkgver );
+# method fname_wildcard_nover ( $arch = undef )
+# {    # pass your own or set to 1 for current
+#     pkgfile_glob( $srcinfo_href, undef, $arch );
+# }
+
+method as ( $format = $self->format, $field = $self->field ) {
+    $srcinfo->as( $format, $field );
 }
 
 method cli : common ($argv, $clispec, $dest //= {}, %opt) {
@@ -143,23 +154,24 @@ method cli : common ($argv, $clispec, $dest //= {}, %opt) {
         clidest => $dest
     );
 
-    BS::Common::dmsg( { self => $self } );
+    dmsg $self;
 
-    say $self->as( $self->format, $$dest{field} );
+    say $self->as( @$dest{qw(format field)} );
     $self;
 }
 
-method load ($in) {
+method load ( $in = $infile ) {
     $infile  = $in;
     $srcinfo = BS::Package::SRCINFO->new( file => $in );
 }
 
 package main;
 
-use Path::Tiny qw( path );
+use v5.40;
 
-#         GetOptions( "library=s" => \@libfiles );
-#         @libfiles = split( /,/, join( ',', @libfiles ) );
+use Path::Tiny;
+use IPC::Nosh::IO;
+
 our @clispec = (
     'field|fields|out-fields|outfields|filter|select' => 's{1,}',
     'format|out-format|fmt|of|outfmt'                 => 's',
@@ -172,8 +184,5 @@ our @clispec = (
 
 our %cliopt = ( field => [] );
 
-sub run {
-    srcinfo::cli->cli( \@ARGV, \@clispec, \%cliopt );
-}
-
-run()
+our $cli = srcinfo::cli->cli( \@ARGV, \@clispec, \%cliopt );
+dmsg $cli;

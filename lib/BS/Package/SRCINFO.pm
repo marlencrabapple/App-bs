@@ -13,6 +13,7 @@ use Scalar::Util;
 use Path::Tiny;
 use Tie::File;
 use Syntax::Keyword::Defer;
+use Syntax::Keyword::Dynamically;
 use meta;
 use JSON::MaybeXS;
 use TOML::Tiny qw'to_toml from_toml';
@@ -45,24 +46,22 @@ field $depends = {
 field $cksum   = {};
 field $options = [];
 
-field $_file : reader(file) : param(file) //=
-  Path::Tiny::tempfile('.SRCINFOXXXXXXX');
-field $_srcinfo   : reader(srcinfo) : param(str) //= $_file->slurp_utf8;
-field $_hrefcache : reader;
-field $_json      : reader(json);
+field $file    : reader(file)    : param(file) //= undef;
+field $content : reader(content) : param(str)  //= $file->slurp_utf8;
+field $href    : reader(as_href);
+field $json    : reader(json) { $self->init_json };
 
 ADJUSTPARAMS($params) {
-    $_json //= $self->_init_json;
 
-    if ($_file) {
-        %$_hrefcache = __PACKAGE__->from_srcinfo($_file)->%*;
+    if ($file) {
+        %$href = __PACKAGE__->from_srcinfo($file)->%*;
         (
             $pkgname,  $pkgbase, $pkgver, $epoch,
             $pkgrel,   $arch,    $source, $conflicts,
             $provides, $depends, $cksum,  $options
-        ) = values %$_hrefcache;
+        ) = values %$href;
 
-        BS::Common::dmsg( _hrefcache => $_hrefcache );
+        dmsg $href;
     }
 
     # else {
@@ -142,15 +141,16 @@ method values (%opts) {
 }
 
 method writeline ( $line, %opts ) {
-    $opts{noop} || say $_file->append_utf8($line);
+    $opts{noop} || say $file->append_utf8($line);
 }
 
-method to_href {
-    my @fields = ( $self->fields );
+method to_href (@fields) {
+    @fields = $self->fields->@*
+      unless scalar @fields;
 
     foreach my ( $k, $v ) ( map { $_->name => $_->value } @fields ) {
 
-        if ( my $_v = $$_hrefcache{$k} ) {
+        if ( my $_v = $$href{$k} ) {
 
             if ( blessed $_v ) {
                 ...;
@@ -167,11 +167,7 @@ method to_href {
         }
     }
 
-    $_hrefcache;
-}
-
-method as_href {
-    $self->to_href;
+    $href;
 }
 
 method parse_line : common ( $line, %opts ) {
@@ -214,9 +210,9 @@ method as_SRCINFO (%opts) {
 
     defer {
         warn "hihihi";
-        $_file->spew_utf8(@lines)
+        $file->spew_utf8(@lines)
           if any { $_ } @opts{qw(write update)}
-          && $_file->exists
+          && $file->exists
     }
 
     const my $PKGBASENAME_RE => qr/^pkg(name|base)$/;
@@ -242,7 +238,7 @@ method as_SRCINFO (%opts) {
       :                    join "\n", @lines;
 }
 
-method $init_json (%opts) {
+method init_json (%opts) {
     const my @JSON_ALLOWEDKEYS => qw(pretty utf8 allow_blessed allow_nonref);
 
     state %json_constructor = (
@@ -255,20 +251,20 @@ method $init_json (%opts) {
 
     );
 
-    $_json = JSON::MaybeXS->new(%json_constructor);
+    $json = JSON::MaybeXS->new(%json_constructor);
 
-    $_json;
+    $json;
 }
 
-method as_json ( $ashref = $self->as_href, %opts ) {
-    $self->$init_json(%opts);
+method as_json ( $href = $self->as_href, %opt ) {
+    dynamically $json = $self->init_json(%opt);
 
     # Consider ordering keys on demand?
-    $_json->encode($ashref);
+    $json->encode($href);
 }
 
-method as_toml ( $ashref = $self->as_href ) {
-    to_toml($ashref);
+method as_toml ( $href = $self->as_href ) {
+    to_toml($href);
 }
 
 method as_yaml {
