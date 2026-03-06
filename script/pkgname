@@ -1,0 +1,75 @@
+#!/usr/bin/env perl
+use Object::Pad ':experimental(:all)';
+
+package pkgname;
+
+use lib 'lib';
+
+class pkgname;
+
+use utf8;
+use v5.40;
+
+use File::chdir;
+use Path::Tiny;
+use List::Util qw'uniq any';
+use Const::Fast;
+use IPC::Nosh;
+use IPC::Nosh::IO;
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev passthrough long_prefix_pattern=--?);
+
+field $verbose : param = 0;
+field $debug   : param = 0;
+
+ADJUST {
+    dmsg $self
+}
+
+const our $so_re => qr/.+\.so(?:\.([0-9\.]+[0-9]{1}))*/;
+
+method pkgname ( $in, $updatedb = 1 ) {
+    my @cmd;
+    if ( my ($ver) = $in =~ $so_re ) {
+        @cmd = qw(pacman -F -q);
+        if ($updatedb) {
+            push @cmd, '-y';
+            unshift @cmd, 'sudo';
+        }
+
+    }
+    else {
+        my $field = "%r/%n";
+        @cmd = ( qw(expac -S), $field );
+    }
+
+    my $run = run( [ @cmd, $in ], autochomp => 1 );
+    dmsg($run);
+    my ( $repo, $name ) = split /\//, $run->out->[0];
+
+    ( $name, repo => $repo );
+}
+
+method cli : common ($argv = \@ARGV) {
+    my %clidest = ();
+    my $pkgname_in;
+    GetOptionsFromArray(
+        $argv,
+        \%clidest,
+        'installed',
+        'verbose+',
+        'debug+',
+        '<>' => sub ($barearg) {
+            $pkgname_in = $barearg;
+        }
+    );
+
+    my $self = $class->new(%clidest);
+    $self->pkgname($pkgname_in);
+
+    return $self;
+}
+
+package main;
+
+pkgname->cli( \@ARGV )
