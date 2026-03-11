@@ -65,7 +65,7 @@ method cli : common ($argv = \@ARGV) {
     );
 
     my $self = $class->new(%clidest);
-    $self->pkgname($pkgname_in);
+    say $self->pkgname($pkgname_in);
 
     return $self;
 }
