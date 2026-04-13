@@ -7,12 +7,12 @@ use v5.40;
 use File::chdir;
 use Path::Tiny;
 use Data::Dumper;
-use IPC::Run3;
+
 use Const::Fast;
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=-(?:-)?);
 use IPC::Nosh;
-use IPC::Nosh::IO;
+use IPC::Nosh::Common;
 
 our @out = ();
 our @err = ();
@@ -57,7 +57,8 @@ GetOptionsFromArray(
         map { ( $goarg_def{$_} !~ /^(1|0)$/ || !$goarg_def{$_} ) ? "$_=s" : $_ }
           keys %goarg_def
     ),
-    "clean=s@",
+    'clean=s@',
+    'tidy',
     '<>' => sub ($barearg) {
         $cliopts{srcdir} = path($barearg)->assert(
             sub {
@@ -125,4 +126,6 @@ sub build {
 }
 
 our $run = build();
-exit $run->status;
+dmsg $run
+
+  #exit $run->status;

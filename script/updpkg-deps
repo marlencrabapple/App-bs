@@ -1,0 +1,72 @@
+#!/usr/bin/env perl
+package updpkg_deps;
+
+use v5.40;
+use List::Util 'first';
+use IPC::Run3;
+use IPC::Nosh::Common;
+
+
+
+sub upgpkg_list {
+my @upgpkg;
+  run3([qw'pacman -Qqu'], \undef, sub ($line) {
+		  chomp $line;
+	push @upgpkg, $line
+	  });
+  return @upgpkg
+}
+
+sub pkgtree ($pkg) {
+my @pkgtree;
+	run3([qw'pactree -lus', $pkg], \undef, sub ($line) {
+			chomp $line;
+			push @pkgtree, $line
+		});
+	@pkgtree
+}
+
+sub pkgname ($pkgstr) {
+	my @pkgname;
+
+      run3([qw'pacman -Sqs', "^$pkgstr"], \undef, sub ($line) {
+        chomp $line;
+	push @pkgname, $line if $line =~ /^[a-z0-9_\.-]+$/
+      });
+
+      if(!scalar @pkgname) {
+        run3([qw'pacman -Fq', $pkgstr], \undef, sub ($line) {
+	  chomp $line;
+	  my ($repo, $_pkgname) = ($line =~ /.+\/(.+)/);
+	  push @pkgname, $_pkgname if $_pkgname =~ /^[a-z0-9_\.-]+$/;
+      	});
+      }
+      @pkgname
+}
+
+sub upgpkg_deps (@search) {
+  my %upgpkg;
+  my @found;
+  for my ($pkg, $dep_aref) (map { ($_ => [] )} upgpkg_list()) {
+	  say "Searching $pkg dependency tree...";
+    foreach my $dep_pkgname (map { pkgname($_) } pkgtree($pkg)) {
+	    if (my $found = first { $_ eq $dep_pkgname} @search) {
+		    push @found, $upgpkg{$pkg};
+	    say "$pkg wants $found"
+	    }
+	    push @$dep_aref, $dep_pkgname
+
+    }
+    
+    say "\t" . (join " ", @$dep_aref) . "\n";
+    warn "$dep_aref";
+
+    $upgpkg{$pkg} = $dep_aref
+  }
+  dmsg \%upgpkg, \@search, \@found;
+  }
+
+  #dmsg \%updpkg, \@search
+
+
+upgpkg_deps(@ARGV)

@@ -1,0 +1,20 @@
+#!/usr/bin/env perl
+use Object::Pad ':experimental(:all)';
+
+package App::BS::pkgtree;
+class App::BS::pkgtree;
+
+use utf8;
+use v5.42;
+
+use IPC::Nosh;
+use IPC::Nosh::Common;
+use List::Util qw'any';
+
+method pkgtree :common ($argv = \@ARGV, %opt) {
+  
+}
+
+package pkgtree;
+
+App::BS::pkgtree->pkgtree(\@ARGV);
