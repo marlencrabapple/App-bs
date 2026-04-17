@@ -1,8 +1,9 @@
 #!/usr/bin/env perl
 
-use Object::Pad ':experimental(:all)'
+use Object::Pad ':experimental(:all)';
 
 package gitremotesync;
+
 class gitremotesync;
 
 use utf8;
@@ -13,3 +14,10 @@ use IPC::Nosh::Common;
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=-(?:-)?);
 
+field $cliopt : reader = {};
+
+method cli : common {
+    ...
+
+    #  GetOptionsFromArray($)
+}

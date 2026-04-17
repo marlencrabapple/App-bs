@@ -1,6 +1,6 @@
 #!/usr/bin/env ksh
 
-[[ "${DEBUG:-1}" -ne 0 ]] && set -x;
+[[ ${DEBUG:-1} -ne 0 ]] && set -x -ofunctrace
 
 err() {
   msg="$1"
@@ -10,46 +10,45 @@ err() {
 
 packagelist=("$@")
 if [[ ${#packagelist[*]} -lt 1 ]]; then
-	err "No package names given!"
-	exit 1
+  err "No package names given!"
+  exit 1
 fi
 
 for package in ${packagelist[*]}; do
-  [[ -z "$package" ]] \
-	  && err "\$package is an empty string!" \
-	  && exit 1
+  [[ -z $package ]] &&
+    err '$package is an empty string!' &&
+    exit 1
 
   pkgname="${package//::/-}"
   pkgname="perl-${pkgname,,*}"
 
-  [[ -n "$(sudo pacman -Ssq $pkgname)" ]] \
-	  && [[ $? -eq 0 ]] \
-	  && >&2 echo "$pkgname is already in the pacman sync database" \
-	  && continue
+  [[ -n "$(sudo pacman -Ssq $pkgname)" ]] &&
+    [[ $? -eq 0 ]] &&
+    >&2 echo "$pkgname is already in the pacman sync database" &&
+    continue
 
   #[[ -f "$pkgname"* ]] || cpan2aur "$pkgname";
   cpan2aur "$package" || continue
-  
+
   srcdist=(./"$pkgname-"*src.tar.gz)
-  [[ ! -f "$srcdist" ]] \
-	  && err "Could not find source distribution in '$(pwd)'" \
-	  && continue
+  [[ ! -f $srcdist ]] &&
+    err "Could not find source distribution in '$(pwd)'" &&
+    continue
 
-  pkgver="${srcdist/#$pkgname-}"
-  pkgver="${pkgver/%*src.tar.gz}"
+  pkgver="${srcdist#$pkgname-}"
+  pkgver="${pkgver%.src.tar.gz}"
 
-  [[ -z "$pkgver" ]] \
-	  && err "Could not properly parse package version string from source distribution filename." \
-	  && continue
+  [[ -z $pkgver ]] &&
+    err "Could not properly parse package version string from source distribution filename." &&
+    continue
 
   srcdir="$pkgname-$pkgver"
   mkdir -pv "$srcdir" || continue
 
   bsdtar -xvf "$pkgname-$pkgver.src.tar.gz" -C"$srcdir" # || continue
   cd "$srcdir/$pkgname" || continue
-  
+
   nvim PKGBUILD
- 
+
   makepkg -Lisf
 done
-
