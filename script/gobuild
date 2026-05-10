@@ -19,7 +19,7 @@ our @err = ();
 
 my $argv = \@ARGV;
 
-const our %goenvironment => (
+const our %CLI_GOENV_DEFAULT => (
     goos       => lc( `uname -s` =~ s/[\n\r]+//rg ),
     goarch     => lc( `uname -m` =~ s/[\n\r]+//rg =~ s/x86_64/amd64/rg ),
     gohostos   => lc( `uname -s` =~ s/[\n\r]+//rg ),
@@ -29,7 +29,7 @@ const our %goenvironment => (
     goamd64    => undef
 );
 
-const our %goarg_def => (
+const our %GOARG_DEFAULTS => (
     x          => 1,
     ldflags    => '-compressdwarf=false',
     buildmode  => 'pie',
@@ -47,15 +47,19 @@ const our $CLEAN_POSTBUILD => qr'^(
    |exit
   )$'xxi;
 
-our %cliopts = ( %goenvironment, %goarg_def, clean => ['pre'] );
+our %cliopts = ( %CLI_GOENV_DEFAULT, %GOARG_DEFAULTS, clean => ['pre'] );
 
 GetOptionsFromArray(
     $argv,
     \%cliopts,
-    ( map { "$_=s" } keys %goenvironment ),
+    ( map { "$_=s" } keys %CLI_GOENV_DEFAULT ),
     (
-        map { ( $goarg_def{$_} !~ /^(1|0)$/ || !$goarg_def{$_} ) ? "$_=s" : $_ }
-          keys %goarg_def
+        map {
+            ( $GOARG_DEFAULTS{$_} !~ /^(1|0)$/ || !$GOARG_DEFAULTS{$_} )
+              ? "$_=s"
+              : $_
+          }
+          keys %GOARG_DEFAULTS
     ),
     'clean=s@',
     'tidy',
@@ -72,14 +76,16 @@ push $cliopts{clean}->@*, map { split /,/, $_ } $cliopts{clean}->@*;
 
 my $debug = $cliopts{debug} || $ENV{DEBUG};
 
-foreach my ( $key, $val ) ( %cliopts{ map { lc $_ } keys %goenvironment } ) {
-    warn Dumper( $key, $val ) if $debug;
-    $ENV{ uc $key } = $val    if $val;
+foreach my ( $key, $val ) ( %cliopts{ map { lc $_ } keys %CLI_GOENV_DEFAULT } ) {
+
+    # warn Dumper( $key, $val ) if $debug;
+    dmsg $key, $val;
+    $ENV{ uc $key } = $val if $val;
 }
 
 my @goarg;
 
-foreach my ( $k, $v ) ( %cliopts{ keys %goarg_def } ) {
+foreach my ( $k, $v ) ( %cliopts{ keys %GOARG_DEFAULTS } ) {
     if ( $v =~ /^(1|0)$/ && $v == 1 ) {
         push @goarg, "-$k";
     }
@@ -93,8 +99,8 @@ our $dbg_state_prebuild = {
     argv          => $argv,
     cliopts       => \%cliopts,
     goarg         => \@goarg,
-    goenvironment => \%goenvironment,
-    ENV           => { %ENV{ keys %goenvironment } }
+    goenvironment => \%CLI_GOENV_DEFAULT,
+      ENV         => { %ENV{ keys %CLI_GOENV_DEFAULT } }
 };
 
 # );
@@ -123,6 +129,17 @@ sub build {
     our $run = run( [ qw(go install), @goarg ] );
     dmsg($run);
     $run;
+}
+
+sub dist {
+    my $goarch = $cliopts{goarch};
+
+    my $goarch_ext =
+        $goarch eq 'amd64' ? $cliopts{goamd64}
+      : $goarch eq 'arm64' ? $cliopts{goarm64}
+      :                      undef;
+
+    my $distdir = "";
 }
 
 our $run = build();

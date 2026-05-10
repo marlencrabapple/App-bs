@@ -14,7 +14,7 @@ use re 'strict';
 
 use List::Util qw'any uniq';
 use Const::Fast;
-use IPC::Nosh::IO;
+use IPC::Nosh::Common;
 
 const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?'xi;
 const our $pkgstr_re         => qr/($pkgname_common_re)/xi;
@@ -60,7 +60,7 @@ use utf8;
 use v5.40;
 
 use Path::Tiny;
-use IPC::Nosh::IO;
+use IPC::Nosh::Common;
 
 my @match;
 

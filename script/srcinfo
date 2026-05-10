@@ -20,7 +20,7 @@ use List::Util qw'uniq first any';
 use BS::Package::SRCINFO;
 
 use IPC::Nosh;
-use IPC::Nosh::IO;
+use IPC::Nosh::Common;
 
 const our $ENV_RE => qr/^(.*sh|env(?:vironment)?|export)$/;
 
@@ -170,7 +170,7 @@ package main;
 use v5.40;
 
 use Path::Tiny;
-use IPC::Nosh::IO;
+use IPC::Nosh::Common;
 
 our @clispec = (
     'field|fields|out-fields|outfields|filter|select' => 's{1,}',

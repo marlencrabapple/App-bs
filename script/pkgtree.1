@@ -5,7 +5,7 @@ $ENV{DEBUG} = 1;
 use Getopt::Long qw(GetOptionsFromArray :config no_ignore_case auto_abbrev);
 use List::Util 'any';
 use IPC::Nosh;
-use IPC::Nosh::IO;
+use IPC::Nosh::Common;
 
 our @in;    # = @ARGV;
 our %state;
