@@ -38,6 +38,7 @@ requires 'Object::Pad::FieldAttr::Trigger';
 requires 'YAML';
 requires 'YAML::Tiny';
 
+requires 'IO::Handle::Common';
 requires 'IPC::Nosh';
 
 on 'test' => sub {

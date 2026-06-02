@@ -48,6 +48,7 @@ my %args = (
         'HTTP::Tinyish' => '0',
         'IO::Async' => '0',
         'IO::Async::SSL' => '0',
+        'IO::Handle::Common' => '0',
         'IO::Socket::SSL' => '0',
         'IPC::Nosh' => '0',
         'IPC::Run3' => '0',
