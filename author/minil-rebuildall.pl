@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+
 use Object::Pad ':experimental(:all)';
 use Object::Pad::FieldAttr::Trigger;
 
@@ -9,7 +10,7 @@ use lib 'lib';
 
 use BS::Common;
 use IPC::Nosh;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev long_prefix_pattern=--?);
 
@@ -28,10 +29,15 @@ sub update() {
     unlink "./local" if -d "./local" && !$preserve_locallib;
 
     foreach my $cmd (qw(install update)) {
-        my ( $status, $out, $err, $internalerr ) = cmd( [ 'carmel', $cmd ] );
-        if ($status) {
-            err("$err ($status)");
-            last;
+	info("Running `carmel $cmd`...");
+
+        my $run = run( [ 'carmel', $cmd ] );
+        
+	if ($run->status) {
+            error('carmel exited with o non-zero status code: '. $run->status);
+
+	    say STDERR $_ for map { chomp $_; "  carmel: $_"  } $run->err->lines_utf8;
+    last;
         }
     }
 
@@ -47,17 +53,24 @@ sub git_pull_remote ($argstr) {
 
     push @cmd, '--rebase' if $opt{rebase};
 
-    run( \@cmd, undef );
-}
+    my $cmd = say join ' ', @cmd;
+    info "Running `$cmd`...";
 
-sub cmd ( $cmdlist, $in = \undef, $out = $outh, $err = $errh ) {
-    my $run3err = run( $cmdlist, $in, $out, $err );
-    $?, $out, $err, $run3err;
+    my $run = run( \@cmd );
+
+    if ($run->status) {
+	    error 'git exited with a non-zero status code: ' . $run->status;
+            say STDERR $_ for map { chomp $_; "  git: $_" } $run->err->lines_utf8;
+    }
 }
 
 sub minil (@cmd_ahref) {
     foreach my $cmd (@cmd_ahref) {
-        run( [ qw(carmel exec minil), $$cmd{cmd}, $$cmd{args}->@* ] );
+	info 'Running `carmel exec minil ' 
+	 . (join ' ', $$cmd{cmd}, $$cmd{args}->@*) 
+	 . '`...';
+        
+	 my $run = run( [ qw(carmel exec minil), $$cmd{cmd}, $$cmd{args}->@* ] );
     }
 }
 
@@ -67,7 +80,7 @@ sub cli {
         'update|git-pull-remote=s' );
 
     update()              if $update;
-    git_pull_remote($git) if $git;
+    my $run = git_pull_remote($git) if $git;
 
     my @minilcmd;
 

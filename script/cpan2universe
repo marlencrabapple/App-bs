@@ -1,6 +1,6 @@
 #!/usr/bin/env ksh
 
-[[ ${DEBUG:-1} -ne 0 ]] && set -x -ofunctrace
+[[ ${DEBUG:-0} -ne 0 ]] && set -x -ofunctrace
 
 err() {
   msg="$1"
@@ -21,6 +21,8 @@ for package in ${packagelist[*]}; do
 
   pkgname="${package//::/-}"
   pkgname="perl-${pkgname,,*}"
+
+  [[ "${NOOP:-0}" ]] && echo "$pkgname" && continue 
 
   [[ -n "$(sudo pacman -Ssq $pkgname)" ]] &&
     [[ $? -eq 0 ]] &&
