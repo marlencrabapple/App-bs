@@ -2,10 +2,16 @@
 
 [[ ${DEBUG:-0} -ne 0 ]] && set -x -ofunctrace
 
-err() {
+function err {
   msg="$1"
   echo >&2 "❌️ $msg"
   return 0
+}
+
+function cpan2aur_sysperl {
+  package="$1"
+  plenv shell system
+  cpan2aur "$1"
 }
 
 packagelist=("$@")
@@ -16,7 +22,7 @@ fi
 
 for package in ${packagelist[*]}; do
   [[ -z $package ]] &&
-    err '$package is an empty string!' &&
+    err "'\$package'' is an empty string!" &&
     exit 1
 
   pkgname="${package//::/-}"
@@ -25,22 +31,25 @@ for package in ${packagelist[*]}; do
   [[ "${NOOP:-0}" -eq 1 ]] && echo "$pkgname" && continue 
 
   [[ -n "$(sudo pacman -Ssq "$pkgname")" ]] &&
-    [[ $? -eq 0 ]] &&
+    [[ "$?" -eq 0 ]] &&
     >&2 echo "'$pkgname' is already in the pacman sync database" &&
     continue
 
   #[[ -f "$pkgname"* ]] || cpan2aur "$pkgname";
-  cpan2aur "$package" || continue
 
-  srcdist=(./"$pkgname-"*src.tar.gz)
-  [[ ! -f $srcdist ]] &&
+  cpan2aur_sysperl "$package" || continue
+
+  srcdistglob_res=(./"$pkgname-"*src.tar.gz)
+  srcdist="$(basename "${srcdistglob_res[*]:0:1}")"
+  
+  [[ ! -f "$srcdist" ]] &&
     err "Could not find source distribution in '$(pwd)'" &&
     continue
 
-  pkgver="${srcdist#$pkgname-}"
-  pkgver="${pkgver%.src.tar.gz}"
+  pkgver="${srcdist##"$pkgname-"}"
+  pkgver="${pkgver%%.src.tar.gz}"
 
-  [[ -z $pkgver ]] &&
+  [[ -z "$pkgver" ]] &&
     err "Could not properly parse package version string from source distribution filename." &&
     continue
 
