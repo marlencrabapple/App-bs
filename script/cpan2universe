@@ -22,7 +22,7 @@ for package in ${packagelist[*]}; do
   pkgname="${package//::/-}"
   pkgname="perl-${pkgname,,*}"
 
-  [[ "${NOOP:-0}" -eq 0 ]] && echo "$pkgname" && continue 
+  [[ "${NOOP:-0}" -eq 1 ]] && echo "$pkgname" && continue 
 
   [[ -n "$(sudo pacman -Ssq "$pkgname")" ]] &&
     [[ $? -eq 0 ]] &&
