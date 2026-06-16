@@ -22,11 +22,11 @@ for package in ${packagelist[*]}; do
   pkgname="${package//::/-}"
   pkgname="perl-${pkgname,,*}"
 
-  [[ "${NOOP:-0}" ]] && echo "$pkgname" && continue 
+  [[ "${NOOP:-0}" -eq 0 ]] && echo "$pkgname" && continue 
 
-  [[ -n "$(sudo pacman -Ssq $pkgname)" ]] &&
+  [[ -n "$(sudo pacman -Ssq "$pkgname")" ]] &&
     [[ $? -eq 0 ]] &&
-    >&2 echo "$pkgname is already in the pacman sync database" &&
+    >&2 echo "'$pkgname' is already in the pacman sync database" &&
     continue
 
   #[[ -f "$pkgname"* ]] || cpan2aur "$pkgname";

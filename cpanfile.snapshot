@@ -316,6 +316,18 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
+  Cwd-Guard-0.05
+    pathname: K/KA/KAZEBURO/Cwd-Guard-0.05.tar.gz
+    provides:
+      Cwd::Guard 0.05
+    requirements:
+      Cwd 0
+      Exporter 0
+      Module::Build 0.38
+      Test::More 0
+      Test::Requires 0
+      if 0
+      parent 0
   DBD-SQLite-1.78
     pathname: I/IS/ISHIGAKI/DBD-SQLite-1.78.tar.gz
     provides:
@@ -633,6 +645,17 @@ DISTRIBUTIONS
       File::Copy 0
       File::Glob 0
       File::Spec 0
+  File-Copy-Recursive-Reduced-0.008
+    pathname: J/JK/JKEENAN/File-Copy-Recursive-Reduced-0.008.tar.gz
+    provides:
+      File::Copy::Recursive::Reduced 0.008
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Copy 0
+      File::Find 0
+      File::Path 0
+      File::Spec 0
+      perl 5.008000
   File-Find-Rule-0.35
     pathname: R/RC/RCLAMP/File-Find-Rule-0.35.tar.gz
     provides:
@@ -903,10 +926,10 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       HTTP::Headers 6
       perl 5.008001
-  HTTP-Tinyish-0.19
-    pathname: M/MI/MIYAGAWA/HTTP-Tinyish-0.19.tar.gz
+  HTTP-Tinyish-0.20
+    pathname: M/MI/MIYAGAWA/HTTP-Tinyish-0.20.tar.gz
     provides:
-      HTTP::Tinyish 0.19
+      HTTP::Tinyish 0.20
       HTTP::Tinyish::Base undef
       HTTP::Tinyish::Curl undef
       HTTP::Tinyish::HTTPTiny undef
@@ -996,6 +1019,23 @@ DISTRIBUTIONS
       Exporter 5.57
       ExtUtils::MakeMaker 0
       perl 5.008
+  IO-Handle-Common-0.01-TRIAL
+    pathname: C/CR/CRABAPP/IO-Handle-Common-0.01-TRIAL.tar.gz
+    provides:
+      IO::Handle::Common 0.01
+      IO::Handle::Common::Handle undef
+    requirements:
+      Class::Exporter 0
+      Const::Fast 0
+      Data::Dumper::Names 0
+      Devel::StackTrace::WithLexicals 0
+      FileHandle 0
+      IO::Handle 0
+      List::Util 0
+      Module::Build::Tiny 0.034
+      PadWalker 0
+      Path::Tiny 0
+      perl v5.40.0
   IO-Socket-SSL-2.098
     pathname: S/SU/SULLR/IO-Socket-SSL-2.098.tar.gz
     provides:
@@ -1068,11 +1108,11 @@ DISTRIBUTIONS
       Parse::RecDescent 1.967009
       Pegex 0.66
       perl 5.008001
-  Inline-Module-0.34
-    pathname: I/IN/INGY/Inline-Module-0.34.tar.gz
+  Inline-Module-0.35
+    pathname: I/IN/INGY/Inline-Module-0.35.tar.gz
     provides:
       Inline::CPP::Config undef
-      Inline::Module 0.34
+      Inline::Module 0.35
     requirements:
       ExtUtils::CppGuess 0
       ExtUtils::MakeMaker 0
@@ -1241,6 +1281,22 @@ DISTRIBUTIONS
       Menlo 1.9018
       perl 5.008001
       version 0.9905
+  Metrics-Any-0.10
+    pathname: P/PE/PEVANS/Metrics-Any-0.10.tar.gz
+    provides:
+      Metrics::Any 0.10
+      Metrics::Any::Adapter 0.10
+      Metrics::Any::Adapter::File 0.10
+      Metrics::Any::Adapter::Null 0.10
+      Metrics::Any::Adapter::Stderr 0.10
+      Metrics::Any::Adapter::Tee 0.10
+      Metrics::Any::Adapter::Test 0.10
+      Metrics::Any::AdapterBase::Stored 0.10
+      Metrics::Any::Collector 0.10
+    requirements:
+      List::Util 1.29
+      Module::Build 0.4004
+      perl 5.014
   Minilla-v3.1.29
     pathname: S/SY/SYOHEX/Minilla-v3.1.29.tar.gz
     provides:
@@ -2589,7 +2645,6 @@ DISTRIBUTIONS
     pathname: J/JS/JSTOWE/TermReadKey-2.38.tar.gz
     provides:
       Term::ReadKey 2.38
-      TermReadKey undef
     requirements:
       ExtUtils::MakeMaker 6.58
   Test-CPAN-Meta-0.25
@@ -2604,6 +2659,27 @@ DISTRIBUTIONS
       Test::Builder 0
       Test::Builder::Tester 0
       Test::More 0.70
+  Test-Future-IO-Impl-0.21
+    pathname: P/PE/PEVANS/Test-Future-IO-Impl-0.21.tar.gz
+    provides:
+      Test::Future::IO::Impl 0.21
+    requirements:
+      Errno 0
+      IO::Handle 0
+      Module::Build 0.4004
+      Socket 0
+      Test2::V0 0
+      Time::HiRes 0
+      perl 5.014
+  Test-Metrics-Any-0.01
+    pathname: P/PE/PEVANS/Test-Metrics-Any-0.01.tar.gz
+    provides:
+      Test::Metrics::Any 0.01
+    requirements:
+      Metrics::Any::Adapter 0
+      Metrics::Any::Adapter::Test 0
+      Module::Build 0.4004
+      Test::Builder::Module 0
   Test-MinimumVersion-Fast-0.04
     pathname: T/TO/TOKUHIROM/Test-MinimumVersion-Fast-0.04.tar.gz
     provides:
@@ -2631,6 +2707,15 @@ DISTRIBUTIONS
       Test::Builder::Tester 1.02
       Test::More 0.62
       perl 5.008
+  Test-Requires-0.11
+    pathname: T/TO/TOKUHIROM/Test-Requires-0.11.tar.gz
+    provides:
+      Test::Requires 0.11
+    requirements:
+      ExtUtils::MakeMaker 6.64
+      Test::Builder::Module 0
+      Test::More 0.47
+      perl 5.006
   Text-Glob-0.11
     pathname: R/RC/RCLAMP/Text-Glob-0.11.tar.gz
     provides:
@@ -3002,7 +3087,6 @@ DISTRIBUTIONS
       LWP::RobotUA 6.81
       LWP::Simple 6.81
       LWP::UserAgent 6.81
-      libwww::perl undef
     requirements:
       Digest::MD5 0
       Encode 2.12
