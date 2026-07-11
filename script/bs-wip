@@ -1,0 +1,22 @@
+
+use Object::Pad ':experimental(:all)';
+
+package App::BS::WIP;
+
+class App::BS::WIP;
+
+# script/pkgiden.pl
+
+
+use utf8;
+use v5.40;
+
+# use lib 'lib';
+
+use IPC::Nosh;
+use IO::Handle::Common 'dmsg';
+use Getopt::Long;
+use Path::Tiny;
+use Const::Fast;
+
+method cli : common ($argv =\@ARGV, %opt);

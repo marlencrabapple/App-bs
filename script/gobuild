@@ -6,13 +6,11 @@ use v5.40;
 
 use File::chdir;
 use Path::Tiny;
-use Data::Dumper;
-
 use Const::Fast;
 use Getopt::Long
-qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--|-);
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--|-);
 use IPC::Nosh;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 
 our @out = ();
 our @err = ();
@@ -63,6 +61,7 @@ GetOptionsFromArray(
     ),
     'clean=s@',
     'tidy',
+    'pull_remote|git-pull-remote|update|sync|pull-remote!',
     '<>' => sub ($barearg) {
         $cliopts{srcdir} = path($barearg)->assert(
             sub {
@@ -76,9 +75,8 @@ push $cliopts{clean}->@*, map { split /,/, $_ } $cliopts{clean}->@*;
 
 my $debug = $cliopts{debug} || $ENV{DEBUG};
 
-foreach my ( $key, $val ) ( %cliopts{ map { lc $_ } keys %CLI_GOENV_DEFAULT } ) {
-
-    # warn Dumper( $key, $val ) if $debug;
+foreach my ( $key, $val ) ( %cliopts{ map { lc $_ } keys %CLI_GOENV_DEFAULT } )
+{
     dmsg $key, $val;
     $ENV{ uc $key } = $val if $val;
 }
@@ -94,13 +92,12 @@ foreach my ( $k, $v ) ( %cliopts{ keys %GOARG_DEFAULTS } ) {
     }
 }
 
-# say STDERR Dumper(
 our $dbg_state_prebuild = {
     argv          => $argv,
     cliopts       => \%cliopts,
     goarg         => \@goarg,
     goenvironment => \%CLI_GOENV_DEFAULT,
-      ENV         => { %ENV{ keys %CLI_GOENV_DEFAULT } }
+    ENV           => { %ENV{ keys %CLI_GOENV_DEFAULT } }
 };
 
 # );

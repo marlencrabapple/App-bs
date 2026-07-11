@@ -4,11 +4,11 @@ shopt -s nullglob
 
 [[ -z "$BS_REPOROOT" ]] &&
   [[ -d "$BS_REPOROOT" ]] &&
-  echo "Error BS_REPOROOT must be defined" && exit 1
+  >&2 echo "Error: BS_REPOROOT must be set" && exit 1
 
 [[ -z "$BS_ROOT" ]] &&
   [[ -d "$BS_REPOROOT" ]] &&
-  echo "Error: BS_ROOT must be defined" && exit 1
+  echo "Error: BS_ROOT must be set" && exit 1
 
 scriptdir="${0//\/$(basename "$0")/}"
 . "$scriptdir/bs-common.sh"

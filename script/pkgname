@@ -53,6 +53,7 @@ method pkgname ( $in, $updatedb = 1 ) {
 method cli : common ($argv = \@ARGV) {
     my %clidest = ();
     my $pkgname_in;
+
     GetOptionsFromArray(
         $argv,
         \%clidest,
