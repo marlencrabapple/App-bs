@@ -28,19 +28,22 @@ ADJUST {
 
 const our $so_re => qr/.+\.so(?:\.([0-9\.]+[0-9]{1}))*/;
 
-method pkgname ( $in, $updatedb = 1 ) {
+method pkgname ( $in, %opt ) {
     my @cmd;
     if ( my ($ver) = $in =~ $so_re ) {
         @cmd = qw(pacman -F -q);
-        if ($updatedb) {
+        if ( $opt{update_filedb} ) {
             push @cmd, '-y';
             unshift @cmd, 'sudo';
         }
-
     }
     else {
         my $field = "%r/%n";
-        @cmd = ( qw(expac -S), $field );
+        if ( $opt{update_pkgdb} ) {
+            push @cmd, '-y';
+            unshift @cmd, 'sudo';
+        }
+        @cmd = ( qw(pacman -S -s), $field );
     }
 
     my $run = run( [ @cmd, $in ], autochomp => 1 );
@@ -66,7 +69,8 @@ method cli : common ($argv = \@ARGV) {
     );
 
     my $self = $class->new(%clidest);
-    say $self->pkgname($pkgname_in);
+    my ( $outname, $repo ) = $self->pkgname($pkgname_in);
+    say "$repo/$_" for @$outname;
 
     return $self;
 }
