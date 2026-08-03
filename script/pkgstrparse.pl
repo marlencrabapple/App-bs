@@ -14,7 +14,16 @@ use re 'strict';
 
 use List::Util qw'any uniq';
 use Const::Fast;
-use IPC::Nosh::Common;
+use IO::Handle::Common::Handle;
+
+# my %parsed = map {
+#     my %parsed = ();
+#     @parsed{qw'name epoch ver rel arch ext'} =
+#       ( $_ =~
+# /^([^.-]{1}[a-z0-9@_+.-]+)(:[0-9]+)?-([^\s:-]+)-([0-9]+)-(any|aarch64|i368|i638|(?:x86_64(?:_v3)?))\.(pkg\.tar\.(?:zst|xz|gz|bz2|zip))$/ig
+#       );
+#     ( $_ => \%parsed );
+# } @found;
 
 const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?'xi;
 const our $pkgstr_re         => qr/($pkgname_common_re)/xi;
@@ -27,14 +36,14 @@ const our $arch_re   => qr'(any|aarch64|i368|i638|(?:x86_64(?:_v3)?))'xi;
 const our $pkgext_re => qr'(pkg\.tar\.(?:zst|xz|gz|bz2|zip))'xi;
 
 const our $pkgfile_re => qr'$pkgstr_re
-                            -(?:$epoch_re)?
+                            -($epoch_re:)?
                             $pkgver_re-$pkgrel_re
 	               		    -$arch_re
 			                \.$pkgext_re
 			               'xxi;
 
 const our $pkgspec_re => qr'$pkgstr_re
-                            -(?:$epoch_re)?
+                            -($epoch_re:)?
                             $pkgver_re-$pkgrel_re
 	               		    -$arch_re
 			               'xxi;

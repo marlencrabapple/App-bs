@@ -169,8 +169,8 @@ package main;
 
 use v5.40;
 
+use IO::Handle::Common;
 use Path::Tiny;
-use IPC::Nosh::Common;
 
 our @clispec = (
     'field|fields|out-fields|outfields|filter|select' => 's{1,}',
