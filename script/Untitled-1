@@ -1,2 +1,0 @@
-  const our $pkgver_re => qr'([^\s:/\-]+?)'xi;
-  const our $pkgver_re => qr'([^\s:/\-]+?)'xi;
