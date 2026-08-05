@@ -127,8 +127,6 @@ method pkgfield ( $pkgin, $field, %opt ) {
         }
     }
 
-    # dmsg( $outh, \@cmd, $pkgin, $field, \%opt, $op );
-
     $opt{dest}->@*;
 }
 
@@ -268,7 +266,7 @@ method cli : common ($argv = \@ARGV, %opt) {
 
         # resultset print order
         'sort-by|order-by=s@',
-        'build-order!',
+        'build-order|rebuild-order|arch-rebuild-order!',
         'sort-direction|order',
         'asc', 'desc',
         'sep|seperator=s',

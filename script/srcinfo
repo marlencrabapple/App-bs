@@ -20,7 +20,7 @@ use List::Util qw'uniq first any';
 use BS::Package::SRCINFO;
 
 use IPC::Nosh;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 
 const our $ENV_RE => qr/^(.*sh|env(?:vironment)?|export)$/;
 
@@ -100,48 +100,6 @@ method getopt (
 
     GetOptionsFromArray( ( $argv // \@ARGV ), $optdest, @getoptspec );
 }
-
-# method pkgfile_glob ( $srcinfo, $pkgver, $arch ) {
-#     my $pkgver_str;
-
-#     dmsg $srcinfo, $pkgver;
-
-#     if ($pkgver) {
-#         if (
-#             my $pkgver_href =
-#             ( ( $pkgver && ref $pkgver eq 'HASH' ) ? \%$pkgver : undef ) // (
-#                 $pkgver eq $ENV{PKGVER_CURR}
-#                 ? { $srcinfo->%{qw'epoch ver rel'} }
-#                 : undef
-#             )
-#           )
-#         {
-#             $pkgver_str .= "$$pkgver_href{epoch}:" if $$pkgver_href{epoch};
-#             $pkgver_str .= $$pkgver_href{ver};
-#             $pkgver_str .= "-$$pkgver_href{rel}" if $$pkgver_href{rel};
-#         }
-#         elsif ($pkgver) {
-#             $pkgver_str = $pkgver;
-#         }
-#     }
-#     my $glob =
-#       $$srcinfo{pkgname} eq 'ARRAY'
-#       ? '{' . ( join ',', $$srcinfo{pkgname}->@* ) . '}-'
-#       : "$$srcinfo{pkgname}"
-#       . (
-#         ref $$srcinfo{arch} eq 'ARRAY'
-#         ? ( $pkgver_str ? " -$pkgver_str-" : "-*" ) . "-{"
-#           . ( join ',', $$srcinfo{arch}->@* ) . '}'
-#         : "-$$srcinfo{arch}"
-#       ) . ".pkg.tar.zst";
-
-#     $glob;
-# }
-
-# method fname_wildcard_nover ( $arch = undef )
-# {    # pass your own or set to 1 for current
-#     pkgfile_glob( $srcinfo_href, undef, $arch );
-# }
 
 method as ( $format = $self->format, $field = $self->field ) {
     $srcinfo->as( $format, $field );

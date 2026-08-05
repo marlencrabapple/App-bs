@@ -1,3 +1,5 @@
+#!/usr/bin/env perl
+
 package asdfsadf;
 
 use v5.40;
@@ -32,7 +34,8 @@ sub search_filedb( $so, %opt ) {
 }
 
 sub pkgbase ( $pkgname, %opt ) {
-    run( [ pacman -Sqs ] );
+    run( [qw'pacman -Sqs '] );
+    ...;
 }
 
 sub so2pkgmeta ( $so, %opt ) {
