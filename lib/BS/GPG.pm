@@ -4,28 +4,35 @@ package BS::GPG;
 
 class BS::GPG : does(BS::Common);
 
+use utf8;
 use v5.40;
 
 use parent 'Exporter';
 
-use IPC::Run3;
-use BS::Common 'dmsg';
+our @EXPORT = qw(can_sign);
 
-sub can_sign ( $gpgiden, %opts ) {
+use IPC::Nosh;
+use IO::Handle::Common;
+
+sub can_sign ( $gpgiden, %opt ) {
     my @out = ();
 
-    my $ret = run3(
+    $ENV{GNUPGHOME} //= $ENV{BS_GNUPGHOME}
+      if $ENV{BS_GNUPGHOME};
+
+    my $run = run(
         [ qw(gpg --verbose -a --export), $gpgiden ],
-        \undef,
-        sub ($line) {
-            chomp $line, say $line;
+        out => sub ( $line, @ ) {
+            say $line if $ENV{VERBOSE} || $opt{verbose};
             push @out, $line;
         },
-        sub ($line) {
-            chomp $line;
+        err => sub ( $line, @ ) {
             say $line;
-        }
+        },
+        autochomp => 1
     );
+
+    dmsg $run;
 
     1 if scalar @out;
 }

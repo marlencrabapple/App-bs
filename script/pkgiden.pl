@@ -73,7 +73,7 @@ my class PacmanConf {
     method parse_line ($line) {
         state $section;
         $line =~ s/^\s*(.*)\s*/$1/g;
-        return unless $line;
+        return undef unless $line;
 
         # Context switch
         if ( my $sectkey = ( $line =~ /^\s*\[([^\]]+)\]\s*$/ ) ) {

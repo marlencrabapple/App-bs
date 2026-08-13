@@ -2,8 +2,8 @@
 set -x -ofunctrace
 
 for in in ./*; do
-  if [[ -x "$in/dnscrypt-proxy" ]]; then #|| continue
-    archive="dnscrypt-proxy-$(basename "$(pwd)")-$(basename "$in")"
+  if [[ -x "$in/dnscrypt-proxy" ]]; then
+    archive="$(basename "$(pwd)")-$(basename "$in")"
     DESTFNAME="$archive" ctzst.sh "$in"
 
     GNUPGHOME=/bs/.gnupg-ian@domains \

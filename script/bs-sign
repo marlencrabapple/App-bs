@@ -16,6 +16,7 @@ scriptdir="${0//\/$(basename "$0")/}"
 repo="${BS_REPO:-universe}"
 repodir="$BS_REPOROOT/$repo/os/$BS_TARGET/"
 repodb="$repodir/$repo.db.tar.zst"
+gnupghome="${BS_GNUPGHOME:-${GNUPGHOME:-$BS_ROOT/.gnupg}}"
 gpgpubid="${BS_GPGID:-${BS_GPGFPR:-${BS_GPG_PUBID:-${GPGKEYID}}}}"
 pkgdest="${BS_PKGDEST:-${PKGDEST:-"$BS_ROOT/pkgdest"}}"
 
@@ -77,10 +78,17 @@ signpkg() {
       signpkg "$f"
     fi
   else
-    gpg -u "$gpgpubid" -sb "$f"
+    env GNUPGHOME="$gnupghome" gpg --verbose -u "$gpgpubid" -sb "$f"
     gpgerr=$?
-    [[ ${gpgerr:-0} -eq 0 ]] &&
+
+        [[ ${gpgerr:-0} -eq 0 ]] &&
       echo "[●] Signed '$f' with '$gpgpubid'"
+
+   env GNUPGHOME="$gnupghome" gpg --verbose -v "$f.sig"
+   gpgerr=$?
+
+    [[ ${gpgerr:-0} -eq 0 ]] ||
+      echo "[●] Signature for '$f' is invalid: $f.sig"
   fi
 
   return "${gpgerr:-0}"

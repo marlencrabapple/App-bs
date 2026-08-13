@@ -35,7 +35,6 @@ requires 'meta';
 requires 'FreezeThaw';
 requires 'Stream::Buffered';
 requires 'Object::Pad::FieldAttr::Trigger';
-requires 'YAML';
 requires 'YAML::Tiny';
 
 requires 'IO::Handle::Common';
