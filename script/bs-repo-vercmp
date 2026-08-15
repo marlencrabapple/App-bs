@@ -1,0 +1,239 @@
+#!/usr/bin/env perl
+
+use Object::Pad ':experimental(:all)';
+
+package bs_repo_vercmp;
+
+class bs_repo_vercmp;
+
+use v5.44;
+use utf8;
+
+use Path::Tiny;
+use List::Util qw'any all none uniq';
+use IPC::Nosh;
+use IO::Handle::Common;
+use Time::HiRes;
+use Syntax::Keyword::Dynamically;
+use Syntax::Keyword::Defer;
+use Const::Fast;
+
+no warnings 'experimental::re_strict';
+use re 'strict';
+
+field $repo           : accessor;
+field $filter         : accessor;
+field $lastsync       : accessor;
+field $updatedb       : accessor = 1;
+field $cmp_pkgrel     : accessor = 0;
+field $installed_only : accessor = 0;
+field $outfmt         : accessor : param = undef;
+field $pkg = {};
+
+ADJUST : params (:$updatedb //= 1) {
+    $self->param_bool( updatedb => $updatedb );
+};
+
+ADJUST : params (:$cmp_pkgrel //= 0) {
+    $self->param_bool( cmp_pkgrel => $cmp_pkgrel )
+};
+
+ADJUST : params (:$repo, :$filter //= undef) {
+   # TODO: Compare repos definied somewhere in BS config/env to repos enabled in
+   # pacman.conf excluding dupes
+   # - do arch based distros list repos shipped with anywhere dependable?
+   # - ...
+    fatal "repo must be an ARRAY ref with >=2 repositories"
+      unless ref $repo
+      && ref $repo eq 'ARRAY'
+      && scalar @$repo >= 2;
+
+    $self->repo($repo);
+
+    if ($filter) {
+        $self->filter(
+            ( ref $filter && ref $filter eq 'Regexp' ? $filter : qr/$filter/ )
+        );
+    }
+};
+
+method param_bool ( $name, $val ) {
+    if ( $val && $val !~ /^(0|1)$/ ) {
+        my $errstr = "Unexpected for $name: $val. Assuming ";
+        $errstr .= $val && 1 ? 'truthy' : 'falsey';
+        $errstr .= '...';
+        error $errstr;
+    }
+
+    $self->$name( ( $val && 1 ) );
+}
+
+method epoch : common ($sep = '') {
+    join $sep, Time::HiRes::gettimeofday;
+}
+
+method repo_listpkg : common ($repo, %opt) {
+    ...;
+}
+
+method $package_seen ( $pkg, %opt ) {
+    ...;
+}
+
+method vercmp ( $repo = $self->repo, %opt ) {
+    dynamically $updatedb   = $opt{updatedb}   if $opt{updatedb};
+    dynamically $cmp_pkgrel = $opt{cmp_pkgrel} if $opt{cmp_pkgrel};
+
+    info "Stripping pkgrel from version strings before comparison..."
+      unless $cmp_pkgrel;
+
+    # my %pkg = ();
+    my $repo_prev;
+
+    foreach my $repo (@$repo) {
+        my @repolist_cmd = (qw'pacman -S -l');
+        $$pkg{$repo} //= {};
+
+        defer { $repo_prev = $repo }
+
+        if ( $updatedb && !$lastsync ) {
+            unshift @repolist_cmd, 'sudo';
+            push @repolist_cmd, '-y';
+        }
+
+        const my $repolist_line_re => qr/^
+          $repo\s
+          ([^\s]+)\s # name
+          ([^\s]+) # ver
+          (?:\s
+          (\[installed # installed
+            (?::\s
+            ([^\]]+) # ver from other repo
+            )?\]
+          ))?
+          $/xi;
+
+        my $run = run(
+            [ @repolist_cmd, $repo ],
+            out => sub ( $line, @ ) {
+                my ( $name, $ver, $installed, $localver ) =
+                  $line =~ $repolist_line_re;
+
+                if ( none { $_ } $name, $ver ) {
+                    return
+                      if $line =~ /^::/
+                      || $line =~ /^\s*[^\s]+ downloading.../;
+
+                    error
+                      "Encountered error processing pacman output:\n  $line";
+
+                    dmsg $repo, $line;
+
+                    return;
+                }
+
+                if ( !$filter || $name =~ $filter ) {
+                    my %currpkg = (
+                        ver       => $ver,
+                        installed => (
+                                 $installed
+                              && $installed =~ /^\[installed/ ? 1 : undef
+                        ),
+                        localver => $localver
+                    );
+
+                    if ( $pkg->{$repo}{$name} ) {
+                        error
+                          "Package already processed: $repo/$name. Ignoring...";
+                        dmsg $line, \%currpkg, $pkg->{$repo}{$name};
+                    }
+                    if ( !$repo_prev || $pkg->{$repo_prev}{$name} ) {
+                        $pkg->{$repo}{$name} //= \%currpkg
+                          unless $installed_only && !$installed;
+                    }
+
+                    my $vercmp_outh = sub ( $line, @ ) {
+                        if ( $line < 0 ) {
+                            my @ver = map {
+                                    $cmp_pkgrel
+                                  ? $_
+                                  : ( $_ =~ s/-[0-9]+$/-x/r )
+                            } ( $ver, $pkg->{$repo_prev}{$name}{ver} );
+                            if ($outfmt) {
+                                const my %fmtmap => (base => '%e', name =>
+                                '%n', repo => '%r', );
+                            }
+                            else {
+
+                                say "$repo_prev/$name ("
+                                  . $ver[1]
+                                  . ") is newer than $repo/$name ($ver[0])";
+                            }
+                        }
+                    };
+
+                    if (   $repo_prev
+                        && $pkg->{$repo_prev}{$name} )
+                    {
+                        my $run = run(
+                            [
+                                'vercmp',
+                                map {
+                                    $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$//r );
+                                } ( $ver, $pkg->{$repo_prev}{$name}{ver} )
+                            ],
+                            out => $vercmp_outh,
+                        );
+                    }
+                }
+            },
+            autochomp => 1
+        );
+
+        if ( $run->status == 0 ) {
+            $lastsync = __PACKAGE__->epoch if $updatedb;
+        }
+    }
+
+    dmsg $pkg;
+}
+
+package bs_repo_vercmp::CLI;
+
+use v5.44;
+
+use IO::Handle::Common;
+use Getopt::Long qw'GetOptionsFromArray';
+
+sub run ( $argv = \@ARGV ) {
+    my @repo;
+    my %clidest = ( repo => \@repo, updatedb => 1, cmp_pkgrel => 0 );
+
+    GetOptionsFromArray(
+        $argv,
+        \%clidest,
+        'updatedb|sync!',
+        'filter|pattern|search|regexp|ptn:s',
+        'installed-only',
+        'cmp_pkgrel|pkgrel|compare-pkgrel!',
+        'format:s',
+        '<>' => sub ($repo) {
+            push @repo, $repo;
+        }
+    );
+
+    dmsg \%clidest;
+
+    my $app = bs_repo_vercmp->new(
+        map { ( ( $_ =~ s/-/_/r ) => $clidest{$_} ) }
+          keys %clidest
+    );
+
+    # dmsg $app;
+
+    $app->vercmp;
+
+    # dmsg $app;
+}
+
+run( \@ARGV )
