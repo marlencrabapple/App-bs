@@ -25,6 +25,18 @@
          "builder"
       ]
    },
+   "optional_features" : {
+      "pacrelay" : {
+         "description" : "pacrelay",
+         "prereqs" : {
+            "runtime" : {
+               "requires" : {
+                  "WWW::pacman::Proxy" : "0"
+               }
+            }
+         }
+      }
+   },
    "prereqs" : {
       "build" : {
          "requires" : {
@@ -79,11 +91,7 @@
       "runtime" : {
          "requires" : {
             "Class::Exporter" : "0",
-            "Const::Fast::Exporter" : "0",
-            "DBD::SQLite" : "0",
-            "DBI" : "0",
             "DBIx::Connector" : "0",
-            "Data::Dumper::Names" : "0",
             "Devel::CheckBin" : "0",
             "File::chdir" : "0",
             "FreezeThaw" : "0",
@@ -95,7 +103,6 @@
             "IO::Handle::Common" : "0",
             "IO::Socket::SSL" : "0",
             "IPC::Nosh" : "0",
-            "IPC::Run3" : "0",
             "Inline" : "0",
             "Inline::C" : "0",
             "Inline::Module" : "0",

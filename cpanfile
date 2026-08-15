@@ -1,9 +1,5 @@
 requires 'perl', 'v5.40';
 
-requires 'Data::Dumper::Names';
-requires 'DBI';
-requires 'Const::Fast::Exporter';
-requires 'DBD::SQLite';
 requires 'DBIx::Connector';
 requires 'Inline';
 requires 'Inline::C';
@@ -17,7 +13,9 @@ requires 'Pod::Usage';
 requires 'Path::Tiny';
 requires 'Class::Exporter';
 requires 'File::chdir';
-requires 'IPC::Run3';
+requires 'IPC::Nosh';
+requires 'IO::Handle::Common';
+
 requires 'IO::Socket::SSL';
 requires 'Net::SSLeay';
 requires 'List::Util';
@@ -33,12 +31,9 @@ requires 'IO::Async::SSL';
 requires 'Devel::CheckBin';
 requires 'meta';
 requires 'FreezeThaw';
-requires 'Stream::Buffered';
-requires 'Object::Pad::FieldAttr::Trigger';
-requires 'YAML::Tiny';
 
-requires 'IO::Handle::Common';
-requires 'IPC::Nosh';
+requires 'Object::Pad::FieldAttr::Trigger';
+
 
 on 'test' => sub {
     requires 'Test::More',       '0.98';
@@ -67,4 +62,8 @@ use constant DEV_PREREQS => sub {
 };
 
 on 'build' => DEV_PREREQS;
-on 'develop' => DEV_PREREQS
+on 'develop' => DEV_PREREQS;
+
+feature 'pacrelay' => sub {
+    requires 'WWW::pacman::Proxy';
+}
