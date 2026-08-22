@@ -20,7 +20,7 @@ use TOML::Tiny qw'to_toml from_toml';
 use YAML;
 
 use IPC::Nosh;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 
 const our $SHENV_RE => qr/^(.*sh(?:env)?|env(?:vironment)?|export|eval)$/;
 

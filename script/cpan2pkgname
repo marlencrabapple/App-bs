@@ -1,0 +1,71 @@
+#!/usr/bin/env perl
+use Object::Pad ':experimental(:all)';
+
+package cpan2pkgname;
+
+class cpan2pkgname;
+
+our $VERSION = "0.01";
+
+use v5.40;
+use utf8;
+
+use Path::Tiny::Try qw'';
+use IO::Handle::Common;
+use Syntax::Keyword::Try;
+
+field $infile : writer(add_file);
+field $outfile;
+
+ADJUST : params (:$path = undef) {
+    $path = Path::Tiny::Try->new($path);
+    $self->add_file($path)
+};
+
+method convert : common ($instr) {
+    lc( $instr =~ s/(::|-)/-/rg )
+
+    # my $pkgname;
+    # if ( my @match = ( $instr =~ /^([^:]+::)([^:]+)?$/g )
+    #     || ( $instr =~ /^([^-]+-)([^-]+)?$/g ) )
+    # {
+    #     return 'perl-' . join '-', map { lc($_) } @match;
+    # }
+    # else {
+    #     say STDERR
+    #       "$instr is not a valid Perl package or CPAN distribution name.";
+
+    #     return undef;
+    # }    #'perl' . lc($instr =~ s/::/-/g)
+}
+
+# method convert : common ( $str) {
+#     my $self = $class->new;
+#     dmsg $self;
+#     to_pkgname($str);
+# }
+
+package cpan2pkgname::CLI;
+
+use v5.40;
+
+sub cli {
+    my %pkgname;
+
+    foreach my $in (@ARGV) {
+
+        $pkgname{$in} = cpan2pkgname->convert($in);
+
+        # dmsg $in, $pkgname{$in};
+        say "$in: $pkgname{$in}";
+
+        if ( my @fail = grep { !$pkgname{$_} } keys %pkgname ) {
+            say STDERR "Skipped the following due to errors:";
+            say STDERR join "\n", @fail;
+        }
+
+    }
+
+}
+
+cli

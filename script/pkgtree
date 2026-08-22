@@ -70,16 +70,12 @@ const our %RUN_DEFAULT => (
 
 const our $ver_req => qr/([=<>]{1}|(?:[<>]=)){,2}/x;
 
-const our $sover_re => qr/^
- ([^=<>]+)\.so
- ([0-9-]+)
-$/x;
-
-const our $pkgname_ver => qr/^
- ([^=<>]+)
- ([=<>]{1}|(?:[<>]=)){1,2}
- ([0-9.-]+)
-$/x;
+const my $pkgname_re => qr/
+([^=<>]+)
+ (?:
+   ([\s-]|[=<>]{1}|[<>]=)
+   ([0-9.:-]+)
+ )?/x;
 
 field $in : param;
 
@@ -118,8 +114,7 @@ method pkgfield ( $pkgin, $field, %opt ) {
     my $op = '-S';
     $op .= 's' unless $opt{exact};
 
-    $pkgin = [$pkgin] unless ref $pkgin eq 'ARRAY';
-    $field = [$field] unless ref $field eq 'ARRAY';
+    ( $pkgin, $field ) = ARRAY( $pkgin, $field );
 
     my @cmd = ( 'expac', $op, ( join ',', @FIELD_MAP{@$field} ) );
 
@@ -156,7 +151,7 @@ sub refstr ($ref) {
     reftype($ref) || "";
 }
 
-sub ARRAY(@in) {
+sub ARRAY : prototype(@) (@in) {
     my @ret;
 
     foreach my ($var) (@in) {
@@ -176,7 +171,6 @@ sub ARRAY(@in) {
 
     @ret;
 }
-
 *array = \&ARRAY;
 
 method pacman_pkgname( $pkglist, %opt ) {
@@ -230,18 +224,12 @@ method pacman_files ( $filelist, %opt ) {
 
 method pactree ( $pkglist, %opt ) {
     my @res = ();
+
     $opt{dest} //= [];
     $opt{db}   //= 'sync';
     $pkglist = [ split /[\s,]+/, $pkglist ] unless ref $pkglist eq 'ARRAY';
 
     const my $soname_re => qr/(.+\.so)=([0-9-].+)/xx;
-
-    const my $pkgname_re => qr/
-            ([^=<>]+)
-            (?:
-           ([=<>]{1}|[<>]=)
-             ([0-9.-]+)
-            )?/x;
 
     foreach my $pkgstr (@$pkglist) {
         my @pkgname = ();
@@ -364,10 +352,11 @@ method cli : common ($argv = \@ARGV, %opt) {
 
         # prune/filter packages at different stages of resolution
         "prune:s",
+        "variant|choose|chosen|wanted:s",
 
         # input packages
         '<>' => sub ($barearg) {
-            push $clidest{in}->@*, $barearg;
+            push $clidest{in}->@*, split /[\s,]+/, $barearg;
         }
     );
 

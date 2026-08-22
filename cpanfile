@@ -10,7 +10,7 @@ requires 'Pod::Usage';
 requires 'Path::Tiny';
 
 requires 'File::chdir';
-requires 'IPC::Nosh', '9.01.3;
+requires 'IPC::Nosh', '0.01.3';
 requires 'IO::Handle::Common';
 
 requires 'IO::Socket::SSL';
@@ -43,18 +43,17 @@ on 'test' => sub {
 use constant DEV_PREREQS => sub {
     requires 'CPAN::Uploader';
     requires 'Version::Next';
-    requires 'Minilla';
-    requires 'Minilla::Profile::ModuleBuildTiny';
-    requires 'Perl::Critic';
-    requires 'Perl::Tidy';
-    requires 'Perl::Critic::Community';
+    recommends 'Minilla';
+    recommends 'Minilla::Profile::ModuleBuildTiny';
+    recommends 'Perl::Critic';
+    recommends 'Perl::Tidy';
+    recommends 'Perl::Critic::Community';
     requires 'Inline';
     requires 'Inline::C';
     requires 'Inline::MakeMaker';
     requires 'ExtUtils::MakeMaker';
     requires 'Devel::StackTrace::WithLexicals', '2.01';
     requires 'Module::Build::XSUtil';
-r
 };
 
 on 'build' => DEV_PREREQS;

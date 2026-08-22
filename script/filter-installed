@@ -1,0 +1,91 @@
+#!/usr/bin/env perl
+
+package FilterInstalled;
+
+use utf8;
+use v5.40;
+
+use lib 'lib';
+
+use Getopt::Long qw(GetOptionsFromArray :config no_ignore_case);
+use IO::Handle::Common;
+use IPC::Nosh;
+use List::Util qw'none any all';
+use Const::Fast;
+
+our @inpkg     = ();
+our @installed = ();
+our %seen      = ();
+our %cliopt =
+  ( installed => 1, native => 1, foreign => 0, expicit => 1, in => \@inpkg );
+
+sub seen_pkg ( $pkg, %opt ) {
+    $seen{$pkg} //= 0;
+    $seen{$pkg}++;
+}
+
+sub cli ( $argv //= \@ARGV, %opt ) {
+    my $addpkg = sub($pkg) {
+        push @inpkg, $pkg if none { $pkg eq $_ } @inpkg;
+    };
+
+    GetOptionsFromArray(
+        $argv,
+        \%cliopt,
+        'debug+',
+        'verbose+',
+        'explicit!',
+        'native',
+        'foreign',
+        'installed!',
+        '<>' => sub ($bare) {
+            $addpkg->($bare);
+        }
+    );
+
+    if ( !-t STDIN ) {
+        foreach my $pkg ( map { chomp $_; $_ } (<STDIN>) ) {
+            $addpkg->($pkg);
+        }
+    }
+
+    dmsg \%cliopt;
+}
+
+sub filter_installed {
+    my @cmd = qw(pacman -Qq);
+
+    push @cmd, '-e' if $cliopt{explicit};
+    const my %optmap => qw(native -n foreign -m);
+
+    my %opt = %cliopt{qw'native foreign'};
+
+    my $seen_limit = 1;
+    foreach my ($status) ( grep { $opt{$_} } keys %opt ) {
+        push @cmd, $optmap{$status};
+
+        dmsg \@cmd;
+        my $run = run(
+            \@cmd,
+            out => sub ( $pkg, @ ) {
+
+                # TODO: consider different repos
+                push @installed, $pkg if none { $pkg eq $_ } @installed;
+                seen_pkg($pkg);
+
+                say STDERR "Duplicate package: ", $pkg,
+                  if $seen{$pkg} > $seen_limit;
+            },
+            autochomp => 1
+        );
+
+        $seen_limit++;
+    }
+
+    dmsg \%seen;
+
+    say join " ", grep { $cliopt{installed} ? $seen{$_} : !$seen{$_} } @inpkg;
+}
+
+cli( \@ARGV );
+filter_installed()

@@ -12,7 +12,7 @@ use re 'strict';
 
 use List::Util qw'any uniq';
 use Const::Fast;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 
 const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?'xi;
 

@@ -10,7 +10,7 @@ use utf8;
 use v5.40;
 
 use IPC::Nosh;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=-(?:-)?);
 

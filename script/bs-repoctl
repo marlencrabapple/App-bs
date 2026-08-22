@@ -13,7 +13,7 @@ use List::Util 'first';
 use Const::Fast;
 use Path::Tiny;
 use IPC::Nosh;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 
 use BS::Common;
 use BS::GPG;

@@ -15,7 +15,7 @@ use Path::Tiny;
 use List::Util qw'uniq any';
 use Const::Fast;
 use IPC::Nosh;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev passthrough long_prefix_pattern=--?);
 

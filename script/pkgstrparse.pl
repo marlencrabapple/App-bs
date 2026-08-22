@@ -69,7 +69,7 @@ use utf8;
 use v5.40;
 
 use Path::Tiny;
-use IPC::Nosh::Common;
+use IO::Handle::Common;
 
 my @match;
 
