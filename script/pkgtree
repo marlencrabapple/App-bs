@@ -8,6 +8,8 @@ class pkgtree;
 
 use utf8;
 use v5.40;
+no warnings 'experimental::re_strict';
+use re 'strict';
 
 use lib 'lib';
 
@@ -70,12 +72,14 @@ const our %RUN_DEFAULT => (
 
 const our $ver_req => qr/([=<>]{1}|(?:[<>]=)){,2}/x;
 
-const my $pkgname_re => qr/
-([^=<>]+)
+const our $pkgname_re => qr/
+([a-z0-9_@+][a-z0-9_@+.-]+)
  (?:
    ([\s-]|[=<>]{1}|[<>]=)
-   ([0-9.:-]+)
- )?/x;
+   ([^\s:\/\\-]+?)
+ )?/xi;
+
+const our $soname_re => qr/(.+\.so)=([0-9-].+)/xx;
 
 field $in : param;
 
@@ -90,7 +94,7 @@ field $sortdir : param = 'desc';
 
 field $reversedeps : param = 0;
 field $repo        : param = \@REPO_DEFAULT;
-field $field       : param : accessor = [qw(base)];
+field $field       : param : accessor = [];
 field $fmtstr      : param : accessor = '%e';
 
 # Default is hybrid: will do expac -Ss if pkgstr has regex meta-characters
@@ -100,13 +104,16 @@ field $sep    : param = ' ';
 field $unique : param = 1;
 field $pkgtree = {};
 
+field $db             : param = 'sync';
 field $filedb_updated : accessor;
 field $pkgdb_updated  : accessor;
 
-field $verbose : param = 0;
+field $verbose    : param    = 0;
+field $extcmd_log : accessor = [];
 
-sub run ( $cmd, %opt ) {
+method run ( $cmd, %opt ) {
     my $run = IPC::Nosh::run( $cmd, %RUN_DEFAULT, %opt );
+    push @$extcmd_log, $run;
     $run;
 }
 
@@ -114,11 +121,9 @@ method pkgfield ( $pkgin, $field, %opt ) {
     my $op = '-S';
     $op .= 's' unless $opt{exact};
 
-    ( $pkgin, $field ) = ARRAY( $pkgin, $field );
+    ( $pkgin, $field, $opt{dest} ) = ARRAY( $pkgin, $field, $opt{dest} );
 
     my @cmd = ( 'expac', $op, ( join ',', @FIELD_MAP{@$field} ) );
-
-    $opt{dest} = [] unless $opt{dest} && ref $opt{dest} eq 'ARRAY';
 
     my $outh = sub ( $line, @ ) {
         push $opt{dest}->@*, grep {
@@ -127,12 +132,14 @@ method pkgfield ( $pkgin, $field, %opt ) {
         } split /\s/, $line;
     };
 
+    my $run;
+
     if ( $opt{exact} ) {
-        run( [ @cmd, @$pkgin ], out => $outh );
+        $run = $self->run( [ @cmd, @$pkgin ], out => $outh );
     }
     else {
         foreach my $pkgstr (@$pkgin) {
-            run( [ @cmd, $pkgstr ], out => $outh );
+            $self->run( [ @cmd, $pkgstr ], out => $outh );
         }
     }
 
@@ -155,6 +162,7 @@ sub ARRAY : prototype(@) (@in) {
     my @ret;
 
     foreach my ($var) (@in) {
+        $var //= [];
         my $type = reftype($var);
 
         if ( !$type ) {
@@ -173,43 +181,77 @@ sub ARRAY : prototype(@) (@in) {
 }
 *array = \&ARRAY;
 
-method pacman_pkgname( $pkglist, %opt ) {
-    $opt{dest} //= [];
-    die "\$opt{dest} must be an ARRAY. (Got: )" . reftype( $opt{dest} )
-      if reftype( $opt{dest} ) ne 'ARRAY';
+method pacman_provides ( $pkg, %opt ) {
 
+    # die "\$opt{dest} must be an ARRAY. (Got: )" . reftype( $opt{dest} )
+    #   if reftype( $opt{dest} ) ne 'ARRAY';
+
+    ( $pkg, $opt{dest} ) = array( $pkg, $opt{dest} );
+
+    # sudo pacman -Sy --print-format '%P' ffmpeg-git
+    $self->run(
+        [ qw(pacman -S --print-format '%P'), pacman_updarg($db), $pkg ],
+        out => sub( $line, @ ) {
+            $self->group_pkgstr( $line, $opt{dest} );
+        }
+    );
+}
+
+method pacman_updarg ( $db, %opt ) {
+    my $lastupdate = $db eq 'file' ? 'filedb_updated' : 'pkgdb_updated';
+    if ( !$self->$lastupdate || $opt{force} ) {
+        $self->$lastupdate(time);
+        return '-y';
+    }
+    undef;
+}
+
+method pacman_pkgname( $pkglist, %opt ) {
     ( $pkglist, $opt{dest} ) = ARRAY( $pkglist, $opt{dest} );
 
-    my $pkgre = '^(' . ( join '|', @$pkglist ) . ')$';
+    my $pkgre = '^(' . ( join '|', uniq @$pkglist ) . ')$';
 
     my @cmd = qw(pacman -Sqs);
-    push @cmd, '-y' if $opt{update_filedb};
+
+    if ( my $arg = $self->pacman_updarg( 'package', force => $opt{update_db} ) )
+    {
+        unshift @cmd, 'sudo';
+        push @cmd, $arg;
+    }
+
     push @cmd, $pkgre;
 
-    my $run = run(
+    my $run = $self->run(
         \@cmd,
         out => sub( $line, @ ) {
-            push $opt{dest}->@*, $line;
+            if ( my ($name) = ( $line =~ /^$pkgname_re/ ) ) {
+
+                # dmsg $name, $line, $pkgname_re;
+                push $opt{dest}->@*, $name;
+            }
         }
     );
 
     fatal( '`' . ( join ' ', @cmd ) . "` exited with " . $run->status )
       if $run->status > 0;
-    dmsg $pkglist, \%opt, $pkgre, $run;
+
+    # dmsg \%opt, $pkgre, \@cmd;
 
     $opt{dest}->@*;
 }
 
 method pacman_files ( $filelist, %opt ) {
-    $opt{dest} //= [];
-
-    die "\$opt{dest} must be an ARRAY. (Got: )" . reftype( $opt{dest} )
-      if reftype( $opt{dest} ) ne 'ARRAY';
-
     ( $filelist, $opt{dest} ) = array( $filelist, $opt{dest} );
 
-    my $run = run(
-        [ qw(sudo pacman -Fq), ( $opt{updatedb} ? qw(-y) : () ), @$filelist ],
+    my @cmd = qw(pacman -Fq);
+    if ( my $arg = $self->pacman_updarg( 'package', force => $opt{update_db} ) )
+    {
+        unshift @cmd, 'sudo';
+        push @cmd, $arg;
+    }
+
+    my $run = $self->run(
+        [ @cmd, uniq @$filelist ],
         out => sub ( $line, @ ) {
             say $line if $verbose;
             if ( my ( $repo, $name ) = $line =~ m!([^/]+)/(.+)!g ) {
@@ -219,52 +261,62 @@ method pacman_files ( $filelist, %opt ) {
         }
     );
 
+    # dmsg \@cmd;
+
     $opt{dest}->@*;
 }
 
 method pactree ( $pkglist, %opt ) {
     my @res = ();
 
-    $opt{dest} //= [];
-    $opt{db}   //= 'sync';
-    $pkglist = [ split /[\s,]+/, $pkglist ] unless ref $pkglist eq 'ARRAY';
+    my $dest = $opt{dest} //= { pkg => [], file => [] };
+    $opt{db} //= 'sync';
+    ($pkglist) = ARRAY($pkglist);
 
-    const my $soname_re => qr/(.+\.so)=([0-9-].+)/xx;
+    my @pkgname = ();
+    my @file    = ();
 
     foreach my $pkgstr (@$pkglist) {
-        my @pkgname = ();
-        my @file    = ();
 
-        my $run = run(
-            [ qw(pactree -lu), ( $opt{db} eq 'sync' ? qw'-s' : () ), $pkgstr ],
+        # my @cmd     = ( qw(pactree -lu), $pkgstr );
+        my @cmd =
+          ( qw(pactree -lu), ( $opt{db} eq 'sync' ? qw'-s' : () ), $pkgstr );
+
+        my $run = $self->run(
+            \@cmd,
             out => sub ( $line, @ ) {
-                my $dep = $line;
 
-                if ( my ( $soname, $sover ) = $dep =~ $soname_re ) {
-                    push @file, $soname;
+                if ( my ( $soname, $sover ) = $line =~ $soname_re ) {
+                    push @file, $soname
+                      if none { $_ eq $soname } @file, $$dest{file}->@*;
                 }
-                elsif ( my ( $name, $cmp, $ver ) = $dep =~ $pkgname_re ) {
-                    dmsg $name, $cmp, $ver;
-
-      # TODO: check version consraint (I think pacman reads these strings as is)
-                    push @pkgname, $name;
+                elsif ( my ( $name, $cmp, $ver ) = $line =~ $pkgname_re ) {
+                    push @pkgname, $name
+                      if none { $_ eq $name } @pkgname, $$dest{pkg}->@*;
                 }
                 else {
-                    error "'$dep' is unresolvable";
+                    error
+"'$pkgstr' does not seem to be a shared object or package name/base.";
                 }
             }
         );
         push @res, $run;
 
+        # dmsg \@cmd;
+
         # Get canon/current pkgname (example dependency package has been
         # replaced but pactree returns name it was built with)
-        @pkgname = uniq $self->pacman_pkgname( \@pkgname ) if scalar @pkgname;
 
-        push @pkgname,       $self->pacman_files( \@file ) if scalar @file;
-        push $opt{dest}->@*, @pkgname;
+        #push $opt{dest}->@*, @pkgname;
     }
 
-    $opt{dest}->@*;
+    push $$dest{pkg}->@*, uniq $self->pacman_pkgname( \@pkgname )
+      if scalar @pkgname;    #$$dest{pkg}->@*;
+
+    push $$dest{pkg}->@*, uniq $self->pacman_files( \@file )
+      if scalar @file;
+
+    $opt{dest}->%*;
 }
 
 method arch_rebuild_order( $pkgname_aref, %opt ) {
@@ -275,7 +327,7 @@ method arch_rebuild_order( $pkgname_aref, %opt ) {
 
     dynamically $reversedeps = $opt{reversedeps};
 
-    my $run = run(
+    my $run = $self->run(
         [
             qw'arch-rebuild-order',                         $repostr,
             ( $reversedeps ? () : '--no-reverse-depends' ), @$pkgname_aref
@@ -289,24 +341,38 @@ method arch_rebuild_order( $pkgname_aref, %opt ) {
     @$ordered;
 }
 
-method resolve ( $pkglist = $in, %opt ) {
-    my @pkgname;
-    $self->pacman_pkgname( $pkglist, %opt, dest => \@pkgname );
+method resolve ( $pkglist //= $in, %opt ) {
 
-    my @pactree;
-    $self->pactree( \@pkgname, dest => \@pactree, exact => 1 );
+    dmsg $pkglist, \%opt;
 
-    @pactree = uniq @pactree if $opt{unique} // $unique;
+    my @in_pkgname;
+    $self->pacman_pkgname( $pkglist, %opt, dest => \@in_pkgname );
+
+    dmsg \@in_pkgname;
+
+    my %pactree = ( pkg => [], file => [] );
+    $self->pactree( \@in_pkgname, dest => \%pactree, exact => 1 );
+
+    # @pactree = uniq @pactree if $opt{unique} // $unique;
+    dmsg \%pactree;
 
     my @ordered;
-    $self->arch_rebuild_order( \@pactree, dest => \@ordered )
+    $self->arch_rebuild_order( $pactree{pkg}, dest => \@ordered )
       if $opt{buildorder} // $buildorder;
 
-    dmsg \@pkgname, \@pactree, \@ordered;
+    dmsg \@ordered;
+
+    if ( !scalar $field ) {
+        error
+"Outputting package bases. For package names run with '--field=name' or '--names'";
+    }
 
     $self->pkgfield(
-        ( scalar @ordered ? \@ordered : \@pactree ),
-        ( $opt{field} // $field // 'base' ),
+        ( scalar @ordered ? \@ordered : $pactree{pkg} ),
+        (
+            first { $_ && ( reftype($_) eq 'ARRAY' ) && scalar(@$_) > 0 }
+              ( $opt{field}, $field, ['base'] )
+        ),
         exact => 1
     );
 }
@@ -356,14 +422,18 @@ method cli : common ($argv = \@ARGV, %opt) {
 
         # input packages
         '<>' => sub ($barearg) {
-            push $clidest{in}->@*, split /[\s,]+/, $barearg;
+            push $clidest{in}->@*, $barearg;
         }
     );
 
     $clidest{in}->@* = uniq $clidest{in}->@* if $clidest{prune};
 
-    my $self    = $class->new( %clidest, %opt );
+    my $self = $class->new( %clidest, %opt );
+    dmsg $self, \%clidest;
+
     my @pkgtree = $self->resolve;
+
+    # dmsg \@pkgtree;
 
     say join $clidest{sep}, @pkgtree;
 }
