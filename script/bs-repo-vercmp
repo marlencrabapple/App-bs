@@ -6,7 +6,7 @@ package bs_repo_vercmp;
 
 class bs_repo_vercmp;
 
-use v5.44;
+use v5.40;
 use utf8;
 
 use Path::Tiny;
@@ -34,16 +34,18 @@ ADJUST : params (:$updatedb //= 1) {
     $self->param_bool( updatedb => $updatedb );
 };
 
-ADJUST : params (:$cmp_pkgrel //= 0) {
-    $self->param_bool( cmp_pkgrel => $cmp_pkgrel )
-};
+ADJUST : params (:$cmp_pkgrel //= 0)
+  { $self->param_bool( cmp_pkgrel => $cmp_pkgrel ) };
 
 ADJUST : params (:$repo, :$filter //= undef) {
+
+    # $repo =
+
    # TODO: Compare repos definied somewhere in BS config/env to repos enabled in
    # pacman.conf excluding dupes
    # - do arch based distros list repos shipped with anywhere dependable?
    # - ...
-    fatal "repo must be an ARRAY ref with >=2 repositories"
+      fatal "repo must be an ARRAY ref with >=2 repositories"
       unless ref $repo
       && ref $repo eq 'ARRAY'
       && scalar @$repo >= 2;
@@ -160,8 +162,11 @@ method vercmp ( $repo = $self->repo, %opt ) {
                                   : ( $_ =~ s/-[0-9]+$/-x/r )
                             } ( $ver, $pkg->{$repo_prev}{$name}{ver} );
                             if ($outfmt) {
-                                const my %fmtmap => (base => '%e', name =>
-                                '%n', repo => '%r', );
+                                const my %fmtmap => (
+                                    base => '%e',
+                                    name => '%n',
+                                    repo => '%r',
+                                );
                             }
                             else {
 
@@ -200,10 +205,10 @@ method vercmp ( $repo = $self->repo, %opt ) {
 
 package bs_repo_vercmp::CLI;
 
-use v5.44;
-
+use v5.40;
 use IO::Handle::Common;
-use Getopt::Long qw'GetOptionsFromArray';
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
 
 sub run ( $argv = \@ARGV ) {
     my @repo;
@@ -216,7 +221,7 @@ sub run ( $argv = \@ARGV ) {
         'filter|pattern|search|regexp|ptn:s',
         'installed-only',
         'cmp_pkgrel|pkgrel|compare-pkgrel!',
-        'format:s',
+        'outfmt|format:s',
         '<>' => sub ($repo) {
             push @repo, $repo;
         }
@@ -229,11 +234,7 @@ sub run ( $argv = \@ARGV ) {
           keys %clidest
     );
 
-    # dmsg $app;
-
     $app->vercmp;
-
-    # dmsg $app;
 }
 
 run( \@ARGV )

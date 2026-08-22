@@ -1,9 +1,6 @@
 requires 'perl', 'v5.40';
 
-requires 'DBIx::Connector';
-requires 'Inline';
-requires 'Inline::C';
-requires 'Inline::Module';
+
 requires 'Object::Pad';
 requires 'Syntax::Keyword::Try';
 requires 'Syntax::Keyword::Defer';
@@ -11,20 +8,20 @@ requires 'Syntax::Keyword::Dynamically';
 requires 'Getopt::Long';
 requires 'Pod::Usage';
 requires 'Path::Tiny';
-requires 'Class::Exporter';
+
 requires 'File::chdir';
-requires 'IPC::Nosh';
+requires 'IPC::Nosh', '9.01.3;
 requires 'IO::Handle::Common';
 
 requires 'IO::Socket::SSL';
 requires 'Net::SSLeay';
 requires 'List::Util';
 requires 'List::AllUtils';
-requires 'Path::Tiny';
+
 requires 'HTTP::Tinyish';
 requires 'JSON::MaybeXS';
 requires 'TOML::Tiny';
-requires 'Struct::Dumb';
+
 requires 'Future::AsyncAwait';
 requires 'IO::Async';
 requires 'IO::Async::SSL';
@@ -57,8 +54,7 @@ use constant DEV_PREREQS => sub {
     requires 'ExtUtils::MakeMaker';
     requires 'Devel::StackTrace::WithLexicals', '2.01';
     requires 'Module::Build::XSUtil';
-    requires 'App::FatPacker';
-    requires 'Carmel';
+r
 };
 
 on 'build' => DEV_PREREQS;

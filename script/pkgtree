@@ -1,20 +1,387 @@
 #!/usr/bin/env perl
+
 use Object::Pad ':experimental(:all)';
-
-package App::BS::pkgtree;
-class App::BS::pkgtree;
-
-use utf8;
-use v5.42;
-
-use IPC::Nosh;
-use IPC::Nosh::Common;
-use List::Util qw'any';
-
-method pkgtree :common ($argv = \@ARGV, %opt) {
-  
-}
 
 package pkgtree;
 
-App::BS::pkgtree->pkgtree(\@ARGV);
+class pkgtree;
+
+use utf8;
+use v5.40;
+
+use lib 'lib';
+
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev long_prefix_pattern=--?);
+use Const::Fast;
+use List::Util qw'first uniq none';
+use IPC::Nosh  qw'';
+use IO::Handle::Common;
+use PadWalker;
+use Syntax::Keyword::Dynamically;
+
+const our @REPO_DEFAULT => qw(
+  universe
+  core
+  extra
+);
+
+const our %FIELD_MAP => (
+    base                 => '%e',
+    arch                 => '%a',
+    backup_files         => '%B',
+    build_date           => '%b',
+    conflicts_nover      => '%C',
+    depends_on           => '%D',
+    description          => '%d',
+    depends_on_nover     => '%E',
+    optional_deps        => '%O',
+    optional_deps_nodesc => '%o',
+    filename             => '%f',
+    signature            => '%g',
+    groups               => '%G',
+    conflicts_with       => '%H',
+    md5sum               => '%s',
+    sha256sum            => '%h',
+    download_size        => '%k',
+    licences             => '%L',
+    install_size         => '%m',
+    name                 => '%n',
+    required_by          => '%N',
+    version              => '%v',
+    url                  => '%u',
+    replaces             => '%T',
+    replace_nover        => '%R',
+    provides_nover       => '%S',
+    provides             => '%P',
+    packager             => '%p',
+    package_valid_method => '%V',
+    'literal_%'          => '%%',
+);
+
+const our @SORT_ALLOW => qw( buildorder );
+
+const our %RUN_DEFAULT => (
+    autochomp => 1,
+    err       => sub ( $line, @ ) {
+        say STDERR $line;
+    }
+);
+
+const our $ver_req => qr/([=<>]{1}|(?:[<>]=)){,2}/x;
+
+const our $sover_re => qr/^
+ ([^=<>]+)\.so
+ ([0-9-]+)
+$/x;
+
+const our $pkgname_ver => qr/^
+ ([^=<>]+)
+ ([=<>]{1}|(?:[<>]=)){1,2}
+ ([0-9.-]+)
+$/x;
+
+field $in : param;
+
+field $buildorder : param = 1;
+
+field $sortby  : param = qw'buildorder';
+field $sortdir : param = 'desc';
+
+# field $asc;
+# field $desc;
+# field $reverse;
+
+field $reversedeps : param = 0;
+field $repo        : param = \@REPO_DEFAULT;
+field $field       : param : accessor = [qw(base)];
+field $fmtstr      : param : accessor = '%e';
+
+# Default is hybrid: will do expac -Ss if pkgstr has regex meta-characters
+field $exact  : param : accessor = 0;
+field $regex  : param : accessor = 1;
+field $sep    : param = ' ';
+field $unique : param = 1;
+field $pkgtree = {};
+
+field $filedb_updated : accessor;
+field $pkgdb_updated  : accessor;
+
+field $verbose : param = 0;
+
+sub run ( $cmd, %opt ) {
+    my $run = IPC::Nosh::run( $cmd, %RUN_DEFAULT, %opt );
+    $run;
+}
+
+method pkgfield ( $pkgin, $field, %opt ) {
+    my $op = '-S';
+    $op .= 's' unless $opt{exact};
+
+    $pkgin = [$pkgin] unless ref $pkgin eq 'ARRAY';
+    $field = [$field] unless ref $field eq 'ARRAY';
+
+    my @cmd = ( 'expac', $op, ( join ',', @FIELD_MAP{@$field} ) );
+
+    $opt{dest} = [] unless $opt{dest} && ref $opt{dest} eq 'ARRAY';
+
+    my $outh = sub ( $line, @ ) {
+        push $opt{dest}->@*, grep {
+            my $new = $_;
+            none { $_ eq $new } $opt{dest}->@*
+        } split /\s/, $line;
+    };
+
+    if ( $opt{exact} ) {
+        run( [ @cmd, @$pkgin ], out => $outh );
+    }
+    else {
+        foreach my $pkgstr (@$pkgin) {
+            run( [ @cmd, $pkgstr ], out => $outh );
+        }
+    }
+
+    $opt{dest}->@*;
+}
+
+method pkgbase ( $pkglist, %opt ) {
+    $self->pkgfield( $pkglist, 'base', %opt );
+}
+
+method pkgname ( $pkglist, %opt ) {
+    $self->pkgfield( $pkglist, 'name', %opt );
+}
+
+sub refstr ($ref) {
+    reftype($ref) || "";
+}
+
+sub ARRAY(@in) {
+    my @ret;
+
+    foreach my ($var) (@in) {
+        my $type = reftype($var);
+
+        if ( !$type ) {
+            push @ret, [$var];
+        }
+        elsif ( $type ne 'ARRAY' ) {
+            my $name = PadWalker::var_name( 0, $var );
+            die "\$name must be an ARRAY ref or a scalar value. (Got: $type)";
+        }
+        elsif ( $type eq 'ARRAY' ) {
+            push @ret, $var;
+        }
+    }
+
+    @ret;
+}
+
+*array = \&ARRAY;
+
+method pacman_pkgname( $pkglist, %opt ) {
+    $opt{dest} //= [];
+    die "\$opt{dest} must be an ARRAY. (Got: )" . reftype( $opt{dest} )
+      if reftype( $opt{dest} ) ne 'ARRAY';
+
+    ( $pkglist, $opt{dest} ) = ARRAY( $pkglist, $opt{dest} );
+
+    my $pkgre = '^(' . ( join '|', @$pkglist ) . ')$';
+
+    my @cmd = qw(pacman -Sqs);
+    push @cmd, '-y' if $opt{update_filedb};
+    push @cmd, $pkgre;
+
+    my $run = run(
+        \@cmd,
+        out => sub( $line, @ ) {
+            push $opt{dest}->@*, $line;
+        }
+    );
+
+    fatal( '`' . ( join ' ', @cmd ) . "` exited with " . $run->status )
+      if $run->status > 0;
+    dmsg $pkglist, \%opt, $pkgre, $run;
+
+    $opt{dest}->@*;
+}
+
+method pacman_files ( $filelist, %opt ) {
+    $opt{dest} //= [];
+
+    die "\$opt{dest} must be an ARRAY. (Got: )" . reftype( $opt{dest} )
+      if reftype( $opt{dest} ) ne 'ARRAY';
+
+    ( $filelist, $opt{dest} ) = array( $filelist, $opt{dest} );
+
+    my $run = run(
+        [ qw(sudo pacman -Fq), ( $opt{updatedb} ? qw(-y) : () ), @$filelist ],
+        out => sub ( $line, @ ) {
+            say $line if $verbose;
+            if ( my ( $repo, $name ) = $line =~ m!([^/]+)/(.+)!g ) {
+                push $opt{dest}->@*, $name
+                  if none { $_ eq $name } $opt{dest}->@*;
+            }
+        }
+    );
+
+    $opt{dest}->@*;
+}
+
+method pactree ( $pkglist, %opt ) {
+    my @res = ();
+    $opt{dest} //= [];
+    $opt{db}   //= 'sync';
+    $pkglist = [ split /[\s,]+/, $pkglist ] unless ref $pkglist eq 'ARRAY';
+
+    const my $soname_re => qr/(.+\.so)=([0-9-].+)/xx;
+
+    const my $pkgname_re => qr/
+            ([^=<>]+)
+            (?:
+           ([=<>]{1}|[<>]=)
+             ([0-9.-]+)
+            )?/x;
+
+    foreach my $pkgstr (@$pkglist) {
+        my @pkgname = ();
+        my @file    = ();
+
+        my $run = run(
+            [ qw(pactree -lu), ( $opt{db} eq 'sync' ? qw'-s' : () ), $pkgstr ],
+            out => sub ( $line, @ ) {
+                my $dep = $line;
+
+                if ( my ( $soname, $sover ) = $dep =~ $soname_re ) {
+                    push @file, $soname;
+                }
+                elsif ( my ( $name, $cmp, $ver ) = $dep =~ $pkgname_re ) {
+                    dmsg $name, $cmp, $ver;
+
+      # TODO: check version consraint (I think pacman reads these strings as is)
+                    push @pkgname, $name;
+                }
+                else {
+                    error "'$dep' is unresolvable";
+                }
+            }
+        );
+        push @res, $run;
+
+        # Get canon/current pkgname (example dependency package has been
+        # replaced but pactree returns name it was built with)
+        @pkgname = uniq $self->pacman_pkgname( \@pkgname ) if scalar @pkgname;
+
+        push @pkgname,       $self->pacman_files( \@file ) if scalar @file;
+        push $opt{dest}->@*, @pkgname;
+    }
+
+    $opt{dest}->@*;
+}
+
+method arch_rebuild_order( $pkgname_aref, %opt ) {
+    my $ordered = $opt{dest} // [];
+
+    my $repostr = '--repos=' . join ',',
+      ( $opt{repo} && $opt{repo} eq 'ARRAY' ? $opt{repo}->@* : @$repo );
+
+    dynamically $reversedeps = $opt{reversedeps};
+
+    my $run = run(
+        [
+            qw'arch-rebuild-order',                         $repostr,
+            ( $reversedeps ? () : '--no-reverse-depends' ), @$pkgname_aref
+        ],
+        out => sub ( $line, @ ) {
+            push @$ordered, split /\s/, $line;
+        },
+        autochomp => 1
+    );
+
+    @$ordered;
+}
+
+method resolve ( $pkglist = $in, %opt ) {
+    my @pkgname;
+    $self->pacman_pkgname( $pkglist, %opt, dest => \@pkgname );
+
+    my @pactree;
+    $self->pactree( \@pkgname, dest => \@pactree, exact => 1 );
+
+    @pactree = uniq @pactree if $opt{unique} // $unique;
+
+    my @ordered;
+    $self->arch_rebuild_order( \@pactree, dest => \@ordered )
+      if $opt{buildorder} // $buildorder;
+
+    dmsg \@pkgname, \@pactree, \@ordered;
+
+    $self->pkgfield(
+        ( scalar @ordered ? \@ordered : \@pactree ),
+        ( $opt{field} // $field // 'base' ),
+        exact => 1
+    );
+}
+
+method cli : common ($argv = \@ARGV, %opt) {
+    my %clidest = ( in => [], prune => 'input', sep => ' ' );
+
+    GetOptionsFromArray(
+        $argv,
+        \%clidest,
+
+        # output fields and format
+        'base', 'name',
+        'field=s@',
+        'fmtstr=s',
+
+        # database to search with pactree, expac and pacman
+        'db:s',    # sync or local
+        'sync',
+        'local',
+
+        # resultset print order
+        'sort-by|order-by=s@',
+        'build-order|rebuild-order|arch-rebuild-order!',
+        'sort-direction|order',
+        'asc', 'desc',
+        'sep|seperator=s',
+
+        # input search scope
+        'exact!',
+        'regexp',
+
+        # output verbosity control
+        'debug+',
+        'verbose+',
+        'quiet+',
+
+        # enabled repositories (for sync db)
+        'repository=s@',
+
+        # print dependents of input packages
+        'reversedeps|reverse-depends!',
+
+        # prune/filter packages at different stages of resolution
+        "prune:s",
+
+        # input packages
+        '<>' => sub ($barearg) {
+            push $clidest{in}->@*, $barearg;
+        }
+    );
+
+    $clidest{in}->@* = uniq $clidest{in}->@* if $clidest{prune};
+
+    my $self    = $class->new( %clidest, %opt );
+    my @pkgtree = $self->resolve;
+
+    say join $clidest{sep}, @pkgtree;
+}
+
+package pkgtree::CLI;
+
+use utf8;
+use v5.40;
+
+pkgtree->cli( \@ARGV )
