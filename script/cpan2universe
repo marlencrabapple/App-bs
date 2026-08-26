@@ -30,10 +30,13 @@ for package in ${packagelist[*]}; do
 
   [[ "${NOOP:-0}" -eq 1 ]] && echo "$pkgname" && continue 
 
-  [[ -n "$(sudo pacman -Ssq "$pkgname")" ]] &&
-    [[ "$?" -eq 0 ]] &&
-    >&2 echo "'$pkgname' is already in the pacman sync database" &&
+  if [[ -z "$REBUILD_ALL" ]]; then
+    [[ -n "$(sudo pacman -Ssq "$pkgname")" ]] &&
+     [[ "$?" -eq 0 ]] &&
+     >&2 echo "'$pkgname' is already in the pacman sync database" &&
+
     continue
+  fi
 
   #[[ -f "$pkgname"* ]] || cpan2aur "$pkgname";
 

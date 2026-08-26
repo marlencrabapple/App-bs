@@ -14,7 +14,7 @@ use List::Util qw'any uniq';
 use Const::Fast;
 use IO::Handle::Common;
 
-const our $pkgname_common_re => qr'[^.-]{1}[a-z0-9@_+.-]+?'xi;
+const our $pkgname_common_re => qr'[^\.-][a-z0-9@_+\.-]+?'xi;
 
 const our $pkgprefix_re => qr/(?:(lib)\:)?/;
 
@@ -42,6 +42,8 @@ const our $pkgspec_re => qr'$pkgstr_re
 	               		    -$arch_re
 			                (.$pkgext_re)?
 			               'xxi;
+
+const our $pkgstr_re => qr
 
 method parse_pkg_fname : common ($pkgfile) {
     $pkgfile = path($pkgfile);

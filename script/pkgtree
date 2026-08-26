@@ -8,13 +8,15 @@ class pkgtree;
 
 use utf8;
 use v5.40;
+
 no warnings 'experimental::re_strict';
 use re 'strict';
 
 use lib 'lib';
 
 use Getopt::Long
-  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev long_prefix_pattern=--?);
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
+
 use Const::Fast;
 use List::Util qw'first uniq none';
 use IPC::Nosh  qw'';
@@ -95,13 +97,25 @@ field $sortdir : param = 'desc';
 field $reversedeps : param = 0;
 field $repo        : param = \@REPO_DEFAULT;
 field $field       : param : accessor = [];
-field $fmtstr      : param : accessor = '%e';
+
+# ADJUST : params (%param) {
+#     my $fieldin = delete $param{field};
+#     if ( $fieldin && refstr($fieldin) eq "ARRAY" ) {
+#         @$field = ( uniq( @$field, @$fieldin ) );
+#     }
+
+#     # delete $param{field}
+# };
+
+# ADJUST : params (%params)) { my $fieldset = [ uniq $self->field->@*, @$field ]; $self->adjust($self->$adjust()) };
+field $fmtstr : param : accessor = '%e';
 
 # Default is hybrid: will do expac -Ss if pkgstr has regex meta-characters
 field $exact  : param : accessor = 0;
 field $regex  : param : accessor = 1;
 field $sep    : param = ' ';
 field $unique : param = 1;
+field $depth  : param = undef;
 field $pkgtree = {};
 
 field $db             : param = 'sync';
@@ -113,7 +127,9 @@ field $extcmd_log : accessor = [];
 
 method run ( $cmd, %opt ) {
     my $run = IPC::Nosh::run( $cmd, %RUN_DEFAULT, %opt );
+    dmsg $cmd, $run->status;
     push @$extcmd_log, $run;
+
     $run;
 }
 
@@ -123,7 +139,7 @@ method pkgfield ( $pkgin, $field, %opt ) {
 
     ( $pkgin, $field, $opt{dest} ) = ARRAY( $pkgin, $field, $opt{dest} );
 
-    my @cmd = ( 'expac', $op, ( join ',', @FIELD_MAP{@$field} ) );
+    my @cmd = ( 'expac', $op, ( join ',', uniq @FIELD_MAP{@$field} ) );
 
     my $outh = sub ( $line, @ ) {
         push $opt{dest}->@*, grep {
@@ -154,7 +170,7 @@ method pkgname ( $pkglist, %opt ) {
     $self->pkgfield( $pkglist, 'name', %opt );
 }
 
-sub refstr ($ref) {
+sub refstr : prototype($) ($ref) {
     reftype($ref) || "";
 }
 
@@ -280,10 +296,12 @@ method pactree ( $pkglist, %opt ) {
 
         # my @cmd     = ( qw(pactree -lu), $pkgstr );
         my @cmd =
-          ( qw(pactree -lu), ( $opt{db} eq 'sync' ? qw'-s' : () ), $pkgstr );
+          ( qw(pactree -lu), ( $opt{db} eq 'sync' ? qw'-s' : () ) );
+
+        push @cmd, ( '--depth', $depth ) if defined $depth ;
 
         my $run = $self->run(
-            \@cmd,
+            [ @cmd, $pkgstr ],
             out => sub ( $line, @ ) {
 
                 if ( my ( $soname, $sover ) = $line =~ $soname_re ) {
@@ -378,14 +396,21 @@ method resolve ( $pkglist //= $in, %opt ) {
 }
 
 method cli : common ($argv = \@ARGV, %opt) {
-    my %clidest = ( in => [], prune => 'input', sep => ' ' );
+    my %clidest = (
+        in    => [],
+        prune => 'input',
+        sep   => ' ',
+        depth => undef,
+        field => ['base'],
+        'db'  => 'sync'
+    );
 
     GetOptionsFromArray(
         $argv,
         \%clidest,
 
         # output fields and format
-        'base', 'name',
+        # 'base', 'name',
         'field=s@',
         'fmtstr=s',
 
@@ -400,6 +425,7 @@ method cli : common ($argv = \@ARGV, %opt) {
         'sort-direction|order',
         'asc', 'desc',
         'sep|seperator=s',
+        'depth=i',
 
         # input search scope
         'exact!',
@@ -422,6 +448,7 @@ method cli : common ($argv = \@ARGV, %opt) {
 
         # input packages
         '<>' => sub ($barearg) {
+            dmsg $barearg;
             push $clidest{in}->@*, $barearg;
         }
     );

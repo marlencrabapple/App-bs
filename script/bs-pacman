@@ -1,99 +1,95 @@
 #!/usr/bin/env perl
+
 use Object::Pad ':experimental(:all)';
-use Object::Pad::FieldAttr::Trigger;
 
-package App::BS::CLI::pacman;
+package bs_pacman;
 
-class App::BS::CLI::pacman : does(BS::Common);
+class bs_pacman;
 
 use utf8;
 use v5.40;
 
-use lib 'lib';
+no warnings 'experimental::re_strict';
+use re 'strict';
 
-use IPC::Nosh;
-use IO::Handle::Common;
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev long_prefix_pattern=--?);
 use Const::Fast;
-use Syntax::Keyword::Try;
-use Syntax::Keyword::Dynamically;
-use Stream::Buffered;
-use IO::Handle;
+use List::Util qw'first uniq none';
+use IPC::Nosh  qw'';
+use IO::Handle::Common;
 
-use BS::Common 'dmsg';
+const our @REPO_DEFAULT => qw(
+  universe
+  core
+  extra
+);
 
-const our $S_IPCRUN3_FATAL => sub (%opt) {
-    use Data::Dumper;
-    "❌️ Unrecoverable error while spawning external command!\n"
-      . Dumper( $opt{e} );
-};
-
-field $cliopts : param(dest) = { verbose => 1 };
-field $env : param : reader = { %ENV{qw'as_needed debug verbose'} };
-
-field $status : reader;
-field $errmsg : reader;
-field $out_aref = [];
-field $err_aref = [];
-
-method $run (%opts) {
-
-    # Why am I using Syntax::Keyword::Dynamically over local outside of suppport
-    # for Ojbect::Pad?
-    dynamically $status   = 0;
-    dynamically $errmsg   = "";
-    dynamically $out_aref = [];
-
-    my @overwrite = $ARGV[0] eq '-S' ? qw(--overwrite '*' --noconfirm) : ();
-    push @overwrite, '--needed' if $$env{as_needed};
-
-    try {
-        my $ret = run(
-            [ 'pacman', @overwrite, '--verbose', @ARGV ],
-            autochomp => 1,
-            autoflush => 1,
-            out       => $out_aref,
-            err       => $err_aref
-        );
-
-        dmsg(
-            {
-                overwrite => \@overwrite,
-                ret       => $ret,
-                errmsg    => $errmsg,
-                status    => $status,
-                opts      => \%opts
-            }
-        )
+const our %RUN_DEFAULT => (
+    autochomp => 1,
+    err       => sub ( $line, @ ) {
+        say STDERR $line;
     }
-    catch ($e) {
-        die $S_IPCRUN3_FATAL->( e => $e );
-    }
-    finally {
-        chomp $errmsg;
-        $errmsg =~ s/^(.+)[\s\r\n]*/$1/g;
+);
+const our $soname_re => qr/(.+\.so)=([0-9-].+)/xx;
+const our $ver_req   => qr/([=<>]{1}|(?:[<>]=)){,2}/x;
 
-       dmsg(
-            { errmsg => $errmsg, status => $status, opts => \%opts } )
-    };
+const our $pkgname_re => qr/
+([a-z0-9_@+][a-z0-9_@+.-]+)
+ (?:
+   ([\s-]|[=<>]{1}|[<>]=)
+   ([^\s:\/\\-]+?)
+ )?/xi;
 
-    $status ? 0 : 1;
+const our @pacenv => map { ( $_ = s/PACMAN_//r, $_ ) } qw(
+  REFRESH REGEX OVERWRITE NEEDED NO_CONFIRM NODEPS ROOT VERBOSE ARCH COLOR CONFIRM SYSROOT DBPATH CACHEDIR PACMAN_OPT
+);
+
+const our $envparam_map =>
+  ( map { lc($_) =~ s/PACMAN_?//r =~ s/_/-/r } @pacenv );
+
+const our $pacman_defaultarg => qw(--overwrite * --no-confirm -dd);
+
+method $run (%opt) {
+    my @pacman_cmd = qw(pacman -S);
+
 }
 
-method cli : common ($argv, %opts) {
-    my $app  = $class->new( argv => $argv, %opts{qw''} );
-    my $exit = $app->$run;
-    $app;
+method pacman : common ($argv = \@ARGV) {
+    my $self = $class->new(@$argv);
+    $self->$run;
 }
 
-package main;
+package bs_pacman::CLI;
 
+use utf8;
 use v5.40;
 
-use BS::Common 'dmsg';
+sub cli ( $argv = \@ARGV ) {
+    my %clidest = ( in => [], prune => 'input', sep => ' ' );
 
-sub run {
-    our $app = App::BS::CLI::pacman->cli( \@ARGV );
-    BS::Common::dmsg( { app => $app } );
+    GetOptionsFromArray(
+        $argv,
+        \%clidest,
+
+        # output verbosity control
+        'debug+',
+        'verbose+',
+        'quiet+',
+
+        # prune/filter packages at different stages of resolution
+        "prune-input:s@",
+        "variant|choose|chosen|wanted:s@",
+
+        # input packages
+        '<>' => sub ($barearg) {
+            push $clidest{in}->@*, $barearg;
+        }
+    );
+
+    my $self = bs_pacman->new(%clidest);
+
+    my @pkgtree = $self->resolve;
+
 }
-
-run
+bs_pacman->cli( \@ARGV )
