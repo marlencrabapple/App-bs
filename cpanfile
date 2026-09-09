@@ -1,17 +1,18 @@
 requires 'perl', 'v5.40';
 
-
 requires 'Object::Pad';
 requires 'Syntax::Keyword::Try';
 requires 'Syntax::Keyword::Defer';
 requires 'Syntax::Keyword::Dynamically';
 requires 'Getopt::Long';
 requires 'Pod::Usage';
-requires 'Path::Tiny';
+requires 'Path::Try', dist => 'CRABAPP/Path-Try-0.01-TRIAL.tar.gz';
 
 requires 'File::chdir';
-requires 'IPC::Nosh', '0.01.3';
-requires 'IO::Handle::Common';
+
+requires 'IPC::Nosh', '0.01.3', dist => 'CRABAPP/IO-Nosh-0.01.3-TRIAL.tar.gz';
+requires 'IO::Handle::Common', '0.01.1',
+  dist => 'CRABAPP/IO-Handle-Common-0.01.1-TRIAL.tar.gz';
 
 requires 'IO::Socket::SSL';
 requires 'Net::SSLeay';
@@ -30,7 +31,6 @@ requires 'meta';
 requires 'FreezeThaw';
 
 requires 'Object::Pad::FieldAttr::Trigger';
-
 
 on 'test' => sub {
     requires 'Test::More',       '0.98';
@@ -56,9 +56,9 @@ use constant DEV_PREREQS => sub {
     requires 'Module::Build::XSUtil';
 };
 
-on 'build' => DEV_PREREQS;
+on 'build'   => DEV_PREREQS;
 on 'develop' => DEV_PREREQS;
 
-feature 'pacrelay' => sub {
-    requires 'WWW::pacman::Proxy';
-}
+# feature 'pacrelay' => sub {
+#     requires 'WWW::pacman::Proxy';
+# }

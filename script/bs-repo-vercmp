@@ -27,7 +27,9 @@ field $lastsync       : accessor;
 field $updatedb       : accessor = 1;
 field $cmp_pkgrel     : accessor = 0;
 field $installed_only : accessor = 0;
-field $outfmt         : accessor : param = undef;
+field $outfmt         : accessor : param //= undef;
+field $verbose        : param = 0;
+field $quiet          : param //= undef;
 field $pkg = {};
 
 ADJUST : params (:$updatedb //= 1) {
@@ -41,11 +43,11 @@ ADJUST : params (:$repo, :$filter //= undef) {
 
     # $repo =
 
-   # TODO: Compare repos definied somewhere in BS config/env to repos enabled in
-   # pacman.conf excluding dupes
-   # - do arch based distros list repos shipped with anywhere dependable?
-   # - ...
-      fatal "repo must be an ARRAY ref with >=2 repositories"
+    # TODO: Compare repos defined somewhere in BS config/env to repos enabled in
+    # pacman.conf excluding dupes
+    # - do arch based distros list repos shipped with anywhere dependable?
+    # - ...
+    fatal "repo must be an ARRAY ref with >=2 repositories"
       unless ref $repo
       && ref $repo eq 'ARRAY'
       && scalar @$repo >= 2;
@@ -87,23 +89,27 @@ method vercmp ( $repo = $self->repo, %opt ) {
     dynamically $cmp_pkgrel = $opt{cmp_pkgrel} if $opt{cmp_pkgrel};
 
     info "Stripping pkgrel from version strings before comparison..."
-      unless $cmp_pkgrel;
+      unless $cmp_pkgrel && !$quiet;
 
-    # my %pkg = ();
     my $repo_prev;
 
-    foreach my $repo (@$repo) {
-        my @repolist_cmd = (qw'pacman -S -l');
-        $$pkg{$repo} //= {};
+    # my $pair_prev;
 
-        defer { $repo_prev = $repo }
+    foreach my ($repopair) ( List::Util::pairmap { [ $a, $b ] } @$repo ) {
+        info "Comparing " . join ', ', @$repopair;
+
+        my @repolist_cmd = (qw'pacman -S -l');
+        $pkg->{$_} //= {} for (@$repopair);
+
+        defer { $repo_prev = $repopair->[0] }
 
         if ( $updatedb && !$lastsync ) {
             unshift @repolist_cmd, 'sudo';
             push @repolist_cmd, '-y';
         }
 
-        const my $repolist_line_re => qr/^
+        for my ( $i, $repo ) ( builtin::indexed(@$repopair) ) {
+            const my $repolist_line_re => qr/^
           $repo\s
           ([^\s]+)\s # name
           ([^\s]+) # ver
@@ -114,93 +120,149 @@ method vercmp ( $repo = $self->repo, %opt ) {
             )?\]
           ))?
           $/xi;
+            my $run = run(
+                [ @repolist_cmd, $repo ],
+                out => sub ( $line, @ ) {
+                    my ( $name, $ver, $installed, $localver ) =
+                      $line =~ $repolist_line_re;
 
-        my $run = run(
-            [ @repolist_cmd, $repo ],
-            out => sub ( $line, @ ) {
-                my ( $name, $ver, $installed, $localver ) =
-                  $line =~ $repolist_line_re;
+                    if ( none { $_ } $name, $ver ) {
+                        return
+                          if $line =~ /^::/
+                          || $line =~ /^\s*[^\s]+ downloading.../;
 
-                if ( none { $_ } $name, $ver ) {
-                    return
-                      if $line =~ /^::/
-                      || $line =~ /^\s*[^\s]+ downloading.../;
-
-                    error
-                      "Encountered error processing pacman output:\n  $line";
-
-                    dmsg $repo, $line;
-
-                    return;
-                }
-
-                if ( !$filter || $name =~ $filter ) {
-                    my %currpkg = (
-                        ver       => $ver,
-                        installed => (
-                                 $installed
-                              && $installed =~ /^\[installed/ ? 1 : undef
-                        ),
-                        localver => $localver
-                    );
-
-                    if ( $pkg->{$repo}{$name} ) {
                         error
-                          "Package already processed: $repo/$name. Ignoring...";
-                        dmsg $line, \%currpkg, $pkg->{$repo}{$name};
+"Encountered error processing pacman output:\n  $line";
+
+                        return;
                     }
-                    if ( !$repo_prev || $pkg->{$repo_prev}{$name} ) {
+
+                    if ( !$filter || $name =~ $filter ) {
+                        my %currpkg = (
+                            name      => $name,
+                            ver       => $ver,
+                            installed => (
+                                     $installed
+                                  && $installed =~ /^\[installed/ ? 1 : undef
+                            ),
+                            localver => $localver
+                        );
+
+                        if ( $pkg->{$repo}{$name} ) {
+                            info
+"Package already processed: $repo/$name. Ignoring..."
+                              if $verbose > 1;
+                            dmsg $line, \%currpkg, $pkg->{$repo}{$name};
+                        }
+
+                        # if ( !$repo_prev || $pkg->{$repo_prev}{$name} ) {
                         $pkg->{$repo}{$name} //= \%currpkg
                           unless $installed_only && !$installed;
-                    }
 
-                    my $vercmp_outh = sub ( $line, @ ) {
-                        if ( $line < 0 ) {
-                            my @ver = map {
-                                    $cmp_pkgrel
-                                  ? $_
-                                  : ( $_ =~ s/-[0-9]+$/-x/r )
-                            } ( $ver, $pkg->{$repo_prev}{$name}{ver} );
-                            if ($outfmt) {
-                                const my %fmtmap => (
-                                    base => '%e',
-                                    name => '%n',
-                                    repo => '%r',
-                                );
-                            }
-                            else {
+                        # }
 
-                                say "$repo_prev/$name ("
-                                  . $ver[1]
-                                  . ") is newer than $repo/$name ($ver[0])";
+                        const my $vercmp_outh => sub ( $line, @ ) {
+                            if ( $line < 0 ) {
+                                my @ver = map {
+                                        $cmp_pkgrel
+                                      ? $_
+                                      : ( $_ =~ s/-[0-9]+$/-x/r )
+                                } ( $ver, $pkg->{$repo_prev}{$name}{ver} );
+                                if ($outfmt) {
+                                    const my %fmtmap => (
+                                        base => '%e',
+                                        name => '%n',
+                                        repo => '%r',
+                                    );
+                                }
+                                else {
+                                    if ($quiet) {
+                                        say $name;
+                                    }
+                                    else {
+                                        say "$repo_prev/$name ("
+                                          . $ver[1]
+                                          . ") is newer than $repo/$name ($ver[0])";
+                                    }
+
+                                }
                             }
+                        };
+
+                        # if (   $repo_prev
+                        # && $pkg->{$repo_prev}{$name} )
+                        if ( $i % 2 == 0 ) {
+                            my $run = run(
+                                [
+                                    'vercmp',
+                                    map {
+                                            $cmp_pkgrel
+                                          ? $_
+                                          : ( $_ =~ s/-[0-9]+$//r );
+                                    } ( $ver, $pkg->{$repo_prev}{$name}{ver} )
+                                ],
+                                out => $vercmp_outh,
+                            );
                         }
-                    };
 
-                    if (   $repo_prev
-                        && $pkg->{$repo_prev}{$name} )
-                    {
-                        my $run = run(
-                            [
-                                'vercmp',
-                                map {
-                                    $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$//r );
-                                } ( $ver, $pkg->{$repo_prev}{$name}{ver} )
-                            ],
-                            out => $vercmp_outh,
-                        );
                     }
-                }
-            },
-            autochomp => 1
-        );
+                },
+                autochomp => 1
+            );
 
-        if ( $run->status == 0 ) {
-            $lastsync = __PACKAGE__->epoch if $updatedb;
+#             my $vercmp_outh = sub ( $line, @ ) {
+#     if ( $line < 0 ) {
+#         my @ver = map {
+#                 $cmp_pkgrel
+#               ? $_
+#               : ( $_ =~ s/-[0-9]+$/-x/r )
+#         } ( map { $->{ver} } $pkg->%{@$repopair}); # $ver, $pkg->{$repo_prev}{$name}{ver} );
+
+            #         if ($outfmt) {
+            #             const my %fmtmap => (
+            #                 base => '%e',
+            #                 name => '%n',
+            #                 repo => '%r',
+            #             );
+            #         }
+            #         else {
+            #             if ($quiet) {
+            #                 say $name;
+            #             }
+            #             else {
+            #                 say "$repo_prev/$name ("
+            #                   . $ver[1]
+            #                   . ") is newer than $repo/$name ($ver[0])";
+            #             }
+
+            #         }
+            #     }
+            # };
+
+            # if (   $repo_prev
+            #     && $pkg->{$repo_prev}{$name} )
+            # {
+            #     my $run = run(
+            #         [
+            #             'vercmp',
+            #             map {
+            #                     $cmp_pkgrel
+            #                   ? $_
+            #                   : ( $_ =~ s/-[0-9]+$//r );
+            #             } ( $ver, $pkg->{$repo_prev}{$name}{ver} )
+            #         ],
+            #         out => $vercmp_outh,
+            #     );
+
+            if ( $run->status == 0 ) {
+                $lastsync = __PACKAGE__->epoch if $updatedb;
+            }
         }
+
+        say "";
     }
 
-    dmsg $pkg;
+    # dmsg $pkg;
 }
 
 package bs_repo_vercmp::CLI;
@@ -217,9 +279,10 @@ sub run ( $argv = \@ARGV ) {
     GetOptionsFromArray(
         $argv,
         \%clidest,
-        'updatedb|sync!',
+        'updatedb|update|sync!',
         'filter|pattern|search|regexp|ptn:s',
-        'installed-only',
+        'installed-only!',
+        'quiet!',
         'cmp_pkgrel|pkgrel|compare-pkgrel!',
         'outfmt|format:s',
         '<>' => sub ($repo) {
@@ -227,12 +290,14 @@ sub run ( $argv = \@ARGV ) {
         }
     );
 
-    dmsg \%clidest;
+    # dmsg \%clidest;
 
     my $app = bs_repo_vercmp->new(
         map { ( ( $_ =~ s/-/_/r ) => $clidest{$_} ) }
           keys %clidest
     );
+
+    dmsg $app, \%clidest;
 
     $app->vercmp;
 }

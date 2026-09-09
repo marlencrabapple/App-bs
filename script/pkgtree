@@ -67,6 +67,7 @@ const our @SORT_ALLOW => qw( buildorder );
 
 const our %RUN_DEFAULT => (
     autochomp => 1,
+    autoflush => 1,
     err       => sub ( $line, @ ) {
         say STDERR $line;
     }
@@ -98,16 +99,6 @@ field $reversedeps : param = 0;
 field $repo        : param = \@REPO_DEFAULT;
 field $field       : param : accessor = [];
 
-# ADJUST : params (%param) {
-#     my $fieldin = delete $param{field};
-#     if ( $fieldin && refstr($fieldin) eq "ARRAY" ) {
-#         @$field = ( uniq( @$field, @$fieldin ) );
-#     }
-
-#     # delete $param{field}
-# };
-
-# ADJUST : params (%params)) { my $fieldset = [ uniq $self->field->@*, @$field ]; $self->adjust($self->$adjust()) };
 field $fmtstr : param : accessor = '%e';
 
 # Default is hybrid: will do expac -Ss if pkgstr has regex meta-characters
@@ -122,12 +113,17 @@ field $db             : param = 'sync';
 field $filedb_updated : accessor;
 field $pkgdb_updated  : accessor;
 
-field $verbose    : param    = 0;
-field $extcmd_log : accessor = [];
+field $verbose     : param    = 0;
+field $extcmd_log  : accessor = [];
+field $pacman_conf : param //= $ENV{PACMAN_CONF};
 
 method run ( $cmd, %opt ) {
+    dynamically $cmd =
+      [@$cmd, ( $pacman_conf ? ( '--config', $pacman_conf ) : () ) ];
+
     my $run = IPC::Nosh::run( $cmd, %RUN_DEFAULT, %opt );
-    dmsg $cmd, $run->status;
+
+    dmsg $cmd, $run;
     push @$extcmd_log, $run;
 
     $run;
@@ -298,7 +294,7 @@ method pactree ( $pkglist, %opt ) {
         my @cmd =
           ( qw(pactree -lu), ( $opt{db} eq 'sync' ? qw'-s' : () ) );
 
-        push @cmd, ( '--depth', $depth ) if defined $depth ;
+        push @cmd, ( '--depth', $depth ) if defined $depth;
 
         my $run = $self->run(
             [ @cmd, $pkgstr ],
@@ -402,7 +398,7 @@ method cli : common ($argv = \@ARGV, %opt) {
         sep   => ' ',
         depth => undef,
         field => ['base'],
-        'db'  => 'sync'
+        'db'  => 'sync',
     );
 
     GetOptionsFromArray(
@@ -426,6 +422,7 @@ method cli : common ($argv = \@ARGV, %opt) {
         'asc', 'desc',
         'sep|seperator=s',
         'depth=i',
+        'pacman-conf|config:s',
 
         # input search scope
         'exact!',
@@ -444,7 +441,9 @@ method cli : common ($argv = \@ARGV, %opt) {
 
         # prune/filter packages at different stages of resolution
         "prune:s",
-        "variant|choose|chosen|wanted:s",
+        "variant|prefer|choose|chosen|wanted:s",
+        "filter=s@"
+        ,
 
         # input packages
         '<>' => sub ($barearg) {
@@ -455,7 +454,8 @@ method cli : common ($argv = \@ARGV, %opt) {
 
     $clidest{in}->@* = uniq $clidest{in}->@* if $clidest{prune};
 
-    my $self = $class->new( %clidest, %opt );
+    my $self = $class->new( map { $_ =~ s/-/_/g; ( $_ => $clidest{$_} ) }
+          keys %clidest, %opt );
     dmsg $self, \%clidest;
 
     my @pkgtree = $self->resolve;

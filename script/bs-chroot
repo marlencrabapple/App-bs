@@ -1,0 +1,21 @@
+#!/usr/bin/env perl
+use Object::Pad ':experimental(:all)';
+
+package App::BS::chroot;
+class App::BS::chroot;
+
+use v5.44;
+use utf8;
+
+use Path::Try;
+
+field $target;
+field $hostarch
+field $repo_enabled
+field $pacman_conf_path;
+field $mirrorlist_path;
+field $makepkg_path //= [ path('/etc/makepkg.conf'), path('/etc/makepkg.d')->children];
+
+package App::BS::bs_chroot;
+
+sub

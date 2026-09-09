@@ -7,55 +7,59 @@ class App::BS::CLI : does(App::BS::Common);
 use utf8;
 use v5.40;
 
-use Carp;
-use Pod::Usage;
-use Const::Fast;
-use Data::Dumper;
-use Getopt::Long qw(GetOptionsFromArray :config auto_abbrev permute bundling);
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
 
-const our $S_MULTI_BAREARG => "Two bare argument handlers are defined. Please"
-  . " remove either 'getopts->{\"<>\"}' or 'handle_bareargs' in 'new'.";
 
-field $bareargs        : param(argv) : mutator(argv);
-field $handle_bareargs : param = undef;
-field $getopts_setup   : param(clispec) : mutator;
-field $cliopts         : param(dest)    : mutator = {};
+# use Carp;
+# use Pod::Usage;
+# use Const::Fast;
+# use Data::Dumper;
+# use Getopt::Long qw(GetOptionsFromArray :config auto_abbrev permute bundling);
 
-ADJUSTPARAMS($params) {
-    say STDERR Dumper( { params => $params } );
-    my @handle_bareargs_arr;
-    my $has_bareargs_handler = 0;
+# const our $S_MULTI_BAREARG => "Two bare argument handlers are defined. Please"
+#   . " remove either 'getopts->{\"<>\"}' or 'handle_bareargs' in 'new'.";
 
-    if ( $handle_bareargs && ref $handle_bareargs eq 'CODE' ) {
-        push @handle_bareargs_arr, $handle_bareargs;
-    }
+# field $bareargs        : param(argv) : mutator(argv);
+# field $handle_bareargs : param = undef;
+# field $getopts_setup   : param(clispec) : mutator;
+# field $cliopts         : param(dest)    : mutator = {};
 
-    if ( $self->DOES('App::BS::CLI::Barearg') ) {
-        push @handle_bareargs_arr, sub { $self->handle_barearg(@_) }
-    }
+# ADJUSTPARAMS($params) {
+#     say STDERR Dumper( { params => $params } );
+#     my @handle_bareargs_arr;
+#     my $has_bareargs_handler = 0;
 
-    my @_getopts_processed = ();
+#     if ( $handle_bareargs && ref $handle_bareargs eq 'CODE' ) {
+#         push @handle_bareargs_arr, $handle_bareargs;
+#     }
 
-    foreach my ( $name, $val ) ( $self->getopts_setup->@* ) {
-        if ( $name eq '<>' && ref $val eq 'CODE' ) {
-            push @handle_bareargs_arr, sub { $self->handle_barearg(@_) };
-            last;
-        }
+#     if ( $self->DOES('App::BS::CLI::Barearg') ) {
+#         push @handle_bareargs_arr, sub { $self->handle_barearg(@_) }
+#     }
 
-        push @_getopts_processed, grep { $_ } $name, $val;
-    }
+#     my @_getopts_processed = ();
 
-    my $bareword_handler = sub ($arg) {
-        foreach my $handler (@handle_bareargs_arr) {
-            last if $handler->($arg);
-        }
-    };
+#     foreach my ( $name, $val ) ( $self->getopts_setup->@* ) {
+#         if ( $name eq '<>' && ref $val eq 'CODE' ) {
+#             push @handle_bareargs_arr, sub { $self->handle_barearg(@_) };
+#             last;
+#         }
 
-    GetOptionsFromArray(
-        $self->argv, $self->cliopts, @_getopts_processed,
-        '<>', $self->$bareword_handler,
-        "debug+",
-        "version" => sub { Getopt::Long::VersionMessage(@_) },
-        "help"    => sub { Getopt::Long::HelpMessage(@_) }
-    )
-}
+#         push @_getopts_processed, grep { $_ } $name, $val;
+#     }
+
+#     my $bareword_handler = sub ($arg) {
+#         foreach my $handler (@handle_bareargs_arr) {
+#             last if $handler->($arg);
+#         }
+#     };
+
+#     GetOptionsFromArray(
+#         $self->argv, $self->cliopts, @_getopts_processed,
+#         '<>', $self->$bareword_handler,
+#         "debug+",
+#         "version" => sub { Getopt::Long::VersionMessage(@_) },
+#         "help"    => sub { Getopt::Long::HelpMessage(@_) }
+#     )
+# }

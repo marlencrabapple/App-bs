@@ -1,0 +1,31 @@
+#!/usr/bin/env perl
+
+use Object::Pad ':experimental(:all)';
+
+package pkgtree;
+
+class pkgtree;
+
+use utf8;
+use v5.40;
+
+no warnings 'experimental::re_strict';
+use re 'strict';
+
+use lib 'lib';
+
+field $files :reader;
+field $pkglist :reader;
+field $dir :reader
+
+cosnt our $repo_re =>
+const our $pkgfile_re => qr/pkg.tar.zst$/xg;
+
+ADJUST :params (:$dir) {
+
+  grep { $_ =~ /$pkgext_re$pkgsig_re/ } map { path($_) } $dir->children()
+}
+
+# method files ($dir \\= $self->dir, %opt) {
+
+# }
