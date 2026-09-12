@@ -4,9 +4,6 @@
 [submodule "inc/expac"]
 	path = src/expac
 	url = https://github.com/falconindy/expac.git
-[submodule "src/pacutils"]
-	path = src/pacutils
-	url = https://github.com/andrewgregory/pacutils.git
 [submodule "src/pacman-contrib"]
 	path = src/pacman-contrib
 	url = https://github.com/archlinux/pacman-contrib.git
