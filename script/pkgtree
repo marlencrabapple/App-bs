@@ -4,7 +4,7 @@ use Object::Pad ':experimental(:all)';
 
 package pkgtree;
 
-class pkgtree : does( App::BS::Ext::pacman::Config);
+class pkgtree : does(App::BS::Ext::pacman::Config);
 
 use utf8;
 use v5.44;
@@ -109,12 +109,9 @@ field $db             : param = 'sync';
 field $filedb_updated : accessor;
 field $pkgdb_updated  : accessor;
 
-field $verbose     : param    = 0;
+# field $verbose     : param    = 0;
 field $extcmd_log  : accessor = [];
-# field $pacman_conf : param //= $ENV{PACMAN_CONF};
-
-ADJUST : params (:$pacman_conf //=  $ENV{PACMAN_CONF})
-  { $pkgtree::pacman_conf = ($pacman_conf) };
+field $pacman_conf : param //= $ENV{PACMAN_CONF};
 
 method run ( $cmd, %opt ) {
     my $run = IPC::Nosh::run( $cmd, %RUN_DEFAULT, %opt );
@@ -251,7 +248,7 @@ method pacman_files ( $filelist, %opt ) {
         [ @cmd, uniq @$filelist ],
         db => 'file',
         out => sub ( $line, @ ) {
-            say $line if $verbose;
+            say $line if $self->verbose;
             if ( my ( $repo, $name ) = $line =~ m!([^/]+)/(.+)!g ) {
                 push $opt{dest}->@*, $name
                   if none { $_ eq $name } $opt{dest}->@*;

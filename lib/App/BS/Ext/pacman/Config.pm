@@ -12,9 +12,9 @@ use List::Util qw'any all';
 use IO::Handle::Common;
 use IPC::Nosh;
 
-field $pacman_conf : reader : param(file) = '/etc/pacman.conf';
-field $content     : param = '';
-field $lines       : param = [];
+field $file    : reader : param = '/etc/pacman.conf';
+field $content : param = '';
+field $lines   : param = [];
 field $config = {};
 
 field $repos : reader = [];
@@ -24,15 +24,17 @@ field $dbpath              = '';
 field $cachedir : accessor = undef;
 field $logfile             = '';
 
-field $verbose : param //= $ENV{VERBOSE};
+field $verbose : param : accessor //= $ENV{VERBOSE};
 
 ADJUST {
-    $config = { %$config, $self->pacconf($pacman_conf)->%* };
+    $config = { %$config, $self->pacconf($file)->%* };
     $cachedir //= path( $config->{options}{CacheDir} );
 }
 
+
+
 method load_config : common ($path, %opt) {
-    $class->new( file => $path );
+    $class->new( pacman_conf => $path );
 }
 
 method pacconf ( $path, %opt ) {
@@ -43,7 +45,7 @@ method pacconf ( $path, %opt ) {
         out => sub ( $line, @arg ) {
 
             push @$lines, $line;
-            say $line if $verbose;
+            say $line if $self->verbose;
         },
         autoflush => 1,
         autochomp => 1
@@ -52,14 +54,14 @@ method pacconf ( $path, %opt ) {
     $self->parse_pacman_conf( lines => [ $run->out->lines_utf8 ] );
 }
 
-method parse_pacman_conf (%opt) {
-    my $line_h = sub ($line) {
-        return undef unless $line;
 
-        state %section = ( prev => undef, curr => $config );
+method parse_pacman_conf (%opt) {
+    my method parse_pacman_conf_line ($line) {
+        return undef unless $line;
+        state $section //= $config;
 
         if ( my ($section_k) = ( $line =~ /^\[([^\]]+)\]$/ ) ) {
-            $${$section_k} //= {};
+            $section = $config->{$section_k} //= {};
         }
         elsif ( my ( $k, $v ) = ( $line =~ /^([^=]+?)\s*=\s*(.+)$/ ) ) {
             return undef
@@ -82,11 +84,7 @@ method parse_pacman_conf (%opt) {
         }
     };
 
-    $line_h->($_) for $opt{lines}->@*;
+    parse_pacman_conf_line( $self, $_ ) for $opt{lines}->@*;
     $config;
-
 }
 
-# method load_config : common ($path, %opt) {
-#     $class->new( file => $path );
-# }
