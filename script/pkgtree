@@ -4,18 +4,13 @@ use Object::Pad ':experimental(:all)';
 
 package pkgtree;
 
-class pkgtree;
+class pkgtree : does( App::BS::Ext::pacman::Config);
 
 use utf8;
-use v5.40;
+use v5.44;
 
 no warnings 'experimental::re_strict';
 use re 'strict';
-
-use lib 'lib';
-
-use Getopt::Long
-  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
 
 use Const::Fast;
 use List::Util qw'first uniq none';
@@ -23,6 +18,7 @@ use IPC::Nosh  qw'';
 use IO::Handle::Common;
 use PadWalker;
 use Syntax::Keyword::Dynamically;
+use App::BS::Ext::pacman::Config;
 
 const our @REPO_DEFAULT => qw(
   universe
@@ -115,17 +111,14 @@ field $pkgdb_updated  : accessor;
 
 field $verbose     : param    = 0;
 field $extcmd_log  : accessor = [];
-field $pacman_conf : param //= $ENV{PACMAN_CONF};
+# field $pacman_conf : param //= $ENV{PACMAN_CONF};
+
+ADJUST : params (:$pacman_conf //=  $ENV{PACMAN_CONF})
+  { $pkgtree::pacman_conf = ($pacman_conf) };
 
 method run ( $cmd, %opt ) {
-    dynamically $cmd =
-      [@$cmd, ( $pacman_conf ? ( '--config', $pacman_conf ) : () ) ];
-
     my $run = IPC::Nosh::run( $cmd, %RUN_DEFAULT, %opt );
-
-    dmsg $cmd, $run;
     push @$extcmd_log, $run;
-
     $run;
 }
 
@@ -192,23 +185,6 @@ sub ARRAY : prototype(@) (@in) {
     @ret;
 }
 *array = \&ARRAY;
-
-method pacman_provides ( $pkg, %opt ) {
-
-    # die "\$opt{dest} must be an ARRAY. (Got: )" . reftype( $opt{dest} )
-    #   if reftype( $opt{dest} ) ne 'ARRAY';
-
-    ( $pkg, $opt{dest} ) = array( $pkg, $opt{dest} );
-
-    # sudo pacman -Sy --print-format '%P' ffmpeg-git
-    $self->run(
-        [ qw(pacman -S --print-format '%P'), pacman_updarg($db), $pkg ],
-        out => sub( $line, @ ) {
-            $self->group_pkgstr( $line, $opt{dest} );
-        }
-    );
-}
-
 method pacman_updarg ( $db, %opt ) {
     my $lastupdate = $db eq 'file' ? 'filedb_updated' : 'pkgdb_updated';
     if ( !$self->$lastupdate || $opt{force} ) {
@@ -218,36 +194,50 @@ method pacman_updarg ( $db, %opt ) {
     undef;
 }
 
+method pacman ( $cli, %opt ) {
+    ( $cli, $opt{dest} ) = array( $cli, $opt{dest} );
+    dynamically $cli =
+      [ 'pacman', @$cli, ( $pacman_conf ? ( '--config', $pacman_conf ) : () ) ];
+
+        if ( my $arg =
+            $self->pacman_updarg( 'package', force => $opt{update_db} ) )
+        {
+            unshift @$cli, 'sudo';
+            push @$cli, $arg;
+        }
+
+    $self->run( $cli, %opt{qw'out err autoflush autochomp'} );
+}
+
+method pacman_provides ( $pkg, %opt ) {
+    ( $pkg, $opt{dest} ) = array( $pkg, $opt{dest} );
+
+    $self->pacman(
+        [ qw(-S --print-format '%P'), pacman_updarg($db), $pkg ],
+        out => sub( $line, @ ) {
+            $self->group_pkgstr( $line, $opt{dest} );
+        }
+    );
+}
+
 method pacman_pkgname( $pkglist, %opt ) {
     ( $pkglist, $opt{dest} ) = ARRAY( $pkglist, $opt{dest} );
 
     my $pkgre = '^(' . ( join '|', uniq @$pkglist ) . ')$';
 
-    my @cmd = qw(pacman -Sqs);
+    my @cmd = qw(-Sqs);
 
-    if ( my $arg = $self->pacman_updarg( 'package', force => $opt{update_db} ) )
-    {
-        unshift @cmd, 'sudo';
-        push @cmd, $arg;
-    }
 
     push @cmd, $pkgre;
 
-    my $run = $self->run(
+    my $run = $self->pacman(
         \@cmd,
         out => sub( $line, @ ) {
             if ( my ($name) = ( $line =~ /^$pkgname_re/ ) ) {
-
-                # dmsg $name, $line, $pkgname_re;
                 push $opt{dest}->@*, $name;
             }
         }
     );
-
-    fatal( '`' . ( join ' ', @cmd ) . "` exited with " . $run->status )
-      if $run->status > 0;
-
-    # dmsg \%opt, $pkgre, \@cmd;
 
     $opt{dest}->@*;
 }
@@ -255,15 +245,11 @@ method pacman_pkgname( $pkglist, %opt ) {
 method pacman_files ( $filelist, %opt ) {
     ( $filelist, $opt{dest} ) = array( $filelist, $opt{dest} );
 
-    my @cmd = qw(pacman -Fq);
-    if ( my $arg = $self->pacman_updarg( 'package', force => $opt{update_db} ) )
-    {
-        unshift @cmd, 'sudo';
-        push @cmd, $arg;
-    }
+    my @cmd = qw(-Fq);
 
-    my $run = $self->run(
+    my $run = $self->pacman(
         [ @cmd, uniq @$filelist ],
+        db => 'file',
         out => sub ( $line, @ ) {
             say $line if $verbose;
             if ( my ( $repo, $name ) = $line =~ m!([^/]+)/(.+)!g ) {
@@ -272,9 +258,6 @@ method pacman_files ( $filelist, %opt ) {
             }
         }
     );
-
-    # dmsg \@cmd;
-
     $opt{dest}->@*;
 }
 
@@ -289,8 +272,6 @@ method pactree ( $pkglist, %opt ) {
     my @file    = ();
 
     foreach my $pkgstr (@$pkglist) {
-
-        # my @cmd     = ( qw(pactree -lu), $pkgstr );
         my @cmd =
           ( qw(pactree -lu), ( $opt{db} eq 'sync' ? qw'-s' : () ) );
 
@@ -391,7 +372,18 @@ method resolve ( $pkglist //= $in, %opt ) {
     );
 }
 
-method cli : common ($argv = \@ARGV, %opt) {
+package pkgtree::CLI;
+
+use utf8;
+use v5.44;
+
+use List::Util qw'uniq';
+use IO::Handle::Common;
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
+
+
+sub cli ($argv //= \@ARGV) {
     my %clidest = (
         in    => [],
         prune => 'input',
@@ -454,20 +446,15 @@ method cli : common ($argv = \@ARGV, %opt) {
 
     $clidest{in}->@* = uniq $clidest{in}->@* if $clidest{prune};
 
-    my $self = $class->new( map { $_ =~ s/-/_/g; ( $_ => $clidest{$_} ) }
-          keys %clidest, %opt );
+    my $self = pkgtree->new(
+        map { $_ =~ s/-/_/g; ( $_ => $clidest{$_} ) }
+          keys %clidest
+    );
     dmsg $self, \%clidest;
 
     my @pkgtree = $self->resolve;
 
-    # dmsg \@pkgtree;
-
     say join $clidest{sep}, @pkgtree;
 }
 
-package pkgtree::CLI;
-
-use utf8;
-use v5.40;
-
-pkgtree->cli( \@ARGV )
+cli( \@ARGV )

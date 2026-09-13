@@ -10,3 +10,6 @@
 [submodule "src/archlinux-contrib"]
 	path = src/archlinux-contrib
 	url = https://github.com/archlinux/contrib.git
+[submodule "src/pacutils"]
+	path = src/pacutils
+	url = https://github.com/andrewgregory/pacutils.git
