@@ -14,14 +14,17 @@ use List::Util qw(uniq any);
 use Path::Tiny;
 use Struct::Dumb;
 use Syntax::Keyword::Dynamically;
-use Exporter;
+use parent 'Exporter';
+
+use vars qw'@EXPORT @EXPORT_OK';
+@EXPORT = qw'refstr ARRAY';
 
 const our $DEFAULT_ENVPREFIXRE => qr/^(?:BS_)?(.+)/;
 const our $DEFAULT_CONFIGPATH  => '/etc/bs/config.toml';
 
 field $config_path : param(config) : mutator = path($DEFAULT_CONFIGPATH);
 
-field $config;
+# field $config;
 
 field $aliases = {};
 field $queue : mutator = ();
@@ -41,3 +44,30 @@ ADJUST {
     use v5.40;
     $ENV{DEBUG} = $self->debug = $BS::Common::DEBUG
 };
+
+sub refstr : prototype($) ($ref) {
+# die "Value for \$ref is undefined." unless defined $ref;
+    reftype($ref) || "";
+}
+
+sub ARRAY : prototype(@) (@in) {
+    my @ret;
+
+    foreach my ($var) (@in) {
+        $var //= [];
+        my $type = reftype($var);
+
+        if ( !$type ) {
+            push @ret, [$var];
+        }
+        elsif ( $type ne 'ARRAY' ) {
+            my $name = PadWalker::var_name( 0, $var );
+            die "\$name must be an ARRAY ref or a scalar value. (Got: $type)";
+        }
+        elsif ( $type eq 'ARRAY' ) {
+            push @ret, $var;
+        }
+    }
+
+    @ret;
+}

@@ -4,7 +4,7 @@ use Object::Pad ':experimental(:all)';
 
 package pkgtree;
 
-class pkgtree : does(App::BS::Ext::pacman::Config);
+class pkgtree : does(App::BS::Common) : does(App::BS::Ext::pacman::Config);
 
 use utf8;
 use v5.44;
@@ -13,18 +13,13 @@ no warnings 'experimental::re_strict';
 use re 'strict';
 
 use Const::Fast;
-use List::Util qw'first uniq none';
+use List::Util qw'pairgrep first uniq none any';
 use IPC::Nosh  qw'';
 use IO::Handle::Common;
 use PadWalker;
 use Syntax::Keyword::Dynamically;
+use App::BS::Common;
 use App::BS::Ext::pacman::Config;
-
-const our @REPO_DEFAULT => qw(
-  universe
-  core
-  extra
-);
 
 const our %FIELD_MAP => (
     base                 => '%e',
@@ -65,7 +60,7 @@ const our %RUN_DEFAULT => (
     autochomp => 1,
     autoflush => 1,
     err       => sub ( $line, @ ) {
-        say STDERR $line;
+        error $line;
     }
 );
 
@@ -92,8 +87,9 @@ field $sortdir : param = 'desc';
 # field $reverse;
 
 field $reversedeps : param = 0;
-field $repo        : param = \@REPO_DEFAULT;
-field $field       : param : accessor = [];
+use App::BS::Ext::pacman::Config;
+
+field $field : param : accessor = [];
 
 field $fmtstr : param : accessor = '%e';
 
@@ -109,13 +105,21 @@ field $db             : param = 'sync';
 field $filedb_updated : accessor;
 field $pkgdb_updated  : accessor;
 
-# field $verbose     : param    = 0;
-field $extcmd_log  : accessor = [];
-field $pacman_conf : param //= $ENV{PACMAN_CONF};
+field $repo_enabled : accessor;
+
+field $verbose : param : accessor = 0;
+field $extcmd_log : accessor = [];
+
+ADJUST : params (:$repo = [keys $self->repolist->%*]) {
+    foreach my ( $k, $v ) ( $self->repolist->%* ) {
+        delete $self->repolist->{$k} if none { $_ eq $k } @$repo;
+    }
+};
 
 method run ( $cmd, %opt ) {
     my $run = IPC::Nosh::run( $cmd, %RUN_DEFAULT, %opt );
     push @$extcmd_log, $run;
+    dmsg $cmd, %opt, $run;
     $run;
 }
 
@@ -156,32 +160,6 @@ method pkgname ( $pkglist, %opt ) {
     $self->pkgfield( $pkglist, 'name', %opt );
 }
 
-sub refstr : prototype($) ($ref) {
-    reftype($ref) || "";
-}
-
-sub ARRAY : prototype(@) (@in) {
-    my @ret;
-
-    foreach my ($var) (@in) {
-        $var //= [];
-        my $type = reftype($var);
-
-        if ( !$type ) {
-            push @ret, [$var];
-        }
-        elsif ( $type ne 'ARRAY' ) {
-            my $name = PadWalker::var_name( 0, $var );
-            die "\$name must be an ARRAY ref or a scalar value. (Got: $type)";
-        }
-        elsif ( $type eq 'ARRAY' ) {
-            push @ret, $var;
-        }
-    }
-
-    @ret;
-}
-*array = \&ARRAY;
 method pacman_updarg ( $db, %opt ) {
     my $lastupdate = $db eq 'file' ? 'filedb_updated' : 'pkgdb_updated';
     if ( !$self->$lastupdate || $opt{force} ) {
@@ -192,22 +170,25 @@ method pacman_updarg ( $db, %opt ) {
 }
 
 method pacman ( $cli, %opt ) {
-    ( $cli, $opt{dest} ) = array( $cli, $opt{dest} );
-    dynamically $cli =
-      [ 'pacman', @$cli, ( $pacman_conf ? ( '--config', $pacman_conf ) : () ) ];
+    ( $cli, $opt{dest} ) = ARRAY( $cli, $opt{dest} );
 
-        if ( my $arg =
-            $self->pacman_updarg( 'package', force => $opt{update_db} ) )
-        {
-            unshift @$cli, 'sudo';
-            push @$cli, $arg;
-        }
+    dmsg \@ARGV;
+    dynamically $cli = [
+        'pacman', @$cli,
+        ( $self->pacman_conf ? ( '--config', $self->pacman_conf ) : () )
+    ];
 
-    $self->run( $cli, %opt{qw'out err autoflush autochomp'} );
+    if ( my $arg = $self->pacman_updarg( 'package', force => $opt{update_db} ) )
+    {
+        unshift @$cli, 'sudo';
+        push @$cli, $arg;
+    }
+
+    $self->run( $cli, pairgrep { $b } %opt{qw'out err autoflush autochomp'} );
 }
 
 method pacman_provides ( $pkg, %opt ) {
-    ( $pkg, $opt{dest} ) = array( $pkg, $opt{dest} );
+    ( $pkg, $opt{dest} ) = ARRAY( $pkg, $opt{dest} );
 
     $self->pacman(
         [ qw(-S --print-format '%P'), pacman_updarg($db), $pkg ],
@@ -224,7 +205,6 @@ method pacman_pkgname( $pkglist, %opt ) {
 
     my @cmd = qw(-Sqs);
 
-
     push @cmd, $pkgre;
 
     my $run = $self->pacman(
@@ -240,7 +220,7 @@ method pacman_pkgname( $pkglist, %opt ) {
 }
 
 method pacman_files ( $filelist, %opt ) {
-    ( $filelist, $opt{dest} ) = array( $filelist, $opt{dest} );
+    ( $filelist, $opt{dest} ) = ARRAY( $filelist, $opt{dest} );
 
     my @cmd = qw(-Fq);
 
@@ -269,8 +249,10 @@ method pactree ( $pkglist, %opt ) {
     my @file    = ();
 
     foreach my $pkgstr (@$pkglist) {
-        my @cmd =
-          ( qw(pactree -lu), ( $opt{db} eq 'sync' ? qw'-s' : () ) );
+        my @cmd = (
+            qw(pactree -lu --config),
+            $self->pacman_conf, ( $opt{db} eq 'sync' ? qw'-s' : () )
+        );
 
         push @cmd, ( '--depth', $depth ) if defined $depth;
 
@@ -315,12 +297,17 @@ method arch_rebuild_order( $pkgname_aref, %opt ) {
     my $ordered = $opt{dest} // [];
 
     my $repostr = '--repos=' . join ',',
-      ( $opt{repo} && $opt{repo} eq 'ARRAY' ? $opt{repo}->@* : @$repo );
+    (
+          $opt{repo} && refstr $opt{repo} eq 'ARRAY'
+        ? $opt{repo}->@*
+        : keys $self->repolist->%*
+    );
 
     dynamically $reversedeps = $opt{reversedeps};
 
     my $run = $self->run(
         [
+
             qw'arch-rebuild-order',                         $repostr,
             ( $reversedeps ? () : '--no-reverse-depends' ), @$pkgname_aref
         ],
@@ -339,13 +326,14 @@ method resolve ( $pkglist //= $in, %opt ) {
 
     my @in_pkgname;
     $self->pacman_pkgname( $pkglist, %opt, dest => \@in_pkgname );
-
+    fatal "Could not find packages in the $db" unless scalar @in_pkgname;
     dmsg \@in_pkgname;
 
     my %pactree = ( pkg => [], file => [] );
     $self->pactree( \@in_pkgname, dest => \%pactree, exact => 1 );
+    push $pactree{pkg}->@*, @in_pkgname;
 
-    # @pactree = uniq @pactree if $opt{unique} // $unique;
+    $pactree{pkg}->@* = uniq $pactree{pkg}->@* if $opt{unique} // $unique;
     dmsg \%pactree;
 
     my @ordered;
@@ -354,10 +342,10 @@ method resolve ( $pkglist //= $in, %opt ) {
 
     dmsg \@ordered;
 
-    if ( !scalar $field ) {
-        error
-"Outputting package bases. For package names run with '--field=name' or '--names'";
-    }
+#     if ( !scalar $field ) {
+#         error
+# "Outputting package bases. For package names run with '--field=name' or '--names'";
+#     }
 
     $self->pkgfield(
         ( scalar @ordered ? \@ordered : $pactree{pkg} ),
@@ -379,8 +367,7 @@ use IO::Handle::Common;
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
 
-
-sub cli ($argv //= \@ARGV) {
+sub cli ( $argv //= \@ARGV ) {
     my %clidest = (
         in    => [],
         prune => 'input',
@@ -423,7 +410,7 @@ sub cli ($argv //= \@ARGV) {
         'quiet+',
 
         # enabled repositories (for sync db)
-        'repository=s@',
+        'repolist|repo-enabled@',
 
         # print dependents of input packages
         'reversedeps|reverse-depends!',
@@ -444,9 +431,10 @@ sub cli ($argv //= \@ARGV) {
     $clidest{in}->@* = uniq $clidest{in}->@* if $clidest{prune};
 
     my $self = pkgtree->new(
-        map { $_ =~ s/-/_/g; ( $_ => $clidest{$_} ) }
+        map { ( ( $_ =~ s/-/_/rg ) => $clidest{$_} ) }
           keys %clidest
     );
+
     dmsg $self, \%clidest;
 
     my @pkgtree = $self->resolve;

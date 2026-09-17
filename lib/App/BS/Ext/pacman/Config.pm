@@ -2,43 +2,52 @@ use Object::Pad ':experimental(:all)';
 
 package App::BS::Ext::pacman::Config;
 
-role App::BS::Ext::pacman::Config;
+role App::BS::Ext::pacman::Config : does(App::BS::Common);
 
 use v5.44;
 use utf8;
 
+use Const::Fast;
 use Path::Try;
 use List::Util qw'any all';
 use IO::Handle::Common;
 use IPC::Nosh;
+use App::BS::Common;
 
-field $file    : reader : param = '/etc/pacman.conf';
+field $file : reader(pacman_conf) //= '/etc/pacman.conf';
 field $content : param = '';
 field $lines   : param = [];
 field $config = {};
 
-field $repos : reader = [];
-
+field $repo : accessor(repolist) = {};
 field $rootdir             = '/';
 field $dbpath              = '';
 field $cachedir : accessor = undef;
 field $logfile             = '';
 
-field $verbose : param : accessor //= $ENV{VERBOSE};
+ADJUST : params (:$pacman_conf, %param) {
+    dmsg $self;
+    dmsg $pacman_conf, $pacman_conf, \%param;
+    $file   = path($pacman_conf);
+    $config = { %$config, $self->pacconf($file)->%* };
+};
 
 ADJUST {
-    $config = { %$config, $self->pacconf($file)->%* };
     $cachedir //= path( $config->{options}{CacheDir} );
-}
 
-
+foreach my ( $k, $v ) (%$config) {
+    if (   refstr $v eq 'HASH'
+        && refstr $$v{Server} eq 'ARRAY'
+        && scalar $$v{Server}->@* > 0 ) {
+             $$repo{$k}  = $v
+        }
+}};
 
 method load_config : common ($path, %opt) {
     $class->new( pacman_conf => $path );
 }
 
 method pacconf ( $path, %opt ) {
-    $path = path($path);
 
     my $run = run(
         [ qw'pacconf --config', $path ],
