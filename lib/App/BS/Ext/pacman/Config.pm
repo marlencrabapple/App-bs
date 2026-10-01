@@ -25,7 +25,7 @@ field $dbpath              = '';
 field $cachedir : accessor = undef;
 field $logfile             = '';
 
-ADJUST : params (:$pacman_conf, %param) {
+ADJUST : params (:$pacman_conf //=$file, %param) {
     dmsg $self;
     dmsg $pacman_conf, $pacman_conf, \%param;
     $file   = path($pacman_conf);
