@@ -12,6 +12,7 @@ use v5.44;
 no warnings 'experimental::re_strict';
 use re 'strict';
 
+use builtin;
 use Const::Fast;
 use List::Util qw'pairgrep first uniq none any';
 use IPC::Nosh  qw'';
@@ -87,10 +88,7 @@ field $sortdir : param = 'desc';
 # field $reverse;
 
 field $reversedeps : param = 0;
-use App::BS::Ext::pacman::Config;
-
-field $field : param : accessor = [];
-
+field $field  : param : accessor = [];
 field $fmtstr : param : accessor = '%e';
 
 # Default is hybrid: will do expac -Ss if pkgstr has regex meta-characters
@@ -101,7 +99,8 @@ field $unique : param = 1;
 field $depth  : param = undef;
 field $pkgtree = {};
 
-field $db             : param = 'sync';
+field $db             : param //= 'sync';
+field $updatedb       : param //= true;
 field $filedb_updated : accessor;
 field $pkgdb_updated  : accessor;
 
@@ -162,17 +161,24 @@ method pkgname ( $pkglist, %opt ) {
 
 method pacman_updarg ( $db, %opt ) {
     my $lastupdate = $db eq 'file' ? 'filedb_updated' : 'pkgdb_updated';
-    if ( !$self->$lastupdate || $opt{force} ) {
+
+    dmsg $lastupdate, $self->$lastupdate, $opt{force}, $updatedb;
+
+    if ( ( $updatedb && !$self->$lastupdate ) || $opt{force} ) {
         $self->$lastupdate(time);
+        info "▷ Updating $db database..." if $verbose;
         return '-y';
     }
+    elsif ( !$updatedb ) {
+        say STDERR "▷ --updatedb is disabled, not updating $db database.";
+    }
+
     undef;
 }
 
 method pacman ( $cli, %opt ) {
     ( $cli, $opt{dest} ) = ARRAY( $cli, $opt{dest} );
 
-    dmsg \@ARGV;
     dynamically $cli = [
         'pacman', @$cli,
         ( $self->pacman_conf ? ( '--config', $self->pacman_conf ) : () )
@@ -226,9 +232,9 @@ method pacman_files ( $filelist, %opt ) {
 
     my $run = $self->pacman(
         [ @cmd, uniq @$filelist ],
-        db => 'file',
+        db  => 'file',
         out => sub ( $line, @ ) {
-            say $line if $self->verbose;
+            say $line if $verbose;
             if ( my ( $repo, $name ) = $line =~ m!([^/]+)/(.+)!g ) {
                 push $opt{dest}->@*, $name
                   if none { $_ eq $name } $opt{dest}->@*;
@@ -297,11 +303,11 @@ method arch_rebuild_order( $pkgname_aref, %opt ) {
     my $ordered = $opt{dest} // [];
 
     my $repostr = '--repos=' . join ',',
-    (
+      (
           $opt{repo} && refstr $opt{repo} eq 'ARRAY'
         ? $opt{repo}->@*
         : keys $self->repolist->%*
-    );
+      );
 
     dynamically $reversedeps = $opt{reversedeps};
 
@@ -362,6 +368,7 @@ package pkgtree::CLI;
 use utf8;
 use v5.44;
 
+use builtin;
 use List::Util qw'uniq';
 use IO::Handle::Common;
 use Getopt::Long
@@ -374,8 +381,28 @@ sub cli ( $argv //= \@ARGV ) {
         sep   => ' ',
         depth => undef,
         field => ['base'],
-        'db'  => 'sync',
+        db    => 'sync',
     );
+
+    my $cli2param = sub ($cliopt_href) {
+        my %orig;
+
+        foreach my ( $k, $v ) (%$cliopt_href) {
+            my $_k = ( $k =~ s/-/_/rg );
+
+            if ( $k ne $_k ) {
+                $$cliopt_href{$_k} = $v;
+                $orig{$_k}         = delete $$cliopt_href{$k};
+            }
+        }
+        \%orig;
+    };
+
+    my $optval = sub ( $opt, $val ) {
+        dmsg $opt, $val;
+        $clidest{ $$opt{name} } = $val // defined $val;
+        dmsg \%clidest;
+    };
 
     GetOptionsFromArray(
         $argv,
@@ -390,6 +417,7 @@ sub cli ( $argv //= \@ARGV ) {
         'db:s',    # sync or local
         'sync',
         'local',
+        'updatedb|update-db!' => $optval,
 
         # resultset print order
         'sort-by|order-by=s@',
@@ -397,7 +425,7 @@ sub cli ( $argv //= \@ARGV ) {
         'sort-direction|order',
         'asc', 'desc',
         'sep|seperator=s',
-        'depth=i',
+        'depth:i',
         'pacman-conf|config:s',
 
         # input search scope
@@ -418,8 +446,7 @@ sub cli ( $argv //= \@ARGV ) {
         # prune/filter packages at different stages of resolution
         "prune:s",
         "variant|prefer|choose|chosen|wanted:s",
-        "filter=s@"
-        ,
+        "filter=s@",
 
         # input packages
         '<>' => sub ($barearg) {
@@ -430,12 +457,12 @@ sub cli ( $argv //= \@ARGV ) {
 
     $clidest{in}->@* = uniq $clidest{in}->@* if $clidest{prune};
 
-    my $self = pkgtree->new(
-        map { ( ( $_ =~ s/-/_/rg ) => $clidest{$_} ) }
-          keys %clidest
-    );
+    my $renamed = $cli2param->( \%clidest );
 
-    dmsg $self, \%clidest;
+    dmsg $self;
+    my $self = pkgtree->new(%clidest);
+
+    dmsg $self, \%clidest, $renamed;
 
     my @pkgtree = $self->resolve;
 

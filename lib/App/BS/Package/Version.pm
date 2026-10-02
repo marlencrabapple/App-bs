@@ -7,7 +7,6 @@ use utf8;
 use v5.44;
 
 no warnings 'experimental::re_strict';
-
 use re 'strict';
 
 use IO::Handle::Common;

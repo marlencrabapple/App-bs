@@ -3,17 +3,20 @@ package App::BS::scratchpad;
 use utf8;
 use v5.44;
 
-sub prune_stable {
+use List::Util qw(uniq);
+
+sub prune_stable(@pkg) {
     my %seen = ();
 
-    foreach my ($pkgname) ( map { chomp $_; $_ } (`pkgtree nautilus`) ) {
+    foreach my ($pkgname) ( map { chomp $_; $_ } (@pkg) ) {
         say $pkgname;
-        my $novcs = ( $pkgname =~ s/-git$//r );
-        if ( $seen{$novcs} ) {
-            delete $seen{$novcs};
+        my $novcs = ( $pkgname =~ s/-git$//rg );
+        for my ( $k, $v ) ( %seen{ ( uniq $pkgname, $novcs ) } ) {
+            $v //= 0;
+            $v++;
         }
-        $seen{$pkgname} = 1;
     }
+    grep { $seen{$_} == 1 } keys %seen;
 }
 
 sub repo_gpg_verify {

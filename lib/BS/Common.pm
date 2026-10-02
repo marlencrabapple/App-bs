@@ -6,85 +6,18 @@ role BS::Common;
 use utf8;
 use v5.40;
 
-use Carp;
-use IPC::Run3;
 use Tie::File;
 use Const::Fast;
 use Time::Piece;
-use Data::Dumper;
-use List::AllUtils qw(any all first);
+use List::Util qw(any all first);
 use Syntax::Keyword::Try;
-use Const::Fast::Exporter;
 use Syntax::Keyword::Dynamically;
 use Time::HiRes qw(gettimeofday);
 use FreezeThaw  qw(cmpStr cmpStrHard);
-use Data::Dumper::Names;
+use builtin;
+use IO::Handle::Common;
 
-BEGIN {
-    use Exporter;
-    use parent 'Exporter';
-    use vars '@EXPORT';
-    use subs qw(dmsg bsx callstack __pkgfn__ const);
-
-    @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
-}
-
-const our $DEBUG   => ( any { $_ } @ENV{qw(BS_DEBUG DEBUG)} ) || 0;
-const our $TRIM_RE => qr/\s*(.+)\s*\n*/i;
-
-eval {
-    use Devel::StackTrace::WithLexicals;
-    use PadWalker qw(peek_my peek_our);
-    use Module::Metadata;
-} if $DEBUG;
-
-my class BsxResult {
-    use utf8;
-    use v5.40;
-
-    use subs qw(dmsg);
-
-    field $debug = $BS::Common::DEBUG;
-
-    field @out;
-    field @err;
-
-    field $cmd : param     : reader;
-    field $inh : param(in) : reader = \undef;
-    field $outh : param(out) : mutator(out) //= \@out;
-    field $errh : param(err) : reader //= \@err;
-    field $dest   : param : reader = \@out;
-    field $status : param : reader = 0;
-
-    ADJUST {
-        BS::Common::dmsg { self => $self }
-    }
-};
-
-field $debug : mutator : param : inheritable = $DEBUG;
-
-APPLY($mop) {
-    use utf8;
-    use v5.40;
-
-    use Object::Pad ':experimental(:all)';
-    use Const::Fast::Exporter;
-    use parent 'Exporter';
-
-    use subs qw(dmsg bsx callstack __pkgfn__ const);
-    our @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
-}
-
-ADJUST {
-    use utf8;
-    use v5.40;
-    $ENV{DEBUG} = $debug = $BS::Common::DEBUG;
-
-    use parent 'Exporter';
-
-    use subs qw(dmsg bsx callstack __pkgfn__ const);
-    our @EXPORT = qw(dmsg bsx callstack __pkgfn__ const);
-};
+field $debug : mutator : param : inheritable = $ENV{DEBUG};
 
 method __pkgfn__ : common ($pkgname = undef) {
     $pkgname //= $class;
@@ -121,93 +54,8 @@ sub href_equal_kv : prototype($$) ( $href, $href2 ) {
     cmpStrHard( $href, $href2 );
 }
 
-# field %fhcache : reader(handle) = ();
-
-sub writeh( $line, $handle, %opt ) {
-    state %fhcache = ();
-
-    if ( my $prev = $fhcache{$handle} ) {
-        $handle = $prev unless $opt{newh};
-    }
-    else {
-        $handle = $fhcache{$handle} = IO::Handle->new_from_fd( $handle, 'w' );
-        binmode $handle, ":encoding(UTF-8)";
-    }
-
-    if ( $line isa 'ARRAY' ) {
-        $handle->print("$_\n") for $line->@*;
-    }
-    elsif ( !ref $line ) {
-        $handle->print("$line\n");
-    }
-}
-
-sub outh ($line) {
-    writeh( $line, *STDOUT );
-}
-
-sub errh ($line) {
-    writeh( $line, *STDERR );
-}
-
-sub info ($line) {
-    outh("▶ $line");
-}
-
-sub dmsg  {
-    return undef unless $DEBUG;
-    my @caller = caller 0;
-    local $Data::Dumper::Names::UpLevel = 2;
-
-    my $out;
-    $out .= Dumper(@_);
-    $out .=
-      $DEBUG && $DEBUG == 2
-      ?  join "\n", map { ( my $line = $_ ) =~ s/^\t/  /; "  $line" } split /\R/,
-      Devel::StackTrace::WithLexicals->new(
-        indent      => 1,
-        skip_frames => 1
-      )->as_string
-: "at $caller[1]:$caller[2]\n";
-
-    errh($out);
-    $out;
-}
-
-sub err ($line) {
-    errh("❌️ $line");
-}
-
-sub fatal ( $line, $status = $? // 255, %opt ) {
-    err($line);
-    exit $status;
-}
-
-sub success ($line) {
-    outh("⭕️ $line");
-}
-
 method ts : common ($sep = '') {
     join $sep, gettimeofday;
-}
-
-method bsx : common ($cmd_aref, %args) {
-    %args = ( in => undef, out => [], err => '' ) unless scalar keys %args;
-
-    dmsg { cmd => $cmd_aref, args => \%args };
-
-    run3( $cmd_aref,
-        map { ref $_ ? $_ : defined $_ ? \$_ : undef } @args{qw(in out err)} );
-
-    my $res = BsxResult->new(
-        cmd    => $cmd_aref,
-        status => $?,
-        %args{qw(in out err dest)}
-    );
-
-    #my %ret = map { $_ => $res->$_ } $args{fields}->@*;
-    #   scalar %ret ? \%ret : $res;
-    $res;
 }
 
 method open_as_href : common ($in, %args) {
@@ -220,7 +68,7 @@ method open_as_href : common ($in, %args) {
     $as_aref = $class->tie_file( $in, dest => $as_href, %args );
 
     foreach my $line (@$as_aref) {
-        $line =~ s/$TRIM_RE/$1/;
+        $line = builtin::trim($line);
 
         my ( $key, $val ) =
           $args{parse_line}->( $line, dest => $as_href, %args );
