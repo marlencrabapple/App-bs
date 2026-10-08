@@ -26,6 +26,7 @@ field $lastsync       : accessor;
 field $updatedb       : accessor = 1;
 field $cmp_pkgrel     : accessor = 0;
 field $installed_only : accessor = 0;
+field $verbose        : param    = 0;
 field $outfmt         : accessor : param = undef;
 field $pkg = {};
 
@@ -206,7 +207,6 @@ package bs_repo_vercmp::CLI;
 
 use v5.40;
 
-ues App::BS::
 use IO::Handle::Common;
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
@@ -221,7 +221,7 @@ sub run ( $argv = \@ARGV ) {
         'updatedb|sync!',
         'filter|pattern|search|regexp|ptn:s',
         'installed-only!',
-        'pacman-config:!',
+        'pacman-config:s',
         'cmp-pkgrel|pkgrel|compare-pkgrel!',
         'outfmt|format:s',
         '<>' => sub ($repo) {
