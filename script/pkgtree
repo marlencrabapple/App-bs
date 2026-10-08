@@ -457,12 +457,11 @@ sub cli ( $argv //= \@ARGV ) {
 
     $clidest{in}->@* = uniq $clidest{in}->@* if $clidest{prune};
 
-    my $renamed = $cli2param->( \%clidest );
+    my $clidest_orig = $cli2param->( \%clidest );
 
-    dmsg $self;
     my $self = pkgtree->new(%clidest);
 
-    dmsg $self, \%clidest, $renamed;
+    dmsg $self, \%clidest, $clidest_orig;
 
     my @pkgtree = $self->resolve;
 
