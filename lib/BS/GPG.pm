@@ -14,6 +14,34 @@ our @EXPORT = qw(can_sign);
 use IPC::Nosh;
 use IO::Handle::Common;
 
+field $pubid     : param = "";
+field $gnupghome : param = $ENV{BS_GNUPGHOME} // "$ENV{BS_ROOT}/.gnupg";
+
+# my class Path :isa(Path::Tiny) {
+
+# };
+
+# sub path {
+#     Path::path(@_)
+# }
+
+# method updpath ($old, $new, %opt) {
+#     ($old, $new) = map { path($_)->absolute } ($old, $new);
+#     if($old ne $new) {
+#         $new->realdir
+#     }
+# }
+
+# method gnupghome ($path //= $gnupghome) {
+#   state $cached //= path($path);
+#   $cached = $self->updpath($cached, $path);
+#   $path;
+# }
+
+# method sign_pkgfile ( $path, %opt ) {
+
+# }
+
 sub can_sign ( $gpgiden, %opt ) {
     my @out = ();
 

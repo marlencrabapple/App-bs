@@ -414,7 +414,7 @@ sub cli ( $argv //= \@ARGV ) {
         'fmtstr=s',
 
         # database to search with pactree, expac and pacman
-        'db:s',    # sync or local
+        'db|database:s',    # sync or local
         'sync',
         'local',
         'updatedb|update-db!' => $optval,
@@ -425,7 +425,7 @@ sub cli ( $argv //= \@ARGV ) {
         'sort-direction|order',
         'asc', 'desc',
         'sep|seperator=s',
-        'depth:i',
+        'depth|d:i',
         'pacman-conf|config:s',
 
         # input search scope
@@ -445,8 +445,9 @@ sub cli ( $argv //= \@ARGV ) {
 
         # prune/filter packages at different stages of resolution
         "prune:s",
-        "variant|prefer|choose|chosen|wanted:s",
-        "filter=s@",
+        "variant|prefer|choose|chosen|wanted:s@",
+        "vcs|prefer-vcs!",
+        "filter:s@",
 
         # input packages
         '<>' => sub ($barearg) {

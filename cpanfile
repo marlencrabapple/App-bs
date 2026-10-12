@@ -6,13 +6,12 @@ requires 'Syntax::Keyword::Defer';
 requires 'Syntax::Keyword::Dynamically';
 requires 'Getopt::Long';
 requires 'Pod::Usage';
-requires 'Path::Try', dist => 'CRABAPP/Path-Try-0.01-TRIAL.tar.gz';
-
 requires 'File::chdir';
 
-requires 'IPC::Nosh', '0.01.3', dist => 'CRABAPP/IO-Nosh-0.01.3-TRIAL.tar.gz';
-requires 'IO::Handle::Common', '0.01.1',
-  dist => 'CRABAPP/IO-Handle-Common-0.01.1-TRIAL.tar.gz';
+requires 'Path::Try', '0.01_2', dist => 'CRABAPP/Path-Try-0.01_2-TRIAL.tar.gz';
+requires 'IPC::Nosh', '0.01.4', dist => 'CRABAPP/IO-Nosh-0.01.4-TRIAL.tar.gz';
+requires 'IO::Handle::Common', '0.01_3',
+  dist => 'CRABAPP/IO-Handle-Common-0.01_3-TRIAL.tar.gz';
 
 requires 'IO::Socket::SSL';
 requires 'Net::SSLeay';

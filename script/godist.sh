@@ -6,13 +6,15 @@ function mkdist {
   distname="$_distname"
   rel=1
 
-  while [[ -d "$distname" ]]; do
+  dist_outd="${OUTDIR:+${OUTDIR:-$(pwd)}/}$distname"
+
+  while [[ -d "$dist_outd" ]]; do
     distname="$_distname-$rel"
     rel="$((rel + 1))"
   done
 
-  mkdir "$distname" || return "$?"
-  dist_outdir="${OUTDIR:-$distname}"
+  mkdir -p "$dist_outd" || return "$?"
+
   #olddir="${OLDDIR:-.old-$(epoch)}"
   installdir="${INSTALLDIR:-./}"
 
@@ -30,27 +32,27 @@ function mkdist {
     for target in "${TARGET[@]}"; do
       targetbase="$distname-$(basename "$target")"
       distarch_fn="$targetbase.tar.zst"
-      targetdir="$dist_outdir/$targetbase"
-      distarch="$dist_outdir/$distarch_fn"
+      targetdir="$dist_outd/$targetbase"
+      distarch="$dist_outd/$distarch_fn"
 
       [[ -d "$target" ]] || continue
 
       cp -vaf "$target" "$targetdir"
 
       (
-        cd "$dist_outdir"
+        cd "$dist_outd"
         ctzst.sh "$targetbase"
         [[ "$?" -eq 0 ]] && rm -rv "$targetbase"
 
         export GNUPGHOME
-        gpg --verbose -sb ./"$distarch_fn"
+        gpg --verbose ${GPG_PUBID:+-u $GPG_PUBID} -sb ./"$distarch_fn"
       )
 
       for bin in "${DIGESTBIN[@]}"; do
         [[ -x "$bin" ]] || bin="$(which "$bin")"
 
         "$bin" "$distarch"{.sig,} |
-          tee -a "$dist_outdir/$(basename "$bin").txt"
+          tee -a "$dist_outd/$(basename "$bin").txt"
       done
     done
   )

@@ -13,3 +13,6 @@
 [submodule "src/pacutils"]
 	path = src/pacutils
 	url = https://github.com/andrewgregory/pacutils.git
+[submodule "dist/arch"]
+	path = dist/arch
+	url = https://github.com/Penny-FOSS/perl-app-bs.git
