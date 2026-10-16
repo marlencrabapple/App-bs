@@ -10,6 +10,7 @@ function err {
 
 function cpan2aur_sysperl {
   package="$1"
+  plenv init - $SHELL
   plenv shell system
   cpan2aur "$1"
 }
@@ -28,7 +29,7 @@ for package in ${packagelist[*]}; do
   pkgname="${package//::/-}"
   pkgname="perl-${pkgname,,*}"
 
-  [[ "${NOOP:-0}" -eq 1 ]] && echo "$pkgname" && continue 
+  [[ "${NOOP:-0}" -eq 1 ]] && echo "$pkgname" && continue
 
   if [[ -z "$REBUILD_ALL" ]]; then
     [[ -n "$(sudo pacman -Ssq "$pkgname")" ]] &&
@@ -44,7 +45,7 @@ for package in ${packagelist[*]}; do
 
   srcdistglob_res=(./"$pkgname-"*src.tar.gz)
   srcdist="$(basename "${srcdistglob_res[*]:0:1}")"
-  
+
   [[ ! -f "$srcdist" ]] &&
     err "Could not find source distribution in '$(pwd)'" &&
     continue

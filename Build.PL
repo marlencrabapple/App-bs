@@ -34,6 +34,7 @@ my %args = (
     },
 
     requires => {
+        'Const::Fast' => '0',
         'Devel::CheckBin' => '0',
         'File::chdir' => '0',
         'FreezeThaw' => '0',
@@ -42,23 +43,20 @@ my %args = (
         'HTTP::Tinyish' => '0',
         'IO::Async' => '0',
         'IO::Async::SSL' => '0',
-        'IO::Handle::Common' => 'v0.1.1',
         'IO::Socket::SSL' => '0',
-        'IPC::Nosh' => 'v0.1.3',
         'JSON::MaybeXS' => '0',
         'List::AllUtils' => '0',
         'List::Util' => '0',
         'Net::SSLeay' => '0',
         'Object::Pad' => '0',
         'Object::Pad::FieldAttr::Trigger' => '0',
-        'Path::Try' => '0',
         'Pod::Usage' => '0',
         'Syntax::Keyword::Defer' => '0',
         'Syntax::Keyword::Dynamically' => '0',
         'Syntax::Keyword::Try' => '0',
         'TOML::Tiny' => '0',
         'meta' => '0',
-        'perl' => 'v5.40.0',
+        'perl' => 'v5.44.0',
     },
 
     recommends => {

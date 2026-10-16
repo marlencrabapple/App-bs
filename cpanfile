@@ -1,4 +1,30 @@
-requires 'perl', 'v5.40';
+requires 'perl', 'v5.44';
+
+use utf8;
+use v5.40;
+
+requires 'Const::Fast';
+
+use Const::Fast;
+
+sub distname ($pkgname) {
+    const my $pkg2dist => qr/::/;
+    ( $pkgname =~ s/$pkg2dist/-/rg );
+}
+
+# requires 'Frame';
+# requires 'FFmpeg::Inline';
+# requires 'App::md2html';
+
+const our %pinned => (
+    CRABAPP => {
+        'Path::Try'          => '0.01_2',
+        'IO::Handle::Common' => '0.01_3',
+
+        'IPC::Nosh'          => '0.01.4',
+
+    }
+);
 
 requires 'Object::Pad';
 requires 'Syntax::Keyword::Try';
@@ -8,10 +34,7 @@ requires 'Getopt::Long';
 requires 'Pod::Usage';
 requires 'File::chdir';
 
-requires 'Path::Try', '0.01_2', dist => 'CRABAPP/Path-Try-0.01_2-TRIAL.tar.gz';
-requires 'IPC::Nosh', '0.01.4', dist => 'CRABAPP/IO-Nosh-0.01.4-TRIAL.tar.gz';
-requires 'IO::Handle::Common', '0.01_3',
-  dist => 'CRABAPP/IO-Handle-Common-0.01_3-TRIAL.tar.gz';
+
 
 requires 'IO::Socket::SSL';
 requires 'Net::SSLeay';
