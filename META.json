@@ -79,6 +79,7 @@
       "runtime" : {
          "requires" : {
             "Const::Fast" : "0",
+            "Const::Fast::Exporter" : "0",
             "Devel::CheckBin" : "0",
             "File::chdir" : "0",
             "FreezeThaw" : "0",
@@ -125,7 +126,7 @@
          "web" : "https://github.com/marlencrabapple/App-bs"
       }
    },
-   "version" : "0.0.1",
+   "version" : "0.01_02",
    "x_authority" : "cpan:CRABAPP",
    "x_serialization_backend" : "JSON::PP version 4.16",
    "x_static_install" : 0

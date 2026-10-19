@@ -35,6 +35,7 @@ my %args = (
 
     requires => {
         'Const::Fast' => '0',
+        'Const::Fast::Exporter' => '0',
         'Devel::CheckBin' => '0',
         'File::chdir' => '0',
         'FreezeThaw' => '0',

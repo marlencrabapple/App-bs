@@ -3,7 +3,7 @@ use Object::Pad qw(:experimental(:all));
 package App::BS;
 
 use Const::Fast;
-$VERSION = '0.0.1';
+$VERSION = '0.01_02';
 
 class App::BS;    #: does(App::BS::Common);
 
