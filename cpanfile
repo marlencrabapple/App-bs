@@ -4,6 +4,7 @@ use utf8;
 use v5.40;
 
 requires 'Const::Fast';
+requires 'Const::Fast::Exporter';
 
 use Const::Fast;
 
@@ -11,10 +12,6 @@ sub distname ($pkgname) {
     const my $pkg2dist => qr/::/;
     ( $pkgname =~ s/$pkg2dist/-/rg );
 }
-
-# requires 'Frame';
-# requires 'FFmpeg::Inline';
-# requires 'App::md2html';
 
 const our %pinned => (
     CRABAPP => {
@@ -33,18 +30,13 @@ requires 'Syntax::Keyword::Dynamically';
 requires 'Getopt::Long';
 requires 'Pod::Usage';
 requires 'File::chdir';
-
-
-
 requires 'IO::Socket::SSL';
 requires 'Net::SSLeay';
 requires 'List::Util';
 requires 'List::AllUtils';
-
 requires 'HTTP::Tinyish';
 requires 'JSON::MaybeXS';
 requires 'TOML::Tiny';
-
 requires 'Future::AsyncAwait';
 requires 'IO::Async';
 requires 'IO::Async::SSL';

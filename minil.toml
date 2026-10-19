@@ -3,6 +3,7 @@ name = "App-BS"
 module_maker = "ModuleBuild"
 static_install = "auto"
 authority = "cpan:CRABAPP"
+release_status = "unstable"
 
 #c_source = [ 'src' ]
 requires_external_bin = [

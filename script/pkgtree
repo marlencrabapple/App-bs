@@ -309,11 +309,10 @@ method arch_rebuild_order( $pkgname_aref, %opt ) {
         : keys $self->repolist->%*
       );
 
-    dynamically $reversedeps = $opt{reversedeps};
+    dynamically $reversedeps = $opt{reversedeps} if $opt{reversedeps};
 
     my $run = $self->run(
         [
-
             qw'arch-rebuild-order',                         $repostr,
             ( $reversedeps ? () : '--no-reverse-depends' ), @$pkgname_aref
         ],
@@ -459,8 +458,7 @@ sub cli ( $argv //= \@ARGV ) {
     $clidest{in}->@* = uniq $clidest{in}->@* if $clidest{prune};
 
     my $clidest_orig = $cli2param->( \%clidest );
-
-    my $self = pkgtree->new(%clidest);
+    my $self         = pkgtree->new(%clidest);
 
     dmsg $self, \%clidest, $clidest_orig;
 
