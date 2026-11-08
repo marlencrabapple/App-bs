@@ -1,0 +1,106 @@
+#!/usr/bin/env perl
+
+use Object::Pad ':experimental(:all)';
+
+package pkgvariant;
+
+class pkgvariant : does(Adjust::Params) : does(App::BS::Common) :
+  does(App::BS::Ext::pacman::Config);
+
+use utf8;
+use v5.44;
+
+no warnings 'experimental::re_strict';
+use re 'strict';
+
+use builtin;
+use Const::Fast;
+use List::Util qw'pairgrep first uniq none any';
+use IPC::Nosh;
+use IO::Handle::Common;
+use Syntax::Keyword::Dynamically;
+
+package pkgvariant::CLI;
+use utf8;
+use v5.44;
+
+use builtin;
+use List::Util qw'uniq';
+use IO::Handle::Common;
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
+
+sub cli {
+    my %cliopt    = ();
+    my $cli2param = sub ($cliopt_href) {
+        my %orig;
+
+        foreach my ( $k, $v ) (%$cliopt_href) {
+            my $_k = ( $k =~ s/-/_/rg );
+
+            if ( $k ne $_k ) {
+                $$cliopt_href{$_k} = $v;
+                $orig{$_k}         = delete $$cliopt_href{$k};
+            }
+        }
+        \%orig;
+    };
+
+    my $optval = sub ( $opt, $val ) {
+        dmsg $opt, $val;
+        $cliopt{ $$opt{name} } = $val // defined $val;
+        dmsg \%cliopt;
+    };
+
+    GetOptionsFromArray(
+        \@ARGV,
+        \%cliopt,
+
+        # output fields and format
+        # 'base', 'name',
+        'field=s@',
+        'fmtstr=s',
+
+        # database to search with pactree, expac and pacman
+        'db|database:s',    # sync or local
+        'sync',
+        'local',
+        'updatedb|update-db!' => $optval,
+
+        # resultset print order
+        'sort-by|order-by=s@',
+        'build-order|rebuild-order|arch-rebuild-order!',
+        'sort-direction|order',
+        'asc', 'desc',
+        'sep|seperator=s',
+        'depth|d:i',
+        'pacman-conf|config:s',    #,@',
+
+        # input search scope
+        'exact!',
+        'regexp',
+
+        # output verbosity control
+        'debug+',
+        'verbose+',
+        'quiet+',
+
+        # enabled repositories (for sync db)
+        'repolist|repo-enabled@',
+
+        "variant|prefer|choose|chosen|wanted:s@",
+        "vcs|prefer-vcs!",
+        "filter:s@",
+
+        # input packages
+        '<>' => sub ($barearg) {
+            dmsg $barearg;
+            push $cliopt{in}->@*, $barearg;
+        }
+    );
+
+    $cliopt{in}->@* = uniq $cliopt{in}->@* if $cliopt{prune};
+
+    my $cliopt_orig = $cli2param->( \%cliopt );
+    my $self        = pkgtree->new(%cliopt);
+}

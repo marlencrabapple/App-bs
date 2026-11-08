@@ -10,44 +10,17 @@ sub prune_stable(@pkg) {
     my %seen     = ();
     my @seen_ord = ();
 
-    my $initkey = sub(@pkgname) {
+    foreach my $pkg (@pkg) {
+        my ($novcs) = ($pkg = s/-git$//rg);
 
-        # push @seen_ord, grep { /-git$/ } @pkgname if scalar uniq @pkgname > 1;
 
-        #if(
+        if(exists $seen{$novcs}) {
 
-        push @seen_ord, (scalar uniq @pkgname > 1
-          ? ( grep { /-git$/ } @pkgname )
-          : $pkgname[0]);
-
-        #) {
-
-        # }
-
-        #@seen{@pkgname} //= ( map { 0 } @pkgname );
-        # ( @seen{@pkgname} ) //= ( 0 x scalar @pkgname );
-        $seen{$_} //= 0 for @pkgname;
-        @seen_ord;
-    };
-
-    foreach my ($pkgname) ( map { chomp $_; $_ } (@pkg) ) {
-        my $novcs = ( $pkgname =~ s/-git$//rg );
-
-        # dmsg $novcs, $pkgname;
-        for my $pkg ( $initkey->( $pkgname, $novcs ) ) {
-
-            # $v //= 0;
-            # $v++;
-
-            $seen{$pkg}++;
-            dmsg $pkgname, $novcs, $pkg, $seen{$pkg}
-
-            # dmsg;
+        }
+        else {
+        $seen{$novcs}//=0;
         }
     }
-
-    dmsg \@seen_ord, { %seen{@seen_ord} }, [ @seen{@seen_ord} ];
-    grep { $seen{$_} == 1 } @seen_ord;
 }
 
 sub repo_gpg_verify {

@@ -1,0 +1,122 @@
+#!/usr/bin/env perl
+
+use v5.40;
+use utf8;
+
+use Path::Try;
+use IPC::Nosh;
+use IO::Handle::Common;
+use File::chdir;
+use Time::HiRes;
+use Syntax::Keyword::Dynamically;
+
+IO->decorate;
+
+sub epoch ( $join = '' ) {
+    join $join, Time::HiRes::gettimeofday;
+}
+
+sub cpdir ( $src, $dst, %opt ) {
+    $dst->mkdir unless $dst->is_dir;
+
+    my $onvisit = sub ( $path, $state ) {
+
+        if ( $path->is_dir ) {
+
+            # $dst->mkdir
+            path("$dst/$path")->mkdir;
+            $path->remove_tree
+              if $opt{unlink_src} && scalar $path->children == 0;
+            return;
+        }
+        else {
+            $path->copy($dst);
+            $path->remove if $opt{unlink_src};
+        }
+    };
+
+    $src->visit( $onvisit, { recurse => 1 } );
+    $src->remove_tree if $opt{unlink_src};
+}
+
+sub mvdir ( $src, $dst, %opt ) {
+    cpdir( $src, $dst, %opt, unlink_src => 1 );
+}
+
+our $bsdtar_opt = 'zstd:threads=0,zstd:compression-level=22';
+
+sub ctzst ( $out, @in ) {
+    my $run =
+      run( [ qw(bsdtar --options), $bsdtar_opt, qw(--zstd -cvf), $out, @in ] );
+
+    $run->status == 0 ? path($out) : undef;
+}
+
+sub mkdist {
+    my @out  = ();
+    my $root = path("./")->absolute;
+    my @in   = map { path($_)->absolute } @ARGV;
+
+    my $name = $ENV{DISTNAME};
+    my @target;
+
+    foreach my $in (@in) {
+        my $state = $in->visit(
+            sub ( $path, $state ) {
+                dmsg( $in, $path, $path->basename );
+
+                return unless $path->is_dir;
+
+                if ( $path->basename eq 'publish' ) {
+                    push @target, $path->absolute;
+                }
+            },
+            {
+                recurse         => 1,
+                follow_symlinks => 1,
+            }
+
+        );
+
+        dmsg \@target, \@in, $state;
+
+        error "$in: No publish directories found. Skipping...";
+
+        my ($verstr) =
+          map { chomp $_; ( $_ =~ /(?:$name)?(.+)/ ) }
+          (`git describe --long --tags`);
+
+        my $wkdir = path( "$root/.$name-$verstr-" . epoch )->mkdir->absolute;
+
+        $name //= path('./')->basename;
+
+        dmsg $root, \@target, $verstr, $name, $wkdir;
+
+        foreach my $target (@target) {
+            dynamically $CWD = $wkdir;
+
+            my $distdir =
+              path( "$wkdir/$name-$verstr-" . $target->parent->basename );
+            info "Working on $distdir...";
+
+            dmsg $target, $distdir;
+
+            say STDERR "[1/2] Gathering artifacts to be archived and compressed"
+              if $ENV{DEBUG};
+
+            my $moved = $target->move($distdir);
+
+            say STDERR "[2/2] Compressing archive tarball" if $ENV{DEBUG};
+            my $archive = ctzst( "$root/" . $distdir->basename . '.tar.zst',
+                $distdir->relative );
+
+            push @out, $archive if $archive;
+            $moved->move($target);
+        }
+
+        $wkdir->remove_tree unless $ENV{KEEP_WORKDIR};
+    }
+
+}
+
+mkdist

@@ -76,7 +76,8 @@ const our $pkgname_re => qr/
 
 const our $soname_re => qr/(.+\.so)=([0-9-].+)/xx;
 
-field $in : param;
+field $in         : param;
+field $userselect : param(variant);
 
 field $buildorder : param = 1;
 
@@ -326,8 +327,13 @@ method arch_rebuild_order( $pkgname_aref, %opt ) {
 }
 
 method resolve ( $pkglist //= $in, %opt ) {
+    my @variant_pkgname;
+    my @provided;
 
-    dmsg $pkglist, \%opt;
+
+
+    $self->pacman_pkgname( $userselect, %opt, dest => \@variant_pkgname );
+    $self->pacman_provides( $userselect, %opt, dest => \@provided );
 
     my @in_pkgname;
     $self->pacman_pkgname( $pkglist, %opt, dest => \@in_pkgname );
@@ -360,6 +366,8 @@ method resolve ( $pkglist //= $in, %opt ) {
         ),
         exact => 1
     );
+
+    $self->pacman( ( scalar @ordered ? \@ordered : $pactree{pkg} ) );
 }
 
 package pkgtree::CLI;

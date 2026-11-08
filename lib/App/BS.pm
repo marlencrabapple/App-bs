@@ -40,63 +40,27 @@ const our $defaultconfig_inline => <<'...';
 # Default/Test Configuration Schema
 #
 
-[example_document]
-  # This is a TOML document
-  title = "TOML Example"
+[global]
+ root = "/bs"
+ user = "pennyci"
+ group = "bs"
 
-  [owner]
-    name = "Tom Preston-Werner"
-    dob = 1979-05-27T07:32:00-08:00
+[target.x86_64_v3]
+ carch = "x86_64_v3"
+ march = "$carch"
 
-  [database]
-      enabled = true
-      ports = [ 8000, 8001, 8002 ]
-      data = [ ["delta", "phi"], [3.14] ]
-      temp_targets = { cpu = 79.5, case = 72.0 }
-
-  [servers]
-
-  [servers.alpha]
-    ip = "10.0.0.1"
-    role = "frontend"
-
-  [servers.beta]
-    ip =   "10.0.0.2"
-    role = "backend"
-
-[bs] # The "bs" section heading can be omitted for global/top-level options
-    root = "/bs"
-    user = "bu"
-    group = "alpm"
-    targets = [
-      "thanksmom-mba52", "cincotuf"
-    ]
-
-[targets.thanksmom-mba52]
-    carch = "x86_64"
-    ip = "192.168.86.152"
-    domain = "lan"
-
-[pkgbase]
-    resolution_order = [ 'local', 'repo' ]
-    resolution_order.repo = [ 'pacman.conf' ]
+[targets.x86_64-ivybridge]
+ carch = "x86_64"
+ march = "ivybridge"
 
 [pkgbuild]
-    root = "/bs" # You can (re-)configure many top-level options for each section
-                # idividually
-    debug = 1
-    clean_chroot = 1
-    makepkg_clean_all = 1 # Equivalent to adding C,c to makepkg_args for now
-    chroot => "$root/"
+foo = "bar"
 
-[repo]
-    [universe]
-        target_arch = [ "x86_64", "x86_64_v3", "aarch64" ]
-        siglevel = [ 'DatabaseOptional', 'PackageTrustedOnly' ]
-
-        # There are plently of helper preset variables to keep your config
-        # consise, and easy to parse/decontstruct progmatically
-        server = "file://$sroot/repo/$repo/os/$arch"
+[repo.universe]
+ siglevel = [ 'DatabaseOptional', 'PackageTrustedOnly' ]
+ server = [ "https://repo.cincotuf.lan", "http://cincotuf.lan:8181"
+            "http://pi4u2.lan:8181" ]
+ ssl = {}
 ...
 
 __END__

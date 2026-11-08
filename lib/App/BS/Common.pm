@@ -62,3 +62,13 @@ sub ARRAY : prototype(@) (@in) {
 
     @ret;
 }
+
+sub epoch( $join = '', %opt ) {
+    $opt{ms_pad} //= 6;
+    my ( $sec, $ms ) = Time::HiRes::gettimeofday;
+
+    $ms = '0' x ( $opt{ms_pad} - length $ms ) . $ms
+      if $opt{ms_pad} && $opt{ms_pad} >= 1;
+
+    join $join, $sec, $ms;
+}

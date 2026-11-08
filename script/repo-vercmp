@@ -115,83 +115,84 @@ method vercmp ( $repo = $self->repo, %opt ) {
           ))?
           $/xi;
 
+        my $vercmp_outh = sub ( $line, $pkg, $name, $repo, $repo_prev, $ver ) {
+            if ( $line < 0 ) {
+                my @ver =
+                  map { $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$/-x/r ) }
+                  ( $ver, $pkg->{$repo_prev}{$name}{ver} );
+                if ($outfmt) {
+                    const my %fmtmap => (
+                        base => '%e',
+                        name => '%n',
+                        repo => '%r',
+                    );
+                }
+                else {
+
+                    say "$repo_prev/$name ("
+                      . $ver[1]
+                      . ") is newer than $repo/$name ($ver[0])";
+                }
+            }
+        };
+
+        my $repolist_outh = sub ( $line, @ ) {
+
+            my ( $name, $ver, $installed, $localver ) =
+              $line =~ $repolist_line_re;
+
+            if ( none { $_ } $name, $ver ) {
+                return
+                  if $line =~ /^::/
+                  || $line =~ /^\s*[^\s]+ downloading.../;
+
+                error "Encountered error processing pacman output:\n  $line";
+
+                dmsg $repo, $line;
+
+                return;
+            }
+
+            if ( !$filter || $name =~ $filter ) {
+                my %currpkg = (
+                    ver       => $ver,
+                    installed => (
+                        $installed && $installed =~ /^\[installed/ ? 1 : undef
+                    ),
+                    localver => $localver
+                );
+
+                if ( $pkg->{$repo}{$name} ) {
+                    error "Package already processed: $repo/$name. Ignoring...";
+                    dmsg $line, \%currpkg, $pkg->{$repo}{$name};
+                }
+                if ( !$repo_prev || $pkg->{$repo_prev}{$name} ) {
+                    $pkg->{$repo}{$name} //= \%currpkg
+                      unless $installed_only && !$installed;
+                }
+
+                if (   $repo_prev
+                    && $pkg->{$repo_prev}{$name} )
+                {
+                    my $run = run(
+                        [
+                            'vercmp',
+                            map { $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$//r ); }
+                              ( $ver, $pkg->{$repo_prev}{$name}{ver} )
+                        ],
+                        out => sub ( $line, @ ) {
+                            $vercmp_outh->(
+                                $line, $pkg, $name, $repo, $repo_prev, $ver
+                            );
+                        },
+                    );
+                }
+            }
+        };
+
         my $run = run(
             [ @repolist_cmd, $repo ],
-            out => sub ( $line, @ ) {
-                my ( $name, $ver, $installed, $localver ) =
-                  $line =~ $repolist_line_re;
-
-                if ( none { $_ } $name, $ver ) {
-                    return
-                      if $line =~ /^::/
-                      || $line =~ /^\s*[^\s]+ downloading.../;
-
-                    error
-                      "Encountered error processing pacman output:\n  $line";
-
-                    dmsg $repo, $line;
-
-                    return;
-                }
-
-                if ( !$filter || $name =~ $filter ) {
-                    my %currpkg = (
-                        ver       => $ver,
-                        installed => (
-                                 $installed
-                              && $installed =~ /^\[installed/ ? 1 : undef
-                        ),
-                        localver => $localver
-                    );
-
-                    if ( $pkg->{$repo}{$name} ) {
-                        error
-                          "Package already processed: $repo/$name. Ignoring...";
-                        dmsg $line, \%currpkg, $pkg->{$repo}{$name};
-                    }
-                    if ( !$repo_prev || $pkg->{$repo_prev}{$name} ) {
-                        $pkg->{$repo}{$name} //= \%currpkg
-                          unless $installed_only && !$installed;
-                    }
-
-                    my $vercmp_outh = sub ( $line, @ ) {
-                        if ( $line < 0 ) {
-                            my @ver = map {
-                                    $cmp_pkgrel
-                                  ? $_
-                                  : ( $_ =~ s/-[0-9]+$/-x/r )
-                            } ( $ver, $pkg->{$repo_prev}{$name}{ver} );
-                            if ($outfmt) {
-                                const my %fmtmap => (
-                                    base => '%e',
-                                    name => '%n',
-                                    repo => '%r',
-                                );
-                            }
-                            else {
-
-                                say "$repo_prev/$name ("
-                                  . $ver[1]
-                                  . ") is newer than $repo/$name ($ver[0])";
-                            }
-                        }
-                    };
-
-                    if (   $repo_prev
-                        && $pkg->{$repo_prev}{$name} )
-                    {
-                        my $run = run(
-                            [
-                                'vercmp',
-                                map {
-                                    $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$//r );
-                                } ( $ver, $pkg->{$repo_prev}{$name}{ver} )
-                            ],
-                            out => $vercmp_outh,
-                        );
-                    }
-                }
-            },
+            out       => $repolist_outh,
             autochomp => 1
         );
 
