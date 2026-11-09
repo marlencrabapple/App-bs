@@ -28,6 +28,7 @@ field $cmp_pkgrel     : accessor = 0;
 field $installed_only : accessor = 0;
 field $verbose        : param    = 0;
 field $outfmt         : accessor : param = undef;
+field $quiet          : accessor : param = undef;
 field $pkg = {};
 
 ADJUST : params (:$updatedb //= 1) {
@@ -126,12 +127,26 @@ method vercmp ( $repo = $self->repo, %opt ) {
                         name => '%n',
                         repo => '%r',
                     );
+
+                    const my %_fmtmap => (
+                        base => '%e',
+                        name => '%n',
+                        repo => '%r',
+                    );
+                    my $ptn = join '|', map { quotemeta($_) } values %fmtmap;
+
+                    my $outstr = ( $outfmt =~ s/($ptn)/$_fmtmap{$1}/gr );
+                    say $outstr;
                 }
                 else {
-
-                    say "$repo_prev/$name ("
-                      . $ver[1]
-                      . ") is newer than $repo/$name ($ver[0])";
+                    if ($quiet) {
+                        say $name;
+                    }
+                    else {
+                        say "$repo_prev/$name ("
+                          . $ver[1]
+                          . ") is newer than $repo/$name ($ver[0])";
+                    }
                 }
             }
         };
@@ -225,6 +240,7 @@ sub run ( $argv = \@ARGV ) {
         'pacman-config:s',
         'cmp-pkgrel|pkgrel|compare-pkgrel!',
         'outfmt|format:s',
+        'quiet',
         '<>' => sub ($repo) {
             push @repo, $repo;
         }

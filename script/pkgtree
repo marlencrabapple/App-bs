@@ -119,7 +119,11 @@ ADJUST : params (:$repo = [keys $self->repolist->%*]) {
 method run ( $cmd, %opt ) {
     my $run = IPC::Nosh::run( $cmd, %RUN_DEFAULT, %opt );
     push @$extcmd_log, $run;
-    dmsg $cmd, %opt, $run;
+
+    dmsg $cmd, $run->status, $run->out->joined_utf8, $run->err->joined_utf8,
+      [ caller 0 ];
+
+    #($run->$_->joined_utf8 for qw'out err');
     $run;
 }
 
@@ -191,18 +195,30 @@ method pacman ( $cli, %opt ) {
         push @$cli, $arg;
     }
 
-    $self->run( $cli, pairgrep { $b } %opt{qw'out err autoflush autochomp'} );
+    my $run = $self->run(
+        $cli,
+        (
+            map  { ( %opt{ ($_) } ) }
+            grep { exists $opt{$_} } qw'out err autoflush autochomp'
+        )
+    );
+
+    if ( $run->status > 0 ) {
+        dmsg [ caller 0 ], $run->cmd;
+    }
 }
 
 method pacman_provides ( $pkg, %opt ) {
     ( $pkg, $opt{dest} ) = ARRAY( $pkg, $opt{dest} );
 
-    $self->pacman(
-        [ qw(-S --print-format '%P'), pacman_updarg($db), $pkg ],
-        out => sub( $line, @ ) {
-            $self->group_pkgstr( $line, $opt{dest} );
-        }
-    );
+    foreach my $pkg (@$pkg) {
+        $self->pacman(
+            [ qw(-S --print-format '%P'), $pkg ],
+            out => sub( $line, @ ) {
+                $self->group_pkgstr( $line, $opt{dest} );
+            }
+        );
+    }
 }
 
 method pacman_pkgname( $pkglist, %opt ) {
@@ -330,8 +346,6 @@ method resolve ( $pkglist //= $in, %opt ) {
     my @variant_pkgname;
     my @provided;
 
-
-
     $self->pacman_pkgname( $userselect, %opt, dest => \@variant_pkgname );
     $self->pacman_provides( $userselect, %opt, dest => \@provided );
 
@@ -367,7 +381,7 @@ method resolve ( $pkglist //= $in, %opt ) {
         exact => 1
     );
 
-    $self->pacman( ( scalar @ordered ? \@ordered : $pactree{pkg} ) );
+    # $self->pacman( ( scalar @ordered ? \@ordered : $pactree{pkg} ) );
 }
 
 package pkgtree::CLI;
@@ -383,12 +397,13 @@ use Getopt::Long
 
 sub cli ( $argv //= \@ARGV ) {
     my %clidest = (
-        in    => [],
-        prune => 'input',
-        sep   => ' ',
-        depth => undef,
-        field => ['base'],
-        db    => 'sync',
+        in      => [],
+        prune   => 'input',
+        sep     => ' ',
+        depth   => undef,
+        field   => ['base'],
+        db      => 'sync',
+        variant => []
     );
 
     my $cli2param = sub ($cliopt_href) {
