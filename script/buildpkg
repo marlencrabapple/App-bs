@@ -1,0 +1,126 @@
+#!/usr/bin/env perl
+
+use Object::Pad ':experimental(:all)';
+
+package pkgtree;
+
+class pkgtree : does(App::BS::Common) : does(App::BS::Ext::pacman::Config) :
+  does(App::BS::Run);
+
+use utf8;
+use v5.44;
+
+no warnings 'experimental::re_strict';
+use re 'strict';
+
+use builtin;
+use Const::Fast;
+
+field $in;
+
+method repo_add {
+
+}
+
+method buildpkg {
+
+}
+
+package pkgtree::CLI;
+
+use utf8;
+use v5.44;
+
+use builtin;
+use List::Util qw'uniq';
+use IO::Handle::Common;
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
+
+sub cli ( $argv //= \@ARGV ) {
+    my %clidest = (
+        in      => [],
+        prune   => 'input',
+        depth   => undef,
+        db      => 'sync',
+        variant => []
+    );
+
+    my $cli2param = sub ($cliopt_href) {
+        my %orig;
+
+        foreach my ( $k, $v ) (%$cliopt_href) {
+            my $_k = ( $k =~ s/-/_/rg );
+
+            if ( $k ne $_k ) {
+                $$cliopt_href{$_k} = $v;
+                $orig{$_k}         = delete $$cliopt_href{$k};
+            }
+        }
+        \%orig;
+    };
+
+    my $optval = sub ( $opt, $val ) {
+        dmsg $opt, $val;
+        $clidest{ $$opt{name} } = $val // defined $val;
+        dmsg \%clidest;
+    };
+
+    GetOptionsFromArray(
+        $argv,
+        \%clidest,
+
+        # database to search with pactree, expac and pacman
+        'db|database:s',    # sync or local
+        'sync',
+        'local',
+        'updatedb|update-db!' => $optval,
+
+        # resultset print order
+        'sort-by|order-by=s@',
+        'build-order|rebuild-order|arch-rebuild-order!',
+        'sort-direction|order',
+        'asc', 'desc',
+        'sep|seperator=s',
+        'depth|d:i',
+        'pacman-conf|config:s',
+
+        # input search scope
+        'exact!',
+        'regexp',
+
+        # output verbosity control
+        'debug+',
+        'verbose+',
+        'quiet+',
+
+        # enabled repositories (for sync db)
+        'repolist|repo-enabled@',
+
+        # build dependents of input packages
+        'reversedeps|reverse-depends!',
+
+        # prune/filter packages at different stages of resolution
+        "prune:s",
+        "variant|prefer|choose|chosen|wanted:s@",
+        "vcs|prefer-vcs!",
+        "filter:s@",
+
+        # input packages
+        '<>' => sub ($barearg) {
+            dmsg $barearg;
+            push $clidest{in}->@*, $barearg;
+        }
+    );
+
+    $clidest{in}->@* = uniq $clidest{in}->@* if $clidest{prune};
+
+    my $clidest_orig = $cli2param->( \%clidest );
+    my $self         = pkgtree->new(%clidest);
+
+    dmsg $self, \%clidest, $clidest_orig;
+
+    dmsg $self->run;
+}
+
+cli( \@ARGV )

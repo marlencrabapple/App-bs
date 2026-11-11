@@ -39,7 +39,7 @@ extended method run ( $cmd, : $in = undef, : $out = [], : $err = [], %opt ) {
             }
         },
         err => sub ( $line, @ ) {
-            error $out;
+            error $line;
 
             # state $mod
             # my $modified = $_->($line) for @$err
