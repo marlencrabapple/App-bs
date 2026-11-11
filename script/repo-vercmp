@@ -4,13 +4,12 @@ use Object::Pad ':experimental(:all)';
 
 package bs_repo_vercmp;
 
-class bs_repo_vercmp : does(App::BS::Ext::pacman::Config);
+class bs_repo_vercmp : does(App::BS::Ext::pacman::Config) : does(App::BS::Run);
 
 use v5.40;
 use utf8;
 
 use List::Util qw'any all none uniq';
-use IPC::Nosh;
 use IO::Handle::Common;
 use Time::HiRes;
 use Syntax::Keyword::Dynamically;
@@ -117,10 +116,11 @@ method vercmp ( $repo = $self->repo, %opt ) {
           $/xi;
 
         my $vercmp_outh = sub ( $line, $pkg, $name, $repo, $repo_prev, $ver ) {
-            if ( $line < 0 ) {
+            if ($line) {
                 my @ver =
                   map { $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$/-x/r ) }
                   ( $ver, $pkg->{$repo_prev}{$name}{ver} );
+
                 if ($outfmt) {
                     const my %fmtmap => (
                         base => '%e',
@@ -128,11 +128,8 @@ method vercmp ( $repo = $self->repo, %opt ) {
                         repo => '%r',
                     );
 
-                    const my %_fmtmap => (
-                        base => '%e',
-                        name => '%n',
-                        repo => '%r',
-                    );
+                    const my %_fmtmap => ( reverse %fmtmap );
+
                     my $ptn = join '|', map { quotemeta($_) } values %fmtmap;
 
                     my $outstr = ( $outfmt =~ s/($ptn)/$_fmtmap{$1}/gr );
@@ -189,7 +186,7 @@ method vercmp ( $repo = $self->repo, %opt ) {
                 if (   $repo_prev
                     && $pkg->{$repo_prev}{$name} )
                 {
-                    my $run = run(
+                    my $run = $self->run(
                         [
                             'vercmp',
                             map { $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$//r ); }
@@ -205,7 +202,7 @@ method vercmp ( $repo = $self->repo, %opt ) {
             }
         };
 
-        my $run = run(
+        my $run = $self->run(
             [ @repolist_cmd, $repo ],
             out       => $repolist_outh,
             autochomp => 1

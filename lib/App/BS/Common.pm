@@ -48,16 +48,18 @@ sub ARRAY : prototype(@) (@in) {
         $var //= [];
         my $type = reftype($var);
 
-        if ( !$type ) {
-            push @ret, [$var];
-        }
-        elsif ( $type ne 'ARRAY' ) {
-            my $name = PadWalker::var_name( 0, $var );
-            die "\$name must be an ARRAY ref or a scalar value. (Got: $type)";
-        }
-        elsif ( $type eq 'ARRAY' ) {
-            push @ret, $var;
-        }
+        # if ( !$type ) {
+        #     push @ret, [$var];
+        # }
+        # elsif ( $type ne 'ARRAY' ) {
+        #     my $name = PadWalker::var_name( 0, $var );
+        #     die "\$name must be an ARRAY ref or a scalar value. (Got: $type)";
+        # }
+        # elsif ( $type eq 'ARRAY' ) {
+        #     push @ret, $var;
+        # }
+
+        push @ret, refstr $var eq 'ARRAY' ? $var : [$var];
     }
 
     @ret;
