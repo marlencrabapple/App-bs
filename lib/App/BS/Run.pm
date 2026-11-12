@@ -22,7 +22,7 @@ extended method run ( $cmd, : $in = [], : $out = [], : $err = [], %opt ) {
 
     # dmsg $cmd, $in, $out, $err, \%opt;
 
-    dmsg $self, \%App::BS::Common::;
+    # dmsg $self, \%App::BS::Common::;
 
     ( $in, $out, $err ) = App::BS::Common::ARRAY( $in, $out, $err );
 

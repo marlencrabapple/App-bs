@@ -27,13 +27,13 @@ const our $pkgname_re => qr/
 const our $pkgver_re => qr'^[^\s:/\\-]+$'x;
 
 APPLY($class_mop) {
-    __PACKAGE__->apply($class_mop)
+    App::BS::Common->apply($class_mop)
 };
 
-method apply : common ($class_mop) {
-    $class->import_sub( $class_mop, \@EXPORT );
-    $class->import_common( $class_mop, \@EXPORT_COMMON );
-}
+# method apply : common ($class_mop) {
+#     $class->import_sub( $class_mop, \@EXPORT );
+#     $class->import_common( $class_mop, \@EXPORT_COMMON );
+# }
 
 # method import : common : override {
 #     my $caller = [ caller 1 ];

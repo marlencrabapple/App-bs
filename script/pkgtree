@@ -4,7 +4,8 @@ use Object::Pad ':experimental(:all)';
 
 package pkgtree;
 
-class pkgtree : does(App::BS::Ext::pacman::Config) : does(App::BS::Run);
+class pkgtree : does(App::BS::Ext::pacman::Config) : does(App::BS::Run) :
+  does(App::BS::Common);
 
 use utf8;
 use v5.44;
@@ -111,7 +112,8 @@ method pkgfield ( $pkgin, $field, %opt ) {
     my $op = '-S';
     $op .= 's' unless $opt{exact};
 
-    ( $pkgin, $field, $opt{dest} ) = ARRAY( $pkgin, $field, $opt{dest} );
+    ( $pkgin, $field, $opt{dest} ) =
+      App::BS::Common::ARRAY( $pkgin, $field, $opt{dest} );
 
     my @cmd = ( 'expac', $op, ( join ',', uniq @FIELD_MAP{@$field} ) );
 
@@ -162,7 +164,7 @@ method pacman_updarg ( $db, %opt ) {
 }
 
 method pacman ( $cli, %opt ) {
-    ( $cli, $opt{dest} ) = ARRAY( $cli, $opt{dest} );
+    ( $cli, $opt{dest} ) = App::BS::Common::ARRAY( $cli, $opt{dest} );
 
     dmsg $cli, %opt;
 
@@ -191,7 +193,7 @@ method pacman ( $cli, %opt ) {
 }
 
 method pacman_provides ( $pkg, %opt ) {
-    ( $pkg, $opt{dest} ) = ARRAY( $pkg, $opt{dest} );
+    ( $pkg, $opt{dest} ) = App::BS::Common::ARRAY( $pkg, $opt{dest} );
 
     foreach my $pkg (@$pkg) {
         $self->pacman(
@@ -204,7 +206,7 @@ method pacman_provides ( $pkg, %opt ) {
 }
 
 method pacman_pkgname( $pkglist, %opt ) {
-    ( $pkglist, $opt{dest} ) = ARRAY( $pkglist, $opt{dest} );
+    ( $pkglist, $opt{dest} ) = App::BS::Common::ARRAY( $pkglist, $opt{dest} );
 
     my $pkgre = '^(' . ( join '|', uniq @$pkglist ) . ')$';
 
@@ -225,7 +227,7 @@ method pacman_pkgname( $pkglist, %opt ) {
 }
 
 method pacman_files ( $filelist, %opt ) {
-    ( $filelist, $opt{dest} ) = ARRAY( $filelist, $opt{dest} );
+    ( $filelist, $opt{dest} ) = App::BS::Common::ARRAY( $filelist, $opt{dest} );
 
     my @cmd = qw(-Fq);
 
@@ -248,7 +250,7 @@ method pactree ( $pkglist, %opt ) {
 
     my $dest = $opt{dest} //= { pkg => [], file => [] };
     $opt{db} //= 'sync';
-    ($pkglist) = ARRAY($pkglist);
+    ($pkglist) = App::BS::Common::ARRAY($pkglist);
 
     my @pkgname = ();
     my @file    = ();

@@ -4,7 +4,8 @@ use Object::Pad ':experimental(:all)';
 
 package bs_repo_vercmp;
 
-class bs_repo_vercmp : does(App::BS::Ext::pacman::Config) : does(App::BS::Run);
+class bs_repo_vercmp : does(App::BS::Package::Version) :
+  does(App::BS::Ext::pacman::Config) : does(App::BS::Run);
 
 use v5.40;
 use utf8;
@@ -200,8 +201,12 @@ method repo_vercmp ( $repo = $self->repo, %opt ) {
                     # );
 
                     $vercmp_outh->(
-                        vercmp( $ver, $pkg->{$repo_prev}{$name}{ver} ),
-                        $pkg, $name, $repo, $repo_prev, $ver
+                        App::BS::Package::Version->vercmp(
+                            $ver, $pkg->{$repo_prev}{$name}{ver}
+                        ),
+                        $pkg, $name, $repo,
+                        $repo_prev,
+                        $ver
                     );
                 }
             }
