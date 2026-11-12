@@ -1,0 +1,375 @@
+#!/usr/bin/env perl
+
+use Object::Pad ':experimental(:all)';
+
+package pkgtree;
+
+class pkgtree : does(App::BS::Common) : does(App::BS::Ext::pacman::Config) :
+  does(App::BS::Run);
+
+use utf8;
+use v5.44;
+
+no warnings 'experimental::re_strict';
+use re 'strict';
+
+use builtin;
+use Const::Fast;
+use List::Util qw'pairgrep first uniq none any';
+use IPC::Nosh  qw'';
+use IO::Handle::Common;
+use PadWalker;
+use Syntax::Keyword::Dynamically;
+use App::BS::Common;
+use App::BS::Ext::pacman::Config;
+
+const our %FIELD_MAP => (
+    base                 => '%e',
+    arch                 => '%a',
+    backup_files         => '%B',
+    build_date           => '%b',
+    conflicts_nover      => '%C',
+    depends_on           => '%D',
+    description          => '%d',
+    depends_on_nover     => '%E',
+    optional_deps        => '%O',
+    optional_deps_nodesc => '%o',
+    filename             => '%f',
+    signature            => '%g',
+    groups               => '%G',
+    conflicts_with       => '%H',
+    md5sum               => '%s',
+    sha256sum            => '%h',
+    download_size        => '%k',
+    licences             => '%L',
+    install_size         => '%m',
+    name                 => '%n',
+    required_by          => '%N',
+    version              => '%v',
+    url                  => '%u',
+    replaces             => '%T',
+    replace_nover        => '%R',
+    provides_nover       => '%S',
+    provides             => '%P',
+    packager             => '%p',
+    package_valid_method => '%V',
+    'literal_%'          => '%%',
+);
+
+const our @SORT_ALLOW => qw( buildorder );
+
+const our $ver_req => qr/([=<>]{1}|(?:[<>]=)){,2}/x;
+
+const our $pkgname_re => qr/
+([a-z0-9_@+][a-z0-9_@+.-]+)
+ (?:
+   ([\s-]|[=<>]{1}|[<>]=)
+   ([^\s:\/\\-]+?)
+ )?/xi;
+
+const our $soname_re => qr/(.+\.so)=([0-9-].+)/xx;
+
+field $in         : param;
+field $userselect : param(variant);
+
+field $buildorder : param = 1;
+
+field $sortby  : param = qw'buildorder';
+field $sortdir : param = 'desc';
+
+# field $asc;
+# field $desc;
+# field $reverse;
+
+field $reversedeps : param = 0;
+field $field  : param : accessor = [];
+field $fmtstr : param : accessor = '%e';
+
+# Default is hybrid: will do expac -Ss if pkgstr has regex meta-characters
+field $exact  : param : accessor = 0;
+field $regex  : param : accessor = 1;
+field $sep    : param = ' ';
+field $unique : param = 1;
+field $depth  : param = undef;
+field $pkgtree = {};
+
+field $db             : param //= 'sync';
+field $updatedb       : param //= true;
+field $filedb_updated : accessor;
+field $pkgdb_updated  : accessor;
+
+field $repo_enabled : accessor;
+
+field $verbose : param : accessor = 0;
+field $extcmd_log : accessor = [];
+
+ADJUST : params (:$repo = [keys $self->repolist->%*]) {
+    foreach my ( $k, $v ) ( $self->repolist->%* ) {
+        delete $self->repolist->{$k} if none { $_ eq $k } @$repo;
+    }
+    dmsg $self->repolist
+};
+
+method pkgfield ( $pkgin, $field, %opt ) {
+    my $op = '-S';
+    $op .= 's' unless $opt{exact};
+
+    ( $pkgin, $field, $opt{dest} ) = ARRAY( $pkgin, $field, $opt{dest} );
+
+    my @cmd = ( 'expac', $op, ( join ',', uniq @FIELD_MAP{@$field} ) );
+
+    my $outh = sub ( $line, @ ) {
+        push $opt{dest}->@*, grep {
+            my $new = $_;
+            none { $_ eq $new } $opt{dest}->@*
+        } split /\s/, $line;
+    };
+
+    my $run;
+
+    if ( $opt{exact} ) {
+        $run = $self->run( [ @cmd, @$pkgin ], out => $outh );
+    }
+    else {
+        foreach my $pkgstr (@$pkgin) {
+            $self->run( [ @cmd, $pkgstr ], out => $outh );
+        }
+    }
+
+    $opt{dest}->@*;
+}
+
+method pkgbase ( $pkglist, %opt ) {
+    $self->pkgfield( $pkglist, 'base', %opt );
+}
+
+method pkgname ( $pkglist, %opt ) {
+    $self->pkgfield( $pkglist, 'name', %opt );
+}
+
+method pacman_updarg ( $db, %opt ) {
+    my $lastupdate = $db eq 'file' ? 'filedb_updated' : 'pkgdb_updated';
+
+    dmsg $lastupdate, $self->$lastupdate, $opt{force}, $updatedb;
+
+    if ( ( $updatedb && !$self->$lastupdate ) || $opt{force} ) {
+        $self->$lastupdate(time);
+        info "▷ Updating $db database..." if $verbose;
+        return '-y';
+    }
+    elsif ( !$updatedb ) {
+        say STDERR "▷ --updatedb is disabled, not updating $db database.";
+    }
+
+    undef;
+}
+
+method pacman ( $cli, %opt ) {
+    ( $cli, $opt{dest} ) = ARRAY( $cli, $opt{dest} );
+
+    dynamically $cli = [
+        'pacman', @$cli,
+        ( $self->pacman_conf ? ( '--config', $self->pacman_conf ) : () )
+    ];
+
+    if ( my $arg = $self->pacman_updarg( 'package', force => $opt{update_db} ) )
+    {
+        unshift @$cli, 'sudo';
+        push @$cli, $arg;
+    }
+
+    my $run = $self->run(
+        $cli,
+        (
+            map  { ( %opt{ ($_) } ) }
+            grep { exists $opt{$_} } qw'out err autoflush autochomp'
+        )
+    );
+
+    if ( $run->status > 0 ) {
+        dmsg [ caller 0 ], $run->cmd;
+    }
+}
+
+method pkg_latest ($pkg, %opt) {
+  ( $pkg, $opt{dest} ) = ARRAY( $pkg, $opt{dest} );
+  foreach my $pkg (@$pkg) {
+    
+  }
+}
+
+method pacman_provides ( $pkg, %opt ) {
+    ( $pkg, $opt{dest} ) = ARRAY( $pkg, $opt{dest} );
+
+    foreach my $pkg (@$pkg) {
+        $self->pacman(
+            [ qw(-S --print-format '%P'), $pkg ],
+            out => sub( $line, @ ) {
+                $self->group_pkgstr( $line, $opt{dest} );
+            }
+        );
+    }
+}
+
+method pacman_pkgname( $pkglist, %opt ) {
+    ( $pkglist, $opt{dest} ) = ARRAY( $pkglist, $opt{dest} );
+
+    my $pkgre = '^(' . ( join '|', uniq @$pkglist ) . ')$';
+
+    my @cmd = qw(-Sqs);
+
+    push @cmd, $pkgre;
+
+    my $run = $self->pacman(
+        \@cmd,
+        out => sub( $line, @ ) {
+            if ( my ($name) = ( $line =~ /^$pkgname_re/ ) ) {
+                push $opt{dest}->@*, $name;
+            }
+        }
+    );
+
+    $opt{dest}->@*;
+}
+
+method pacman_files ( $filelist, %opt ) {
+    ( $filelist, $opt{dest} ) = ARRAY( $filelist, $opt{dest} );
+
+    my @cmd = qw(-Fq);
+
+    my $run = $self->pacman(
+        [ @cmd, uniq @$filelist ],
+        db  => 'file',
+        out => sub ( $line, @ ) {
+            say $line if $verbose;
+            if ( my ( $repo, $name ) = $line =~ m!([^/]+)/(.+)!g ) {
+                push $opt{dest}->@*, $name
+                  if none { $_ eq $name } $opt{dest}->@*;
+            }
+        }
+    );
+    $opt{dest}->@*;
+}
+
+method pactree ( $pkglist, %opt ) {
+    my @res = ();
+
+    my $dest = $opt{dest} //= { pkg => [], file => [] };
+    $opt{db} //= 'sync';
+    ($pkglist) = ARRAY($pkglist);
+
+    my @pkgname = ();
+    my @file    = ();
+
+    foreach my $pkgstr (@$pkglist) {
+        my @cmd = (
+            qw(pactree -lu --config),
+            $self->pacman_conf, ( $opt{db} eq 'sync' ? qw'-s' : () )
+        );
+
+        push @cmd, ( '--depth', $depth ) if defined $depth;
+
+        my $run = $self->run(
+            [ @cmd, $pkgstr ],
+            out => sub ( $line, @ ) {
+
+                if ( my ( $soname, $sover ) = $line =~ $soname_re ) {
+                    push @file, $soname
+                      if none { $_ eq $soname } @file, $$dest{file}->@*;
+                }
+                elsif ( my ( $name, $cmp, $ver ) = $line =~ $pkgname_re ) {
+                    push @pkgname, $name
+                      if none { $_ eq $name } @pkgname, $$dest{pkg}->@*;
+                }
+                else {
+                    error
+"'$pkgstr' does not seem to be a shared object or package name/base.";
+                }
+            }
+        );
+        push @res, $run;
+
+        # dmsg \@cmd;
+
+        # Get canon/current pkgname (example dependency package has been
+        # replaced but pactree returns name it was built with)
+
+        #push $opt{dest}->@*, @pkgname;
+    }
+
+    push $$dest{pkg}->@*, uniq $self->pacman_pkgname( \@pkgname )
+      if scalar @pkgname;    #$$dest{pkg}->@*;
+
+    push $$dest{pkg}->@*, uniq $self->pacman_files( \@file )
+      if scalar @file;
+
+    $opt{dest}->%*;
+}
+
+method arch_rebuild_order( $pkgname_aref, %opt ) {
+    my $ordered = $opt{dest} // [];
+
+    my $repostr = '--repos=' . join ',',
+      (
+          $opt{repo} && refstr $opt{repo} eq 'ARRAY'
+        ? $opt{repo}->@*
+        : keys $self->repolist->%*
+      );
+
+    dynamically $reversedeps = $opt{reversedeps} if $opt{reversedeps};
+
+    my $run = $self->run(
+        [
+            qw'arch-rebuild-order',                         $repostr,
+            ( $reversedeps ? () : '--no-reverse-depends' ), @$pkgname_aref
+        ],
+        out => sub ( $line, @ ) {
+            push @$ordered, split /\s/, $line;
+        },
+        autochomp => 1
+    );
+
+    @$ordered;
+}
+
+method depends ( $pkglist //= $in, %opt ) {
+    my @variant_pkgname;
+    my @provided;
+
+    $self->pacman_pkgname( $userselect, %opt, dest => \@variant_pkgname );
+    $self->pacman_provides( $userselect, %opt, dest => \@provided );
+
+    my @in_pkgname;
+    $self->pacman_pkgname( $pkglist, %opt, dest => \@in_pkgname );
+    fatal "Could not find packages in the $db" unless scalar @in_pkgname;
+    dmsg \@in_pkgname;
+
+    my %pactree = ( pkg => [], file => [] );
+    $self->pactree( \@in_pkgname, dest => \%pactree, exact => 1 );
+    push $pactree{pkg}->@*, @in_pkgname;
+
+    $pactree{pkg}->@* = uniq $pactree{pkg}->@* if $opt{unique} // $unique;
+    dmsg \%pactree;
+
+    my @ordered;
+    $self->arch_rebuild_order( $pactree{pkg}, dest => \@ordered )
+      if $opt{buildorder} // $buildorder;
+
+    dmsg \@ordered;
+
+#     if ( !scalar $field ) {
+#         error
+# "Outputting package bases. For package names run with '--field=name' or '--names'";
+#     }
+
+    $self->pkgfield(
+        ( scalar @ordered ? \@ordered : $pactree{pkg} ),
+        (
+            first { $_ && ( reftype($_) eq 'ARRAY' ) && scalar(@$_) > 0 }
+              ( $opt{field}, $field, ['base'] )
+        ),
+        exact => 1
+    );
+
+    # $self->pacman( ( scalar @ordered ? \@ordered : $pactree{pkg} ) );
+}

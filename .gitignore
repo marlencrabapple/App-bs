@@ -50,5 +50,7 @@ MYMETA.*
 !META.json
 /.prove
 /vendor
+/fatlib
 .perl-version
 
+*.log

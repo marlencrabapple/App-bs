@@ -1950,10 +1950,10 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Net::SSLeay 1.46
       Scalar::Util 0
-  IPC-Nosh-0.01_04-TRIAL
-    pathname: C/CR/CRABAPP/IPC-Nosh-0.01_04-TRIAL.tar.gz
+  IPC-Nosh-0.01_05-TRIAL
+    pathname: C/CR/CRABAPP/IPC-Nosh-0.01_05-TRIAL.tar.gz
     provides:
-      IPC::Nosh 0.01_04
+      IPC::Nosh 0.01_05
       IPC::Nosh::Mux undef
     requirements:
       Class::Exporter 0

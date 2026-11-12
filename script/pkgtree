@@ -4,7 +4,7 @@ use Object::Pad ':experimental(:all)';
 
 package pkgtree;
 
-class pkgtree : does(App::BS::Common) : does(App::BS::Ext::pacman::Config);
+class pkgtree : does(App::BS::Ext::pacman::Config) : does(App::BS::Run);
 
 use utf8;
 use v5.44;
@@ -19,8 +19,6 @@ use IPC::Nosh  qw'';
 use IO::Handle::Common;
 use PadWalker;
 use Syntax::Keyword::Dynamically;
-use App::BS::Common;
-use App::BS::Ext::pacman::Config;
 
 const our %FIELD_MAP => (
     base                 => '%e',
@@ -57,14 +55,6 @@ const our %FIELD_MAP => (
 
 const our @SORT_ALLOW => qw( buildorder );
 
-const our %RUN_DEFAULT => (
-    autochomp => 1,
-    autoflush => 1,
-    err       => sub ( $line, @ ) {
-        error $line;
-    }
-);
-
 const our $ver_req => qr/([=<>]{1}|(?:[<>]=)){,2}/x;
 
 const our $pkgname_re => qr/
@@ -76,8 +66,8 @@ const our $pkgname_re => qr/
 
 const our $soname_re => qr/(.+\.so)=([0-9-].+)/xx;
 
-field $in         : param;
-field $userselect : param(variant);
+field $in     : param;
+field $pinned : param(variant);
 
 field $buildorder : param = 1;
 
@@ -114,18 +104,8 @@ ADJUST : params (:$repo = [keys $self->repolist->%*]) {
     foreach my ( $k, $v ) ( $self->repolist->%* ) {
         delete $self->repolist->{$k} if none { $_ eq $k } @$repo;
     }
+    dmsg $self->repolist
 };
-
-method run ( $cmd, %opt ) {
-    my $run = IPC::Nosh::run( $cmd, %RUN_DEFAULT, %opt );
-    push @$extcmd_log, $run;
-
-    dmsg $cmd, $run->status, $run->out->joined_utf8, $run->err->joined_utf8,
-      [ caller 0 ];
-
-    #($run->$_->joined_utf8 for qw'out err');
-    $run;
-}
 
 method pkgfield ( $pkgin, $field, %opt ) {
     my $op = '-S';
@@ -183,6 +163,8 @@ method pacman_updarg ( $db, %opt ) {
 
 method pacman ( $cli, %opt ) {
     ( $cli, $opt{dest} ) = ARRAY( $cli, $opt{dest} );
+
+    dmsg $cli, %opt;
 
     dynamically $cli = [
         'pacman', @$cli,
@@ -321,7 +303,7 @@ method arch_rebuild_order( $pkgname_aref, %opt ) {
 
     my $repostr = '--repos=' . join ',',
       (
-          $opt{repo} && refstr $opt{repo} eq 'ARRAY'
+          $opt{repo} && refstr( $opt{repo} ) eq 'ARRAY'
         ? $opt{repo}->@*
         : keys $self->repolist->%*
       );
@@ -346,8 +328,10 @@ method resolve ( $pkglist //= $in, %opt ) {
     my @variant_pkgname;
     my @provided;
 
-    $self->pacman_pkgname( $userselect, %opt, dest => \@variant_pkgname );
-    $self->pacman_provides( $userselect, %opt, dest => \@provided );
+    if ( scalar @$pinned ) {
+        $self->pacman_pkgname( $pinned, %opt, dest => \@variant_pkgname );
+        $self->pacman_provides( $pinned, %opt, dest => \@provided );
+    }
 
     my @in_pkgname;
     $self->pacman_pkgname( $pkglist, %opt, dest => \@in_pkgname );
@@ -460,7 +444,7 @@ sub cli ( $argv //= \@ARGV ) {
         'quiet+',
 
         # enabled repositories (for sync db)
-        'repolist|repo-enabled@',
+        'repolist|repo-enabled|repositories=s@',
 
         # print dependents of input packages
         'reversedeps|reverse-depends!',

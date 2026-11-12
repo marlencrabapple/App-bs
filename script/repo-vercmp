@@ -16,6 +16,8 @@ use Syntax::Keyword::Dynamically;
 use Syntax::Keyword::Defer;
 use Const::Fast;
 
+use App::BS::Package::Version;
+
 no warnings 'experimental::re_strict';
 use re 'strict';
 
@@ -82,7 +84,7 @@ method $package_seen ( $pkg, %opt ) {
     ...;
 }
 
-method vercmp ( $repo = $self->repo, %opt ) {
+method repo_vercmp ( $repo = $self->repo, %opt ) {
     dynamically $updatedb   = $opt{updatedb}   if $opt{updatedb};
     dynamically $cmp_pkgrel = $opt{cmp_pkgrel} if $opt{cmp_pkgrel};
 
@@ -186,17 +188,20 @@ method vercmp ( $repo = $self->repo, %opt ) {
                 if (   $repo_prev
                     && $pkg->{$repo_prev}{$name} )
                 {
-                    my $run = $self->run(
-                        [
-                            'vercmp',
-                            map { $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$//r ); }
-                              ( $ver, $pkg->{$repo_prev}{$name}{ver} )
-                        ],
-                        out => sub ( $line, @ ) {
-                            $vercmp_outh->(
-                                $line, $pkg, $name, $repo, $repo_prev, $ver
-                            );
-                        },
+                   # my $run = $self->run(
+                   #     [
+                   #         'vercmp',
+                   #         map { $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$//r ); }
+                   #           ( $ver, $pkg->{$repo_prev}{$name}{ver} )
+                   #     ],
+                   #     out => sub ( $line, @ ) {
+
+                    #     },
+                    # );
+
+                    $vercmp_outh->(
+                        vercmp( $ver, $pkg->{$repo_prev}{$name}{ver} ),
+                        $pkg, $name, $repo, $repo_prev, $ver
                     );
                 }
             }
@@ -213,7 +218,7 @@ method vercmp ( $repo = $self->repo, %opt ) {
         }
     }
 
-    dmsg $pkg;
+    # dmsg $pkg;
 }
 
 package bs_repo_vercmp::CLI;
@@ -250,7 +255,7 @@ sub run ( $argv = \@ARGV ) {
           keys %clidest
     );
 
-    $app->vercmp;
+    $app->repo_vercmp;
 }
 
 run( \@ARGV )

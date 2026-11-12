@@ -88,7 +88,7 @@
             "HTTP::Tinyish" : "0",
             "IO::Async" : "0",
             "IO::Async::SSL" : "0",
-            "IO::Handle::Common" : "0.01_06",
+            "IO::Handle::Common" : "0.01_08",
             "IO::Socket::SSL" : "0",
             "IPC::Nosh" : "0.01_04",
             "JSON::MaybeXS" : "0",
@@ -129,7 +129,7 @@
          "web" : "https://github.com/marlencrabapple/App-bs"
       }
    },
-   "version" : "0.01_02",
+   "version" : "0.01_03",
    "x_authority" : "cpan:CRABAPP",
    "x_serialization_backend" : "JSON::PP version 4.16",
    "x_static_install" : 0

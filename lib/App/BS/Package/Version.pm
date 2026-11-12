@@ -1,7 +1,7 @@
 use Object::Pad ':experimental(:all)';
 
 package App::BS::Package::Version;
-role App::BS::Package::Version;
+role App::BS::Package::Version : does(App::BS::Common) : does(App::BS::Run);
 
 use utf8;
 use v5.44;
@@ -11,8 +11,11 @@ use re 'strict';
 
 use IO::Handle::Common;
 use Const::Fast;
-use Exporter;
+use parent 'Exporter';
 use IPC::Nosh;
+
+use vars qw'@EXPORT @EXPORT_OK @EXPORT_COMMON';
+@EXPORT_COMMON = qw'vercmp';
 
 const our $pkgname_re => qr/
 ([a-z0-9_@+][a-z0-9_@+.-]+)
@@ -23,15 +26,52 @@ const our $pkgname_re => qr/
 
 const our $pkgver_re => qr'^[^\s:/\\-]+$'x;
 
-method vercmp : common  ( $ver1, $ver2, %opt ) {
-    my @ver = ( $ver1, $ver2 );
-    my $run = run(
-        [ 'vercmp', $opt{reverse} ? reverse @ver : @ver ],
-        autoflush => 1,
-        autochomp => 1
+APPLY($class_mop) {
+    __PACKAGE__->apply($class_mop)
+};
+
+method apply : common ($class_mop) {
+    $class->import_sub( $class_mop, \@EXPORT );
+    $class->import_common( $class_mop, \@EXPORT_COMMON );
+}
+
+# method import : common : override {
+#     my $caller = [ caller 1 ];
+#     my $mop    = Object::Pad::MOP::Class->try_for_class( $$caller[0] );
+
+#     if ($mop) {
+#         my $mop    = App::BS::Common->import_common( $mop, \@EXPORT_COMMON );
+#         my @method = $mop->all_methods;
+#         my %method = map {
+#             (
+#                 $_->name => {
+#                     meta   => $_,
+#                     class  => { meta => $_->class, name => $_->class->name },
+#                     common => $_->is_common
+#                 }
+#             )
+#         } @method;
+#     }
+#     else {
+
+#         dmsg $class->export_to_level( $$caller[0], $class,
+#             sub { unshift @_, \&{"${class}::$_"} } )
+#           for @EXPORT_COMMON;
+#     }
+# }
+
+method vercmp : common ($left,$right,%opt) {
+    my class VerCmp : does(App::BS::Run) {
+
+    };
+
+    my $run = VerCmp->new->run(
+        [
+            'vercmp',
+            map { $opt{ignore_pkgrel} ? ( $_ =~ s/-[0-9]+$//r ) : $_ }
+              ( $left, $right )
+        ],
     );
 
-    dmsg $run;
-
-    $run->status;
+    return ( $run->out->lines_utf8 )[0];
 }

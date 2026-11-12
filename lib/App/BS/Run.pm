@@ -12,51 +12,45 @@ use Path::Try;
 use List::Util qw'any all';
 use IO::Handle::Common;
 use IPC::Nosh qw'';
-use App::BS::Common;
 use Sublike::Extended;
+use Syntax::Keyword::Dynamically;
 
-extended method run ( $cmd, : $in = undef, : $out = [], : $err = [], %opt ) {
+extended method run ( $cmd, : $in = [], : $out = [], : $err = [], %opt ) {
     $opt{autochomp} //= 1;
-    $opt{autoflush} //= 1;
 
-    dmsg $cmd, $in, $out, $err, \%opt;
+    # $opt{autoflush} //= 1;
 
-    # my $outh
-    ( $in, $out, $err ) = ARRAY( $in, $out, $err );
+    # dmsg $cmd, $in, $out, $err, \%opt;
+
+    dmsg $self, \%App::BS::Common::;
+
+    ( $in, $out, $err ) = App::BS::Common::ARRAY( $in, $out, $err );
+
+    my $itercb = sub ( $line, @arg ) {
+        my $ret;
+        foreach my ($cb)
+          ( grep { $_ && App::BS::Common::refstr($_) eq 'CODE' } @$out )
+        {
+            $ret = $cb->($line);
+            dynamically $line = $ret // $line;
+        }
+        $ret;
+    };
 
     my $run = IPC::Nosh::run(
         $cmd,
 
-        # in  => $in,
         out => sub ( $line, @ ) {
             say $line if $opt{verbose};
-            my $ret;
-            foreach my ($cb) ( grep { $_ && refstr $_ eq 'CODE' } @$out ) {
-
-                $ret  = $cb->($line);
-                $line = $ret // $line;
-
-            }
+            $itercb->($line);
         },
         err => sub ( $line, @ ) {
             error $line;
-
-            # state $mod
-            # my $modified = $_->($line) for @$err
-            # my $=
-            my $ret;
-            foreach my ($cb) ( grep { $_ && refstr $_ eq 'CODE' } @$err ) {
-
-                $ret  = $cb->($line);
-                $line = $ret // $line;
-
-            }
+            $itercb->($line);
         },
-        autochomp => 1,
-        autoflush => 1,
         %opt
     );
 
-    # dmsg $run;
+    dmsg $run if $run->status != 0;
     $run;
 }
