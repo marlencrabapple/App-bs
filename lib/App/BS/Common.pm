@@ -61,7 +61,7 @@ method import_list : common ( $mop, $export_var ) {
 
 method import : common : override {
     my $caller = [ caller 1 ];
-    my $mop    = Object::Pad::MOP::Class->try_for_class( $$caller[0] );
+    my $mop    = Object::Pad::MOP::Class->for_caller;#->try_for_class( $$caller[0] );
 
     # my @$methods
     if ($mop) {
@@ -82,7 +82,7 @@ method import : common : override {
     }
     else {
 
-        dmsg $class->export_to_level(
+        dmsg __PACKAGE__->export_to_level(
             $$caller[0],
             $class,
             (
@@ -92,9 +92,15 @@ method import : common : override {
             )
         );
 
-        dmsg $class->export_to_level( $$caller[0], $class,
-            sub { unshift @_, \&{"${class}::$_"} } )
-          for @EXPORT_COMMON;
+        dmsg __PACKAGE__->export_to_level(
+            $$caller[0],
+            $class,
+            (
+                map {
+                    sub { \&{"${class}::$_"} }
+                } @EXPORT_COMMON
+            )
+        );
     }
 }
 
@@ -131,12 +137,12 @@ method import_instance : common ($class_mop) {
 }
 
 sub matchlist (
-    : $quotemeta //= 1,
+    : $quotemeta //= true,
     : $group //= 1,
-    : $capture, : $mod = [], @list
+    : $capture //= 0, : $mod = [], @list
   )
 {
-    my $str = join '|', @list;
+    my $str = join '|', map { $quotemeta ? quote_meta($_) : $_} @list;
     $str = "?:$group" if $group;
     $str = "($str)"
       if $group || $capture;

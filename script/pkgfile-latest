@@ -1,0 +1,162 @@
+#!/usr/bin/env perl
+use Object::Pad ':experimental(:all)';
+
+package pkgfile_latest;
+
+class pkgfile_latest : does(App::BS::Package::Version) : does(App::BS::Common);
+
+use v5.44;
+
+use Const::Fast;
+use builtin;
+use Path::Tiny;
+use List::Util qw'pairgrep none';
+use IO::Handle::Common;
+use List::Util qw'pairmap';
+use Sublike::Extended;
+use JSON::MaybeXS;
+
+const our $json => JSON::MaybeXS->new(
+    utf8            => 1,
+    pretty          => 1,
+    allow_blessed   => 1,
+    convert_blessed => 1
+);
+
+field $pkgfile : param;
+field $pkgname : param;
+field $pkgname_ptn;
+field $found;
+
+ADJUST {
+    $pkgname_ptn = join '|', @$pkgname;
+    $pkgname_ptn =
+qr/^($pkgname_ptn)-((?:[0-9]+:)?[^\s:\\-]+(?:-[0-9]+)?)-([^.]+?).pkg.tar.zst$/;
+
+    $found = $self->collect
+};
+
+# ADJUST : params (%param) {    #:$root, :$repo, :$target, :$path) {
+#     $repo =
+#       App::BS::Repo->new( pairgrep { $b } %param{qw'root repo target path'} )
+# };
+
+method collect {
+    my %found;
+    foreach my $path ( map { path($_)->absolute } @$pkgfile ) {
+        if ( $path->is_dir ) {
+            $path->visit(
+                sub ( $curr, $state ) {
+                    if ( my ( $name, $ver, $arch ) =
+                        ( $curr->basename =~ $pkgname_ptn ) )
+                    {
+                        $found{$name} //= [];
+
+                        push $found{$name}->@*,
+                          {
+                            path    => $curr->absolute,
+                            version => $ver,
+                            arch    => $arch,
+                            created => $curr->stat->ctime
+                          };
+
+                        return unless scalar $found{$name}->@* > 1;
+
+                    }
+
+                },
+                { recurse => 1 }
+            );
+        }
+    }
+
+    \%found;
+}
+extended method by( : $cmax, : $want, : $by, : $dir ) {
+    my $sorted = {
+        pairmap { ( $a => $b ) }    # $a => $$b{path} ) }
+        (
+            $dir eq 'desc'
+            ? reverse pairmap { ( reverse $a, $b ) } $found->%{@$pkgname}
+            : $found->%{@$pkgname}
+        )
+    };
+
+    my %res = ();
+
+    foreach my ( $pkgname, $data ) (%$sorted) {
+        next unless $pkgname && $data;    # && refstr($data) eq 'HASH';
+        my sub vercmp : prototype($$) ( $left, $right ) {
+            my $run =
+              $self->run( [ 'vercmp', ( $$left{version}, $$right{version} ) ],
+              );
+
+            ( $run->out->lines_utf8 )[0];
+        }
+
+        @$data = sort vercmp @$data;
+        my $top = $data->[ ( scalar @$data - 1 ) .. ( scalar @$data - $cmax ) ];
+
+        $res{ $$top{$want} } = { pkgname => $pkgname, %$top };
+    }
+
+    \%res;
+}
+
+method latest_pkgver (@arg) {
+    $self->by_version( cmax => 10, dir => 'asc', want => 'path' );
+}
+method most_recent       { $self }
+method by_version (@arg) { $self->by( by => 'version', @arg ) }
+
+method by_created (@arg) { $self->by( by => 'created', @arg ) }
+
+package pkgfile_latest::CLI;
+
+use v5.44;
+
+use IO::Handle::Common;
+use Getopt::Long
+  qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
+use Time::HiRes qw(CLOCK_REALTIME_RAW);
+
+# use App::BS::CLI;
+
+sub cli ( $argv //= \@ARGV ) {
+    my @pkgname = ();
+    my @pkgfile;
+
+    my %clidest = (
+        pkgname => \@pkgname,
+        pkgfile => \@pkgfile
+    );
+
+    GetOptionsFromArray(
+        $argv,
+        \%clidest,
+        'pkgname=s@',
+        'pkgfile|pkgdir|dir|file|filelist=s@',
+
+      # 'created|date-created|ctime' =>  sub ( $opt, $val ) { dmsg $opt, $val },
+      # 'version|vercmp|pkgver'      => sub ( $opt, $val ) { dmsg $opt, $val },
+        'sortby|by:s@',
+
+        'direction|sort-direction|sortdir:s',
+
+        # 'asc|desc', => sub ( $opt, $val ) { dmsg $opt, $val },
+
+        # sub ( $opt, $val ) { dsmg( $opt, $val ) },
+        '<>' => sub ($bare) {
+            push @pkgname, $bare;
+        }
+    );
+
+    # dmsg $argv, \%clidest;
+
+    # my $original = App::BS::CLI->cli2param(\%clidest);
+    my $file_newest = pkgfile_latest->new(%clidest)->latest_pkgver;
+    say join "\n", keys $file_newest->%*;
+
+}
+
+cli( \@ARGV )

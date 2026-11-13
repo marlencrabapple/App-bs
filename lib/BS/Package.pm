@@ -43,7 +43,7 @@ const our $pkgspec_re => qr'$pkgstr_re
 			                (.$pkgext_re)?
 			               'xxi;
 
-const our $pkgstr_re => qr
+# const our $pkgstr_re => qr
 
 method parse_pkg_fname : common ($pkgfile) {
     $pkgfile = path($pkgfile);

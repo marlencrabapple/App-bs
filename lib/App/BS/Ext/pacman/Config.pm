@@ -11,7 +11,6 @@ use Const::Fast;
 use Path::Try;
 use List::Util qw'any all none';
 use IO::Handle::Common;
-use App::BS::Common;
 use Syntax::Keyword::Defer;
 
 IO->decorate(1);
@@ -37,8 +36,8 @@ ADJUST {
     $cachedir //= path( $config->{options}{CacheDir} );
 
     foreach my ( $k, $v ) (%$config) {
-        if (   refstr($v) eq 'HASH'
-            && refstr( $$v{Server} ) eq 'ARRAY'
+        if (   App::BS::Common::refstr($v) eq 'HASH'
+            && App::BS::Common::refstr( $$v{Server} ) eq 'ARRAY'
             && scalar $$v{Server}->@* > 0 )
         {
             $$repo{$k} = $v;
@@ -94,7 +93,7 @@ my method parse_pacman_conf_line ( $line, %opt ) {
         $v = \@vsplit if scalar @vsplit > 1;
 
         if ( my $curr = ( $$section{$k} ) ) {
-            if ( refstr($curr) eq 'ARRAY' ) {
+            if ( App::BS::Common::refstr($curr) eq 'ARRAY' ) {
                 push $$section{$k}->@*, $v;
                 push $$ord[$section_i]->@*, $k
                   if none { $k eq $_ } $$ord[$section_i]->@*;

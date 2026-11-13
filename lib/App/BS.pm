@@ -3,7 +3,7 @@ use Object::Pad qw(:experimental(:all));
 package App::BS;
 
 use Const::Fast;
-$VERSION = '0.01_03';
+$VERSION = '0.02_01';
 
 class App::BS;    #: does(App::BS::Common);
 
@@ -15,25 +15,7 @@ use Const::Fast;
 use Const::Fast::Exporter;
 use Syntax::Keyword::Try;
 
-method $import : common (@args) {
-    use utf8;
-    use v5.40;
-}
 
-ADJUSTPARAMS($params) {
-    __CLASS__->$import($params)
-};
-
-try {
-    use BS::Common;
-    use App::BS::Common;
-    my ( $toml, $error ) => from_toml($App::BS::defaultconfig_inline);
-    die $error if $error;
-    const our $config_default => $toml
-}
-catch ($e) {
-    BS::Common::dmsg { err => $e }
-}
 
 const our $defaultconfig_inline => <<'...';
 #

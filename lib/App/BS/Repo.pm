@@ -21,12 +21,25 @@ field $name    : param //= $ENV{BS_REPO};
 field $target  : param //= $ENV{BS_TARGET};
 field $path    : param //= "$root/$name/os/$target";
 
-method file_newest ( $pkgfile = [ $path->children ], %opt ) {
-    ($pkgfile) = ARRAY($pkgfile);
+method file_newest ( $pkgname, %opt ) {
+    ($pkgname) = ARRAY($pkgname);
 
-    foreach my $file (@$pkgfile) {
+    foreach my $pkgname (@$pkgname) {
+        my $fileptn = qr/^$pkgname-(.+).pkg.tar.zst$/;
+        my @file;
+        foreach my ( $prev, $curr, $next ) ( undef, $path->children($fileptn) )
 
-        # my $
-        ...;
+          # {   (my ($version) =  ($file =~ $fileptn)) {
+        {
+            if ( my ($version) = ( $curr =~ $fileptn ) ) {
+                $curr =
+                  { name => $pkgname, version => $version, path => $curr };
+
+                if ($prev) {
+                    dmsg( vercmp( $$prev{version}, $$curr{version} ) );
+                }
+            }
+            next;
+        }
     }
 }

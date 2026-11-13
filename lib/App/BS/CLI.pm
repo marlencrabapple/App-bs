@@ -10,6 +10,19 @@ use v5.40;
 use Getopt::Long
   qw(GetOptionsFromArray :config no_ignore_case auto_abbrev bundling long_prefix_pattern=--?);
 
+method cli2param : common ($cliopt) {
+    my %orig;
+
+    foreach my ( $k, $v ) (%$cliopt) {
+        my $_k = ( $k =~ s/-/_/rg );
+
+        if ( $k ne $_k ) {
+            $$cliopt{$_k} = $v;
+            $orig{$_k}    = delete $$cliopt{$k};
+        }
+    }
+    \%orig;
+}
 
 # use Carp;
 # use Pod::Usage;

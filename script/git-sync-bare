@@ -1,0 +1,4 @@
+#!/usr/bin/env perl
+
+package Sync::Trigger;
+class Sync::Trigger isa(Frame);

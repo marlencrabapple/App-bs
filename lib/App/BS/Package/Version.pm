@@ -9,13 +9,16 @@ use v5.44;
 no warnings 'experimental::re_strict';
 use re 'strict';
 
+use Text::Xslate;
 use IO::Handle::Common;
 use Const::Fast;
 use parent 'Exporter';
 use IPC::Nosh;
+use PadWalker qw(peek_my peek_our peek_sub closed_over);
 
-use vars qw'@EXPORT @EXPORT_OK @EXPORT_COMMON';
-@EXPORT_COMMON = qw'vercmp';
+# use vars qw'@EXPORT @EXPORT_OK @EXPORT_COMMON';
+
+# @EXPORT = @EXPORT_COMMON = qw'vercmp';
 
 const our $pkgname_re => qr/
 ([a-z0-9_@+][a-z0-9_@+.-]+)
@@ -26,13 +29,13 @@ const our $pkgname_re => qr/
 
 const our $pkgver_re => qr'^[^\s:/\\-]+$'x;
 
-APPLY($class_mop) {
-    App::BS::Common->apply($class_mop)
-};
+# APPLY($class_mop) {
+#     App::BS::Common->apply($class_mop)
+# };
 
-# method apply : common ($class_mop) {
+# method apply : common  ($class_mop) {
 #     $class->import_sub( $class_mop, \@EXPORT );
-#     $class->import_common( $class_mop, \@EXPORT_COMMON );
+#     $class->import_coammon( $class_mop, \@EXPORT_COMMON );
 # }
 
 # method import : common : override {
@@ -60,18 +63,42 @@ APPLY($class_mop) {
 #     }
 # }
 
-method vercmp : common ($left,$right,%opt) {
+method vercmp : common ( $left, $right, %opt ) {
     my class VerCmp : does(App::BS::Run) {
 
     };
 
+    # fatal ""
+    # dmsg {
+    #     lexical => peek_my($_),
+    #     level   => $_
+    # } for ( 0 .. 2 );
+
+    dmsg $left, $right, \%opt;
+
     my $run = VerCmp->new->run(
         [
             'vercmp',
-            map { $opt{ignore_pkgrel} ? ( $_ =~ s/-[0-9]+$//r ) : $_ }
+            map { $opt{ignore_pkgrel} ? ( $_ =~ s/-[0-9]+$//r ) : ($_) }
               ( $left, $right )
         ],
     );
 
+    # dmsg $left, $right, \%opt, $run->cmd, ( $run->out->lines_utf8 )[0];
+
     return ( $run->out->lines_utf8 )[0];
+}
+
+# method epoch {
+
+# }
+
+method pkgrel {
+
+}
+
+# method verfmt ($fmtstr='%^d' ,@vars) {}
+
+method verparts {
+    /((?:[0-9]+:)?[^\s:\\-]+(?:-[0-9]+)?)/;
 }

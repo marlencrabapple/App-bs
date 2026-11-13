@@ -189,21 +189,10 @@ method repo_vercmp ( $repo = $self->repo, %opt ) {
                 if (   $repo_prev
                     && $pkg->{$repo_prev}{$name} )
                 {
-                   # my $run = $self->run(
-                   #     [
-                   #         'vercmp',
-                   #         map { $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$//r ); }
-                   #           ( $ver, $pkg->{$repo_prev}{$name}{ver} )
-                   #     ],
-                   #     out => sub ( $line, @ ) {
-
-                    #     },
-                    # );
-
                     $vercmp_outh->(
-                        App::BS::Package::Version->vercmp(
-                            $ver, $pkg->{$repo_prev}{$name}{ver}
-                        ),
+                            App::BS::Package::Version->vercmp(
+                                $ver, $pkg->{$repo_prev}{$name}{ver}
+                            ),
                         $pkg, $name, $repo,
                         $repo_prev,
                         $ver
@@ -222,8 +211,6 @@ method repo_vercmp ( $repo = $self->repo, %opt ) {
             $lastsync = __PACKAGE__->epoch if $updatedb;
         }
     }
-
-    # dmsg $pkg;
 }
 
 package bs_repo_vercmp::CLI;

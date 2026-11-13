@@ -1,6 +1,5 @@
 
 #!/usr/bin/env perl
-
 use v5.40;
 use utf8;
 
@@ -94,10 +93,16 @@ sub mkdist {
         dmsg $root, \@target, $verstr, $name, $wkdir;
 
         foreach my $target (@target) {
-            dynamically $CWD = $wkdir;
+
+            my ($subproj) =
+              ( $target->relative($root)->stringify =~ /^([^\/]+)\//gi );
 
             my $distdir =
-              path( "$wkdir/$name-$verstr-" . $target->parent->basename );
+              path( "$wkdir/$name-$verstr-"
+                  . $target->parent->basename
+                  . "/$subproj" );
+            $distdir->mkdir;
+
             info "Working on $distdir...";
 
             dmsg $target, $distdir;
@@ -108,8 +113,14 @@ sub mkdist {
             my $moved = $target->move($distdir);
 
             say STDERR "[2/2] Compressing archive tarball" if $ENV{DEBUG};
-            my $archive = ctzst( "$root/" . $distdir->basename . '.tar.zst',
-                $distdir->relative );
+            my $archive = ctzst(
+                "$root/"
+                  . (
+                    $subproj ? $distdir->parent->basename : $distdir->basename
+                  )
+                  . '.tar.zst',
+                $distdir->relative
+            );
 
             push @out, $archive if $archive;
             $moved->move($target);
