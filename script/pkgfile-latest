@@ -73,18 +73,20 @@ method collect {
     \%found;
 }
 extended method by( : $cmax, : $want, : $by, : $dir ) {
-    my $sorted = {
+    my $grouped = {
         pairmap { ( $a => $b ) }    # $a => $$b{path} ) }
         (
-            $dir eq 'desc'
-            ? reverse pairmap { ( reverse $a, $b ) } $found->%{@$pkgname}
-            : $found->%{@$pkgname}
+            # $dir eq 'desc'
+            # ? reverse pairmap { ( reverse $a, $b ) } $found->%{@$pkgname}
+            # :
+            $found->%{@$pkgname}
         )
     };
 
     my %res = ();
+    my @res_ord;
 
-    foreach my ( $pkgname, $data ) (%$sorted) {
+    foreach my ( $pkgname, $data ) (%$grouped) {
         next unless $pkgname && $data;    # && refstr($data) eq 'HASH';
         my sub vercmp : prototype($$) ( $left, $right ) {
             my $run =
@@ -94,22 +96,36 @@ extended method by( : $cmax, : $want, : $by, : $dir ) {
             ( $run->out->lines_utf8 )[0];
         }
 
-        @$data = sort vercmp @$data;
-        my $top = $data->[ ( scalar @$data - 1 ) .. ( scalar @$data - $cmax ) ];
+        @$data =
+          $dir eq 'desc' ? reverse sort vercmp @$data : sort vercmp @$data;
 
-        $res{ $$top{$want} } = { pkgname => $pkgname, %$top };
+        my @top =
+          $data->@[ ( scalar @$data - $cmax ) .. ( scalar @$data - 1 ) ];
+
+        foreach my ( $i, $top ) ( indexed @top ) {
+            push @res_ord, $$top{$want};
+            $res{ $$top{$want} } =
+              [ map { { order => $i, pkgname => $pkgname, %$_ } } @top ];
+        }
     }
 
-    \%res;
+    # return { map { ( $_ => $res{$_} ) } @res_ord };#
+    return \@res_ord;
 }
 
 method latest_pkgver (@arg) {
-    $self->by_version( cmax => 10, dir => 'asc', want => 'path' );
+    $self->by_version( cmax => 1, dir => 'asc', want => 'path', @arg );
 }
-method most_recent       { $self }
-method by_version (@arg) { $self->by( by => 'version', @arg ) }
 
-method by_created (@arg) { $self->by( by => 'created', @arg ) }
+method most_recent { $self }
+
+method by_version (@arg) {
+    $self->by( by => 'version', @arg );
+}
+
+method by_created (@arg) {
+    $self->by( by => 'created', @arg );
+}
 
 package pkgfile_latest::CLI;
 
@@ -128,20 +144,25 @@ sub cli ( $argv //= \@ARGV ) {
 
     my %clidest = (
         pkgname => \@pkgname,
-        pkgfile => \@pkgfile
+        want    => 'path',
+        pkgfile => \@pkgfile,
+        cmax    => 1,
+        dir     => 'asc'
     );
 
     GetOptionsFromArray(
         $argv,
         \%clidest,
+        'cmax|limit|max-results=i',
         'pkgname=s@',
-        'pkgfile|pkgdir|dir|file|filelist=s@',
+        'pkgfile|pkgdir|file|filelist=s@',
+        'want|field:s',
 
       # 'created|date-created|ctime' =>  sub ( $opt, $val ) { dmsg $opt, $val },
       # 'version|vercmp|pkgver'      => sub ( $opt, $val ) { dmsg $opt, $val },
-        'sortby|by:s@',
+        'by|sortby:s@',
 
-        'direction|sort-direction|sortdir:s',
+        'dir|direction|sort-direction|sortdir:s',
 
         # 'asc|desc', => sub ( $opt, $val ) { dmsg $opt, $val },
 
@@ -154,9 +175,15 @@ sub cli ( $argv //= \@ARGV ) {
     # dmsg $argv, \%clidest;
 
     # my $original = App::BS::CLI->cli2param(\%clidest);
-    my $file_newest = pkgfile_latest->new(%clidest)->latest_pkgver;
-    say join "\n", keys $file_newest->%*;
 
+    my $pkgfile_by = pkgfile_latest->new(%clidest);
+
+    my $res = $pkgfile_by->latest_pkgver( %clidest{qw'cmax dir by want'} );
+
+    dmsg $res;
+
+    # say join "\n", keys $res->%*;
+    say join "\n", map { "$_" } @$res;
 }
 
 cli( \@ARGV )
