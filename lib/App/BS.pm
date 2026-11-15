@@ -3,7 +3,7 @@ use Object::Pad qw(:experimental(:all));
 package App::BS;
 
 use Const::Fast;
-$VERSION = '0.02_01';
+$VERSION = '0.02_02';
 
 class App::BS;    #: does(App::BS::Common);
 
@@ -14,8 +14,6 @@ use TOML::Tiny 'from_toml';
 use Const::Fast;
 use Const::Fast::Exporter;
 use Syntax::Keyword::Try;
-
-
 
 const our $defaultconfig_inline => <<'...';
 #
