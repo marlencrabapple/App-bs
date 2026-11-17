@@ -61,6 +61,7 @@ sub mkdist {
     my @target;
 
     foreach my $in (@in) {
+        dynamically $CWD = $in;
         my $state = $in->visit(
             sub ( $path, $state ) {
                 dmsg( $in, $path, $path->basename );
@@ -68,6 +69,7 @@ sub mkdist {
                 return unless $path->is_dir;
 
                 if ( $path->basename eq 'publish' ) {
+                    $name = $in->basename;
                     push @target, $path->absolute;
                 }
             },
@@ -123,7 +125,7 @@ sub mkdist {
             );
 
             push @out, $archive if $archive;
-            $moved->move($target);
+            $moved->move( $target->mkdir );
         }
 
         $wkdir->remove_tree unless $ENV{KEEP_WORKDIR};

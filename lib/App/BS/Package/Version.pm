@@ -13,12 +13,11 @@ use Text::Xslate;
 use IO::Handle::Common;
 use Const::Fast;
 use parent 'Exporter';
-use IPC::Nosh;
 use PadWalker qw(peek_my peek_our peek_sub closed_over);
 
-# use vars qw'@EXPORT @EXPORT_OK @EXPORT_COMMON';
+use vars qw'@EXPORT @EXPORT_OK @EXPORT_COMMON';
 
-# @EXPORT = @EXPORT_COMMON = qw'vercmp';
+@EXPORT = @EXPORT_COMMON = qw'vercmp';
 
 const our $pkgname_re => qr/
 ([a-z0-9_@+][a-z0-9_@+.-]+)
@@ -68,12 +67,6 @@ method vercmp : common ( $left, $right, %opt ) {
 
     };
 
-    # fatal ""
-    # dmsg {
-    #     lexical => peek_my($_),
-    #     level   => $_
-    # } for ( 0 .. 2 );
-
     dmsg $left, $right, \%opt;
 
     my $run = VerCmp->new->run(
@@ -84,20 +77,12 @@ method vercmp : common ( $left, $right, %opt ) {
         ],
     );
 
-    # dmsg $left, $right, \%opt, $run->cmd, ( $run->out->lines_utf8 )[0];
-
     return ( $run->out->lines_utf8 )[0];
 }
-
-# method epoch {
-
-# }
 
 method pkgrel {
 
 }
-
-# method verfmt ($fmtstr='%^d' ,@vars) {}
 
 method verparts {
     /((?:[0-9]+:)?[^\s:\\-]+(?:-[0-9]+)?)/;

@@ -23,6 +23,11 @@ sub prune_stable(@pkg) {
     }
 }
 
+
+sub filter_vcs (@pkg, :$variants) {
+
+}
+
 sub repo_gpg_verify {
     my %fail     = ();
     my $checksig = path("./")->children(

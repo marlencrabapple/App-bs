@@ -11,6 +11,7 @@ no warnings 'experimental::signature_named_parameters';
 no warnings 'experimental::re_strict';
 use re 'strict';
 
+use PadWalker;
 use TOML::Tiny;
 use Const::Fast;
 use List::Util qw(uniq any none);
@@ -61,7 +62,8 @@ method import_list : common ( $mop, $export_var ) {
 
 method import : common : override {
     my $caller = [ caller 1 ];
-    my $mop    = Object::Pad::MOP::Class->for_caller;#->try_for_class( $$caller[0] );
+    my $mop =
+      Object::Pad::MOP::Class->for_caller;    #->try_for_class( $$caller[0] );
 
     # my @$methods
     if ($mop) {
@@ -138,11 +140,12 @@ method import_instance : common ($class_mop) {
 
 sub matchlist (
     : $quotemeta //= true,
-    : $group //= 1,
-    : $capture //= 0, : $mod = [], @list
+    : $group     //= 1,
+    : $capture   //= 0,
+    : $mod = [], @list
   )
 {
-    my $str = join '|', map { $quotemeta ? quote_meta($_) : $_} @list;
+    my $str = join '|', map { $quotemeta ? quote_meta($_) : $_ } @list;
     $str = "?:$group" if $group;
     $str = "($str)"
       if $group || $capture;
@@ -187,4 +190,30 @@ sub epoch( $join = '', %opt ) {
       if $opt{ms_pad} && $opt{ms_pad} >= 1;
 
     join $join, $sec, $ms;
+}
+
+sub sigil ( $varref, : $up = 1, : $name, %opt ) {
+    $name //= var_name( $up + 1, $varref );
+    const my $sigil => qr/^[\$\@\%\&\*]{1}/;
+
+    # ( $name, ( $name =~ s/$sigil//rg ) );
+    ( $name =~ /($sigil)(.+)$/g );
+}
+
+method lexical : common ($up //= 1, @name) {
+    my %lexical;
+    foreach my ( $k, $v ) ( PadWalker::peek_my($up)->%* ) {
+
+        # /        dmsg( $k, $v );
+
+        my ( $sig, $name ) = ( sigil( $v, name => $k, up => $up ) );
+
+        # next if none { $name eq $_ } @name;
+        #
+        # dmsg $sig, $name, $v;
+        $lexical{$name} = *{$v};
+
+        # dmsg $lexical{$name};
+    }
+    \%lexical;
 }

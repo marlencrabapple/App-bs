@@ -2552,11 +2552,11 @@ DISTRIBUTIONS
       perl 5.006002
       strict 0
       warnings 0
-  Net-SSLeay-1.96
-    pathname: C/CH/CHRISN/Net-SSLeay-1.96.tar.gz
+  Net-SSLeay-1.97_01
+    pathname: C/CR/CRABAPP/Net-SSLeay-1.97_01.tar.gz
     provides:
-      Net::SSLeay 1.96
-      Net::SSLeay::Handle 1.96
+      Net::SSLeay 1.97_01
+      Net::SSLeay::Handle 1.97_01
     requirements:
       English 0
       ExtUtils::MakeMaker 0

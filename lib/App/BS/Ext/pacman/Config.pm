@@ -72,6 +72,7 @@ method to_string ( $configdata //= $config, %opt ) {
 
 method pacconf ( $path, %opt ) {
     my $run = $self->run( [ qw'pacconf --config', $path ] );
+    dmsg $run;
     $self->parse_pacman_conf( lines => [ $run->out->lines_utf8 ] );
 }
 
@@ -112,6 +113,7 @@ my method parse_pacman_conf_line ( $line, %opt ) {
 }
 
 method parse_pacman_conf (%opt) {
+    dmsg \%opt;
     parse_pacman_conf_line( $self, $_ ) for $opt{lines}->@*;
     $config;
 }
