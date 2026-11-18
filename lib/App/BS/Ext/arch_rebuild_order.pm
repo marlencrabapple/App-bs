@@ -40,7 +40,8 @@ method arch_rebuild_order( $pkgname_aref, %opt ) {
         out => sub ( $line, @ ) {
             push @$ordered, split /\s/, $line;
         },
-        autochomp => 1
+
+        # autochomp => 1
     );
 
     @$ordered;

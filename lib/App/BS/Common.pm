@@ -84,7 +84,7 @@ method import : common : override {
     }
     else {
 
-        dmsg __PACKAGE__->export_to_level(
+        __PACKAGE__->export_to_level(
             $$caller[0],
             $class,
             (
@@ -94,7 +94,7 @@ method import : common : override {
             )
         );
 
-        dmsg __PACKAGE__->export_to_level(
+        __PACKAGE__->export_to_level(
             $$caller[0],
             $class,
             (
@@ -209,9 +209,10 @@ method lexical : common ($up //= 1, @name) {
         my ( $sig, $name ) = ( sigil( $v, name => $k, up => $up ) );
 
         # next if none { $name eq $_ } @name;
-        #
-        # dmsg $sig, $name, $v;
-        $lexical{$name} = *{$v};
+        # #
+        # # dmsg $sig, $name, $v;
+        ( $lexical{$name} ) =
+          refstr($v) eq 'REF' ? ( eval qq'$sig\{\$v\}' ) : $v;
 
         # dmsg $lexical{$name};
     }

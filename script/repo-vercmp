@@ -4,7 +4,7 @@ use Object::Pad ':experimental(:all)';
 
 package bs_repo_vercmp;
 
-class bs_repo_vercmp : does(App::BS::Package::Version) :
+class bs_repo_vercmp : does(Adjust::Params) : does(App::BS::Package::Version) :
   does(App::BS::Ext::pacman::Config) : does(App::BS::Run);
 
 use v5.40;
@@ -25,20 +25,38 @@ use re 'strict';
 field $repo           : accessor;
 field $filter         : accessor;
 field $lastsync       : accessor;
-field $updatedb       : accessor = 1;
-field $cmp_pkgrel     : accessor = 0;
-field $installed_only : accessor = 0;
-field $verbose        : param    = 0;
+field $updatedb       : param : reader = 1;
+field $cmp_pkgrel     : param : reader = 0;
+field $installed_only : param : reader = 0;
+field $verbose        : param = 0;
 field $outfmt         : accessor : param = undef;
 field $quiet          : accessor : param = undef;
 field $pkg = {};
 
-ADJUST : params (:$updatedb //= 1) {
-    $self->param_bool( updatedb => $updatedb );
-};
+# ADJUST : params (:$updatedb //= 1) {
+#     $self->param_bool( updatedb => $updatedb );
+# };
 
-ADJUST : params (:$cmp_pkgrel //= 0)
-  { $self->param_bool( cmp_pkgrel => $cmp_pkgrel ) };
+# ADJUST : params (:$cmp_pkgrel //= 0)
+#   { $self->param_bool( cmp_pkgrel => $cmp_pkgrel ) };
+
+ADJUST : params (%param) {
+    dmsg $self->META;
+    my %paramnorm = ();
+
+    foreach my ( $k, $v ) (%param) {
+        my ($knorm) = ($k) = ( $k =~ s/-/_/r );
+
+        # my field= $self->$knorm;
+        $paramnorm{$knorm} = $v;
+    }
+
+    $self->adjust_params(
+        [ \$cmp_pkgrel, \$updatedb, \$installed_only, \$verbose, \$outfmt ],
+        \%paramnorm );
+
+    dmsg( $self, \%param, \%paramnorm )
+};
 
 ADJUST : params (:$repo, :$filter //= undef) {
 
@@ -62,6 +80,8 @@ ADJUST : params (:$repo, :$filter //= undef) {
     }
 };
 
+# ADJUST { dmsg $self }
+
 method param_bool ( $name, $val ) {
     if ( $val && $val !~ /^(0|1)$/ ) {
         my $errstr = "Unexpected for $name: $val. Assuming ";
@@ -71,6 +91,7 @@ method param_bool ( $name, $val ) {
     }
 
     $self->$name( ( $val && 1 ) );
+    dmsg $self;
 }
 
 method epoch : common ($sep = '') {
@@ -86,8 +107,6 @@ method $package_seen ( $pkg, %opt ) {
 }
 
 method repo_vercmp ( $repo = $self->repo, %opt ) {
-    dynamically $updatedb   = $opt{updatedb}   if $opt{updatedb};
-    dynamically $cmp_pkgrel = $opt{cmp_pkgrel} if $opt{cmp_pkgrel};
 
     info "Stripping pkgrel from version strings before comparison..."
       unless $cmp_pkgrel;
@@ -190,9 +209,9 @@ method repo_vercmp ( $repo = $self->repo, %opt ) {
                     && $pkg->{$repo_prev}{$name} )
                 {
                     $vercmp_outh->(
-                            App::BS::Package::Version->vercmp(
-                                $ver, $pkg->{$repo_prev}{$name}{ver}
-                            ),
+                        App::BS::Package::Version->vercmp(
+                            $ver, $pkg->{$repo_prev}{$name}{ver}
+                        ),
                         $pkg, $name, $repo,
                         $repo_prev,
                         $ver
@@ -201,11 +220,8 @@ method repo_vercmp ( $repo = $self->repo, %opt ) {
             }
         };
 
-        my $run = $self->run(
-            [ @repolist_cmd, $repo ],
-            out       => $repolist_outh,
-            autochomp => 1
-        );
+        my $run =
+          $self->run( [ @repolist_cmd, $repo ], out => $repolist_outh, );
 
         if ( $run->status == 0 ) {
             $lastsync = __PACKAGE__->epoch if $updatedb;
@@ -240,12 +256,9 @@ sub run ( $argv = \@ARGV ) {
         }
     );
 
-    dmsg \%clidest;
+    # dmsg \%clidest;
 
-    my $app = bs_repo_vercmp->new(
-        map { ( ( $_ =~ s/-/_/r ) => $clidest{$_} ) }
-          keys %clidest
-    );
+    my $app = bs_repo_vercmp->new(%clidest);
 
     $app->repo_vercmp;
 }

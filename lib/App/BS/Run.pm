@@ -23,21 +23,21 @@ my class IPC {
     use IPC::Run3;
     use Sublike::Extended;
     use IO::Handle::Common;
+    IO->decorate;
 
     field $cmd    : param;
     field $in     : param = \undef;
     field $out    : param = [];
     field $err    : param = [];
     field $status : reader;
-    field $syserr;
-    field $ipcfail;
+    field $syserr :reader;
+    field $ipcfail :reader;
     field $autochomp : param = 1;
     field $autoflush : param = 1;
     field $verbose   : param = 0;
 
     method exec (%opt) {
         my $itercb = sub ( $line, $dest, @arg ) {
-
             my $ret;
             foreach my ($cb)
               ( grep { $_ && App::BS::Common::refstr($_) eq 'CODE' } @$dest )
@@ -46,10 +46,9 @@ my class IPC {
                 dynamically $line = $ret // $line;
             }
             $ret //= $line;
-
         };
-        dmsg $cmd, $in, $out, $err, $self;
-        dynamically $ipcfail = run3(
+
+        $ipcfail = run3(
             $cmd, $in,
             sub ($line) {
                 chomp $line if $opt{autochomp} // $autochomp;
@@ -57,30 +56,15 @@ my class IPC {
                 push @$out, $itercb->( $line, $out );
             },
             sub ($line) {
-                chomp $line if $opt{autochomp} //= $autochomp;
+                chomp $line if $opt{autochomp} // $autochomp;
                 error $line;
                 push @$err, $itercb->( $line, $err );
             }
         );
-        dynamically $status = $? // 0;
-        dynamically $syserr = $! // undef;
+        $status = $? // 0;
+        $syserr = $! // undef;
         $self;
     }
-
-# extended method run :
-#   common ( $cmd, $in = \undef, $out = [], $err = [], :$autochomp = 1, :$autoflush = 1 )
-# {
-#     my %param = (
-#         cmd       => $cmd,
-#         in        => $in,
-#         out       => $out,
-#         err       => $err,
-#         autochomp => $autochomp,
-#         autoflush => $autoflush
-#     );
-
-    #     $class->new(%param)->exec;
-    # }
 
     my class IPCHandle {
         use v5.44;
@@ -126,7 +110,7 @@ extended method run ( $cmd, : $in = \undef, : $out = [], : $err = [], %opt ) {
 
     my $lex = App::BS::Common->lexical;
 
-    dmsg $lex;
+    # dmsg $lex;
 
     IPC->new( $lex->%{qw'cmd in out err autochomp autoflush'}, $lex->{opt}->%* )
       ->exec();

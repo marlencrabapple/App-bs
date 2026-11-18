@@ -67,7 +67,7 @@ method vercmp : common ( $left, $right, %opt ) {
 
     };
 
-    dmsg $left, $right, \%opt;
+    # dmsg $left, $right, \%opt;
 
     my $run = VerCmp->new->run(
         [

@@ -104,13 +104,12 @@ ADJUST : params (:$repo = [keys $self->repolist->%*]) {
     foreach my ( $k, $v ) ( $self->repolist->%* ) {
         delete $self->repolist->{$k} if none { $_ eq $k } @$repo;
     }
-    dmsg $self->repolist
 };
 
 method pacman_updarg ( $db, %opt ) {
     my $lastupdate = $db eq 'file' ? 'filedb_updated' : 'pkgdb_updated';
 
-    dmsg $lastupdate, $self->$lastupdate, $opt{force}, $updatedb;
+    # dmsg $lastupdate, $self->$lastupdate, $opt{force}, $updatedb;
 
     if ( ( $updatedb && !$self->$lastupdate ) || $opt{force} ) {
         $self->$lastupdate(time);
@@ -127,8 +126,8 @@ method pacman_updarg ( $db, %opt ) {
 method pacman ( $cli, %opt ) {
     ( $cli, $opt{dest} ) = App::BS::Common::ARRAY( $cli, $opt{dest} );
 
-    dmsg $cli, %opt;
-
+    # dmsg $cli, %opt;
+#
     dynamically $cli = [
         'pacman', @$cli,
         ( $self->pacman_conf ? ( '--config', $self->pacman_conf ) : () )
