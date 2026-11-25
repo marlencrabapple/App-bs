@@ -127,7 +127,7 @@ method pacman ( $cli, %opt ) {
     ( $cli, $opt{dest} ) = App::BS::Common::ARRAY( $cli, $opt{dest} );
 
     # dmsg $cli, %opt;
-#
+    #
     dynamically $cli = [
         'pacman', @$cli,
         ( $self->pacman_conf ? ( '--config', $self->pacman_conf ) : () )
@@ -146,8 +146,6 @@ method pacman ( $cli, %opt ) {
             grep { exists $opt{$_} } qw'out err autoflush autochomp'
         )
     );
-
-    dmsg $run;
 
     if ( $run->status > 0 ) {
         dmsg [ caller 0 ], $run->cmd;

@@ -25,13 +25,13 @@ my class IPC {
     use IO::Handle::Common;
     IO->decorate;
 
-    field $cmd    : param;
-    field $in     : param = \undef;
-    field $out    : param = [];
-    field $err    : param = [];
-    field $status : reader;
-    field $syserr :reader;
-    field $ipcfail :reader;
+    field $cmd       : reader : param;
+    field $in        : param = \undef;
+    field $out       : param = [];
+    field $err       : param = [];
+    field $status    : reader;
+    field $syserr    : reader;
+    field $ipcfail   : reader;
     field $autochomp : param = 1;
     field $autoflush : param = 1;
     field $verbose   : param = 0;
@@ -63,6 +63,7 @@ my class IPC {
         );
         $status = $? // 0;
         $syserr = $! // undef;
+        dmsg $self;
         $self;
     }
 

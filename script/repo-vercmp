@@ -75,7 +75,11 @@ ADJUST : params (:$repo, :$filter //= undef) {
 
     if ($filter) {
         $self->filter(
-            ( ref $filter && ref $filter eq 'Regexp' ? $filter : qr/$filter/ )
+            (
+                ref $filter && builtin::reftype $filter eq 'Regexp'
+                ? $filter
+                : qr/$filter/
+            )
         );
     }
 };
@@ -138,36 +142,39 @@ method repo_vercmp ( $repo = $self->repo, %opt ) {
           $/xi;
 
         my $vercmp_outh = sub ( $line, $pkg, $name, $repo, $repo_prev, $ver ) {
-            if ($line) {
-                my @ver =
-                  map { $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$/-x/r ) }
-                  ( $ver, $pkg->{$repo_prev}{$name}{ver} );
 
-                if ($outfmt) {
-                    const my %fmtmap => (
-                        base => '%e',
-                        name => '%n',
-                        repo => '%r',
-                    );
+            # if ($line) {
+            my @ver =
+              map { $cmp_pkgrel ? $_ : ( $_ =~ s/-[0-9]+$/-x/r ) }
+              ( $ver, $pkg->{$repo_prev}{$name}{ver} );
 
-                    const my %_fmtmap => ( reverse %fmtmap );
+            if ($outfmt) {
+                const my %fmtmap => (
+                    base => '%e',
+                    name => '%n',
+                    repo => '%r',
+                );
 
-                    my $ptn = join '|', map { quotemeta($_) } values %fmtmap;
+                const my %_fmtmap => ( reverse %fmtmap );
 
-                    my $outstr = ( $outfmt =~ s/($ptn)/$_fmtmap{$1}/gr );
-                    say $outstr;
+                my $ptn = join '|', map { quotemeta($_) } values %fmtmap;
+
+                my $outstr = ( $outfmt =~ s/($ptn)/$_fmtmap{$1}/gr );
+                say $outstr;
+            }
+            else {
+                if ($quiet) {
+                    say $name;
                 }
                 else {
-                    if ($quiet) {
-                        say $name;
-                    }
-                    else {
-                        say "$repo_prev/$name ("
-                          . $ver[1]
-                          . ") is newer than $repo/$name ($ver[0])";
-                    }
+                    say "$repo_prev/$name ("
+                      . $ver[1]
+                      . ") is newer than $repo/$name ($ver[0])";
                 }
             }
+
+            # }
+            return $line;
         };
 
         my $repolist_outh = sub ( $line, @ ) {
@@ -208,7 +215,7 @@ method repo_vercmp ( $repo = $self->repo, %opt ) {
                 if (   $repo_prev
                     && $pkg->{$repo_prev}{$name} )
                 {
-                    $vercmp_outh->(
+                    dmsg $vercmp_outh->(
                         App::BS::Package::Version->vercmp(
                             $ver, $pkg->{$repo_prev}{$name}{ver}
                         ),
